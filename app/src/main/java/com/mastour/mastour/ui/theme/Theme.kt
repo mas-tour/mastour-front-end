@@ -13,9 +13,9 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = md_theme_dark_primary,
-    primaryVariant = md_theme_dark_primaryContainer,
-    secondary = md_theme_dark_secondary
+    primary = md_theme_light_primary,
+    primaryVariant = md_theme_light_primaryContainer,
+    secondary = md_theme_light_secondary
 )
 
 @Composable
