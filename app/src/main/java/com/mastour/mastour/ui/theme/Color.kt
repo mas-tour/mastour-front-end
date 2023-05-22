@@ -2,7 +2,10 @@ package com.mastour.mastour.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val md_theme_light_primary = Color(0xFF91399A)
+val md_theme_light_primaryContainer = Color(0xFFFFD6FC)
+val md_theme_light_secondary = Color(0xFF5650B9)
+
+val md_theme_dark_primary = Color(0xFFFDAAFF)
+val md_theme_dark_primaryContainer = Color(0xFF751D80)
+val md_theme_dark_secondary = Color(0xFFC4C0FF)
