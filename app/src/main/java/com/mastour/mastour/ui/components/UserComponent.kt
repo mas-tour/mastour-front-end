@@ -1,5 +1,6 @@
 package com.mastour.mastour.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,7 +35,7 @@ fun UserComponent(
     Card(shape = RoundedCornerShape(16.dp), modifier = modifier
         .width(350.dp)
         .height(120.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
             AsyncImage(
                 model = photoUrl,
                 contentDescription = null,
@@ -82,7 +83,7 @@ fun UserComponent2(
     Card(shape = RoundedCornerShape(16.dp), modifier = modifier
         .width(350.dp)
         .height(120.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
             Image(painter = painterResource(photoUrl),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -126,7 +127,7 @@ fun UserComponentPreview(){
 }
 
 @Composable
-@Preview(showBackground = true, device = Devices.PIXEL_4)
+@Preview(showBackground = true, device = Devices.PIXEL_4, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun UserComponentPreview2(){
     MasTourTheme {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
