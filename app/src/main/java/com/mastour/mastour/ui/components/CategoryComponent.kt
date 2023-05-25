@@ -29,12 +29,8 @@ fun CategoryComponent(
     name: String,
     photoUrl: String,
     modifier: Modifier = Modifier,
-    width: Int,
-    height: Int
 ){
     Card(modifier = modifier
-        .width((width).dp)
-        .height((height).dp)
         .clip(RoundedCornerShape(8.dp))
     ){
         Box{
@@ -64,18 +60,14 @@ fun CategoryComponent(
     }
 }
 
-//CategoryComponent2 Drawable Preview Only (To Be Deleted)
+//CategoryComponent2 Don't Delete, Needed !
 @Composable
 fun CategoryComponent2(
     name: String,
     photoUrl: Int,
     modifier: Modifier = Modifier,
-    width: Int,
-    height: Int
 ){
     Card(modifier = modifier
-        .width((width).dp)
-        .height((height).dp)
         .clip(RoundedCornerShape(8.dp))
     ){
         Box{
@@ -109,7 +101,7 @@ fun CategoryComponent2(
 @Preview(showBackground = true)
 fun CategoryComponentPreview(){
     MasTourTheme {
-        CategoryComponent2(name = "B Asylum", photoUrl = R.drawable.asylum, width = 120, height = 120)
+        CategoryComponent2(name = "B Asylum", photoUrl = R.drawable.asylum, modifier = Modifier.width(120.dp).height(120.dp))
     }
 }
 
@@ -120,8 +112,7 @@ fun CategoryComponentPreview2(){
         CategoryComponent(
             name = "Monas",
             photoUrl = "https://upload.wikimedia.org/wikipedia/id/thumb/b/b1/Merdeka_Square_Monas_02.jpg/800px-Merdeka_Square_Monas_02.jpg",
-            width = 120,
-            height = 120
+            modifier = Modifier.width(120.dp).height(120.dp)
         )
     }
 }
