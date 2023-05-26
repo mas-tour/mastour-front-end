@@ -64,7 +64,7 @@ fun ProfileContent(
     username: String,
     gender: String,
     age: String,
-    picture: String,
+    photoUrl: Int, // TODO: Change Later
     phoneNumber: String,
     onGenderClicked: () -> Unit,
     onAgeClicked: () -> Unit,
@@ -79,10 +79,9 @@ fun ProfileContent(
         Box(modifier = modifier
             .fillMaxWidth()
             .height(300.dp)) {
-            val profile_picture = R.drawable.dummy_user // TODO: remove this later
 
             Image(
-                painter = painterResource(profile_picture), // TODO: Dummy, Change this later
+                painter = painterResource(photoUrl), // TODO: Dummy, Change this later
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(Color(0xFF7147B1).copy(alpha = 0.3f), blendMode = BlendMode.Color),
@@ -99,7 +98,7 @@ fun ProfileContent(
                     )
             )
             Image(
-                painter = painterResource(profile_picture),
+                painter = painterResource(photoUrl),
                 contentDescription = "Profile Picture",
                 contentScale = ContentScale.FillHeight,
                 modifier = modifier
@@ -260,7 +259,7 @@ fun SearchScreenPreview(){
             username = "bagus123",
             gender = "Male",
             age = "27",
-            picture = "",
+            photoUrl = R.drawable.dummy_user,
             phoneNumber = "08234623232",
             onGenderClicked = {},
             onPhoneNumberClicked = {},
