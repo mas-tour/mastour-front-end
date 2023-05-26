@@ -57,7 +57,7 @@ object CategoryDatas2{
 
     val place = listOf(
         CategoryData2(
-            "2",
+            "1",
             "Makassar",
             R.drawable.makassar
         ),
@@ -66,5 +66,23 @@ object CategoryDatas2{
             "Bandung",
             R.drawable.bandung
         )
+    )
+
+    val top = listOf(
+        CategoryData2(
+            "1",
+            "Borobudur",
+            R.drawable.borobudur
+        ),
+        CategoryData2(
+            "2",
+            "Borobudur",
+            R.drawable.borobudur
+        ),
+        CategoryData2(
+            "2",
+            "Borobudur",
+            R.drawable.borobudur
+        ),
     )
 }
