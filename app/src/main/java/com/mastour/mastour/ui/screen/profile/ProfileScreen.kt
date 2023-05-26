@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,10 +61,14 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 @Composable
 fun ProfileContent(
     name: String,
+    username: String,
     gender: String,
     age: String,
-    username: String,
-    photoUrl: String,
+    picture: String,
+    phoneNumber: String,
+    onGenderClicked: () -> Unit,
+    onAgeClicked: () -> Unit,
+    onPhoneNumberClicked: () -> Unit,
     onLogoutClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -126,7 +131,7 @@ fun ProfileContent(
 
             // Menu
             Button(
-                onClick = {},
+                onClick = onAgeClicked,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                 elevation = ButtonDefaults.elevation(0.dp),
                 shape = RoundedCornerShape(30.dp),
@@ -146,7 +151,7 @@ fun ProfileContent(
             }
 
             Button(
-                onClick = {},
+                onClick = onGenderClicked,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                 elevation = ButtonDefaults.elevation(0.dp),
                 shape = RoundedCornerShape(30.dp),
@@ -158,9 +163,29 @@ fun ProfileContent(
             {
                 Row(verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier.padding(horizontal = 15.dp)) {
-                    Icon(Icons.Filled.Person, contentDescription = "Logout")
+                    Icon(Icons.Filled.Person, contentDescription = "Gender")
                     Spacer(modifier.width(14.dp))
-                    Text(gender)
+                    Text(gender) // TODO: Dummy, change later
+                    Spacer(modifier.weight(1f))
+                }
+            }
+
+            Button(
+                onClick = onPhoneNumberClicked,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                elevation = ButtonDefaults.elevation(0.dp),
+                shape = RoundedCornerShape(30.dp),
+                contentPadding = PaddingValues(10.dp),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .advancedShadow(shadowRadius = 3.dp, borderRadius = 30.dp, offsetY = 3.dp)
+            )
+            {
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier.padding(horizontal = 15.dp)) {
+                    Icon(Icons.Filled.Phone, contentDescription = "Phone Number")
+                    Spacer(modifier.width(14.dp))
+                    Text(phoneNumber)
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -232,10 +257,15 @@ fun Modifier.advancedShadow(
 fun SearchScreenPreview(){
     MasTourTheme {
         ProfileContent(name = "Bagus Wijaya",
-            username = "Bagus123",
+            username = "bagus123",
             gender = "Male",
             age = "27",
-            onLogoutClicked = {},
-            photoUrl = "")
+            picture = "",
+            phoneNumber = "08234623232",
+            onGenderClicked = {},
+            onPhoneNumberClicked = {},
+            onAgeClicked = {},
+            onLogoutClicked = {}
+        )
     }
 }
