@@ -1,10 +1,7 @@
 package com.mastour.mastour.ui.screen.search
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -94,7 +91,9 @@ fun SearchContent(
                     specialization = guide.specialization,
                     price = guide.price,
                     modifier = Modifier
-                        .padding(top = 14.dp)
+                        .fillMaxWidth()
+                        .height(160.dp)
+                        .padding(16.dp)
                         .shadow(
                             elevation = 8.dp,
                             ambientColor = MaterialTheme.colors.primary,
