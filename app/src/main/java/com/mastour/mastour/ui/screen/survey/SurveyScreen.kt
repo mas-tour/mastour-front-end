@@ -56,8 +56,9 @@ fun SurveyContent(
         modifier
             .fillMaxSize()
             .paint(
-                painter = painterResource(R.drawable.survey_background),
+                painter = painterResource(R.drawable.wayang_background),
                 contentScale = ContentScale.FillBounds,
+                alpha = .15F
             )
     )
     Column(
