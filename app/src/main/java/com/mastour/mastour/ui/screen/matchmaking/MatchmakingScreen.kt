@@ -11,7 +11,11 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -34,34 +38,43 @@ fun MatchmakingContent(
         Image(painter = painterResource(R.drawable.match_bg),
             contentDescription = "Matchmaking",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary, blendMode = BlendMode.Softlight)
         )
         Column(modifier = Modifier
             .align(Alignment.TopStart)
             .padding(16.dp)) {
             Text(text = "Personality", style = MaterialTheme.typography.h5.copy(
-                color = Color.Black,
-                fontWeight = FontWeight.ExtraBold))
+                color = Color.White,
+                fontWeight = FontWeight.ExtraBold,
+                shadow = Shadow(color = MaterialTheme.colors.primary, offset = Offset(5f, 10f), blurRadius = 3f)
+            ))
             Text(text = "Matchmaking", style = MaterialTheme.typography.h5.copy(
-                color = MaterialTheme.colors.primary,
-                fontWeight = FontWeight.ExtraBold))
+                color = MaterialTheme.colors.primaryVariant,
+                fontWeight = FontWeight.ExtraBold,
+                shadow = Shadow(color = MaterialTheme.colors.primary, offset = Offset(5f, 10f), blurRadius = 3f)
+            ))
         }
 
         Column(modifier = Modifier
+            .fillMaxWidth()
             .align(Alignment.BottomStart)
             .padding(16.dp)) {
             Text(buildAnnotatedString {
                 withStyle(style = SpanStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
                     append("Find your best ")
                 }
-                withStyle(style = SpanStyle(color = MaterialTheme.colors.primary, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
+                withStyle(style = SpanStyle(color = MaterialTheme.colors.primaryVariant, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
                     append("tour guide\n")
                 }
                 withStyle(style = SpanStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
                     append("by using our ")
                 }
-                withStyle(style = SpanStyle(color = MaterialTheme.colors.primary, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
-                    append("matchmaking feature\n")
+                withStyle(style = SpanStyle(color = MaterialTheme.colors.primaryVariant, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
+                    append("matchmaking\n")
+                }
+                withStyle(style = SpanStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)) {
+                    append("feature")
                 }
             })
 

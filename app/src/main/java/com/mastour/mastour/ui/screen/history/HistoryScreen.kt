@@ -1,6 +1,5 @@
 package com.mastour.mastour.ui.screen.history
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,9 +44,15 @@ fun HistoryContent(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "History",
+            style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier
+                .padding(top = 60.dp, start = 16.dp)
+                .align(Alignment.Start)
+        )
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = modifier.padding(top = 125.dp)
+            modifier = modifier.padding(16.dp).fillMaxSize()
         ) {
             items(orderData) { order ->
                 OrderComponent(
@@ -62,11 +67,6 @@ fun HistoryContent(
         }
     }
 
-    Text(text = "History",
-        style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
-        modifier = Modifier
-            .padding(top = 60.dp, start = 30.dp)
-    )
 }
 
 @Composable
@@ -80,7 +80,7 @@ fun HistoryScreenPreview() {
 @Composable
 @Preview(showBackground = true)
 fun OrderComponentPreview() {
-    MasTourTheme() {
+    MasTourTheme {
         OrderComponent(
             guideName = "M. Thariq Dorong",
             location = "Bandung",
