@@ -1,6 +1,7 @@
 package com.mastour.mastour.ui.screen.login
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,6 +20,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,9 +30,54 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mastour.mastour.R
 import com.mastour.mastour.ui.theme.MasTourTheme
+import com.mastour.mastour.ui.viewmodel.AuthViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mastour.mastour.dummy.CategoryDatas2
+import com.mastour.mastour.ui.screen.homepage.HomePageContent2
+import com.mastour.mastour.util.UiState
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(
+    viewModel: AuthViewModel = viewModel(),
+    modifier: Modifier = Modifier,
+){
+    val email by viewModel.email
+    val password by viewModel.password
+
+    val context = LocalContext.current
+
+    viewModel.loginResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when(uiState){
+            is UiState.Loading ->{
+                LoginContent(
+                    email = email,
+                    password = password,
+                    onEmailTextChanged = viewModel::changeEmail,
+                    onPasswordTextChanged = viewModel::changePassword,
+                    onLoginClicked = viewModel::login,
+                    onRegisterClicked = { /*TODO*/ })
+            }
+            is UiState.Success ->{
+                HomePageContent2(
+                    moveToCategoryDetail = {},
+                    moveToMatchMaking = { /*TODO*/ },
+                    placeData = CategoryDatas2.place,
+                    categoryData = CategoryDatas2.category,
+                )
+            }
+            //Toast muncul beberapa kali, need fix
+            is UiState.Failure ->{
+                LoginContent(
+                    email = email,
+                    password = password,
+                    onEmailTextChanged = viewModel::changeEmail,
+                    onPasswordTextChanged = viewModel::changePassword,
+                    onLoginClicked = viewModel::login,
+                    onRegisterClicked = { /*TODO*/ })
+                Toast.makeText(context, uiState.e?.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 }
 
