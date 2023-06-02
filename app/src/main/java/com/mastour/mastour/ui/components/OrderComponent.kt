@@ -104,7 +104,7 @@ fun OrderComponent(
 @Composable
 @Preview(showBackground = true)
 fun PreviewOrderComponent() {
-    MasTourTheme() {
+    MasTourTheme {
         OrderComponent(
             guideName = "M. Thariq Dorong",
             location = "Bandung",
