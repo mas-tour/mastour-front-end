@@ -1,5 +1,7 @@
 package com.mastour.mastour.di
 
+import com.mastour.mastour.data.remote.ImgurApiConfig
+import com.mastour.mastour.data.remote.ImgurApiService
 import com.mastour.mastour.data.remote.MasTourApiConfig
 import com.mastour.mastour.data.remote.MasTourApiService
 import com.mastour.mastour.data.repository.Repository
@@ -17,6 +19,12 @@ object HiltModule {
     fun provideMasTourApiService() : MasTourApiService = MasTourApiConfig.getApiService()
 
     @Provides
+    fun provideImgurApiService() : ImgurApiService = ImgurApiConfig.getApiService()
+
+    @Provides
     @Singleton
-    fun provideRepository(masTourApiService: MasTourApiService) = Repository(masTourApiService)
+    fun provideRepository(
+        masTourApiService: MasTourApiService,
+        imgurApiService : ImgurApiService
+    ) = Repository(masTourApiService, imgurApiService)
 }

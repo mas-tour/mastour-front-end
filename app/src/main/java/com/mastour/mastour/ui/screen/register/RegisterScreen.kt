@@ -1,5 +1,14 @@
 package com.mastour.mastour.ui.screen.register
 
+import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,25 +36,67 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mastour.mastour.R
+import com.mastour.mastour.ui.screen.login.LoginScreen
 import com.mastour.mastour.ui.theme.MasTourTheme
+import com.mastour.mastour.ui.viewmodel.AuthViewModel
+import com.mastour.mastour.util.UiState
 
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier) {
+fun RegisterScreen(viewModel: AuthViewModel = viewModel()) {
+    val email by viewModel.emailRegister
+    val username by viewModel.usernameRegister
+    val name by viewModel.nameRegister
+    val password by viewModel.passwordRegister
+    val confirmPassword by viewModel.passwordConfirm
+    val imageUri by viewModel.imageUri
 
+    viewModel.registerResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when(uiState) {
+            is UiState.Loading -> {
+                RegisterContent(
+                    username = username,
+                    name = name,
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    viewModel = viewModel,
+//                    imageUri = imageUri,
+                    onEmailTextChanged = viewModel::changeEmailRegister,
+                    onPasswordTextChanged = viewModel::changePasswordRegister,
+                    onNameTextChanged = viewModel::changeNameRegister,
+                    onConfirmTextChanged = viewModel::changePasswordConfirm,
+                    onUsernameTextChanged = viewModel::changeUsernameRegister,
+                    onEditClicked = {  }, // viewModel::changePicture
+                    onRegisterClicked = { },
+                    onBackClicked = { /*TODO*/ }
+                )
+            }
+            is UiState.Success -> {
+//                LoginScreen() // TODO: Ganti jadi navigasi
+            }
+            is UiState.Failure -> {
+                // TODO: Toast or something
+            }
+        }
+    }
 }
 
 @Composable
@@ -61,6 +112,8 @@ fun RegisterContent(
     onPasswordTextChanged: (String) -> Unit,
     onConfirmTextChanged: (String) -> Unit,
     onRegisterClicked: () -> Unit,
+    viewModel: AuthViewModel,
+//    imageUri: Uri?,
     onBackClicked: () -> Unit,
     onEditClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -76,17 +129,47 @@ fun RegisterContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        val picture by viewModel.picture
+//
+        var imageUri by remember {
+            mutableStateOf<Uri?>(null)
+        }
+
+        val launcher = rememberLauncherForActivityResult(contract =
+        ActivityResultContracts.GetContent()) { uri: Uri? ->
+            imageUri = uri
+        }
+
+        val context = LocalContext.current
+
+        val initialBitmap = BitmapFactory.decodeResource(
+            context.resources,
+            R.drawable.profile_picture
+        )
+
+//        val bitmap =  remember {
+//            mutableStateOf<Bitmap?>(null)
+//        }
+
         Box(modifier = modifier) {
-            Image(
-                painter = painterResource(R.drawable.profile_picture),
-                contentDescription = "Profile Picture",
-                contentScale = ContentScale.FillHeight,
-                modifier = modifier
-                    .size(136.dp)
-                    .clip(CircleShape)
-            )
+            imageUri?.let {
+                viewModel.changePicture(
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, it)
+                )
+
+                viewModel.picture.value?.let {
+                    Image(
+                        bitmap = picture?.asImageBitmap() ?: initialBitmap.asImageBitmap(),
+                        contentDescription = "Profile Picture",
+                        contentScale = ContentScale.FillHeight,
+                        modifier = modifier
+                            .size(136.dp)
+                            .clip(CircleShape)
+                    )
+                }
+            }
             Button(
-                onClick = onEditClicked,
+                onClick = { launcher.launch("image/*") }, // TODO: Ask for permission
                 contentPadding = PaddingValues(),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -246,12 +329,13 @@ fun RegisterContent(
         }
     }
 
-    IconButton(onClick = onBackClicked) {
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Go Back"
-        )
-    }
+//    TODO: Bug on back button, fix later
+//    IconButton(onClick = onBackClicked) {
+//        Icon(
+//            imageVector = Icons.Default.ArrowBack,
+//            contentDescription = "Go Back"
+//        )
+//    }
 
     Text(text = "Register",
         style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
@@ -260,13 +344,13 @@ fun RegisterContent(
     )
 }
 
-@Preview(showBackground = true, device = Devices.PIXEL_4)
-@Composable
-fun RegisterScreenPreview() {
-    MasTourTheme {
-        RegisterContent(username = "", name = "", email = "", password = "", confirmPassword = "",
-            onEmailTextChanged = {}, onPasswordTextChanged = {}, onNameTextChanged = {},
-            onConfirmTextChanged = {}, onUsernameTextChanged = {}, onRegisterClicked = {},
-            onBackClicked = {}, onEditClicked = {})
-    }
-}
+//@Preview(showBackground = true, device = Devices.PIXEL_4)
+//@Composable
+//fun RegisterScreenPreview() {
+//    MasTourTheme {
+//        RegisterContent(username = "", name = "", email = "", password = "", confirmPassword = "",
+//            onEmailTextChanged = {}, onPasswordTextChanged = {}, onNameTextChanged = {},
+//            onConfirmTextChanged = {}, onUsernameTextChanged = {}, onRegisterClicked = {},
+//            onBackClicked = {}, onEditClicked = {})
+//    }
+//}
