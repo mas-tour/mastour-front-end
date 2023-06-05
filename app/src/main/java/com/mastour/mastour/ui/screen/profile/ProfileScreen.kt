@@ -55,7 +55,17 @@ import com.mastour.mastour.ui.theme.MasTourTheme
 
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier) {
-
+    ProfileContent(name = "Bagus Wijaya",
+        username = "bagus123",
+        gender = "Male",
+        age = "27",
+        photoUrl = R.drawable.dummy_user,
+        phoneNumber = "08234623232",
+        onGenderClicked = {},
+        onPhoneNumberClicked = {},
+        onAgeClicked = {},
+        onLogoutClicked = {}
+    )
 }
 
 @Composable

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.mastour.mastour.ui.screen.login.LoginScreen
 import com.mastour.mastour.ui.theme.MasTourTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,8 +20,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    //To Be Deleted, Hanya untuk testing
-                    LoginScreen()
+                    MainJetpack()
                 }
             }
         }
