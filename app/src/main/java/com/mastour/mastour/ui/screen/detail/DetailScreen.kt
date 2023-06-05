@@ -407,7 +407,7 @@ fun DetailContent2(
 @Composable
 @Preview(showBackground = true, device = Devices.PIXEL_4, showSystemUi = true)
 @Preview(showBackground = true, device = Devices.NEXUS_5X, showSystemUi = true)
-fun DetailScreenPreview(){
+fun DetailScreenPreview() {
     MasTourTheme {
         DetailContent2(
             name = "Jeremy Albertson",
@@ -421,9 +421,10 @@ fun DetailScreenPreview(){
                     "supernatural weapon of some kind where upon hearing it, you are immediately transported to a realm of existence that " +
                     "is incomprehensible by the human mind. A realm where you are driven to insanity by immense, Lovecraftian horrors " +
                     "and an infinitely expanding pit of enveloping darkness.",
-        onBackClicked = {},
-        onHireClicked = {},
-        onContactClicked = {},)
+            onBackClicked = {},
+            onHireClicked = {},
+            onContactClicked = {},
+        )
 
-        }
     }
+}

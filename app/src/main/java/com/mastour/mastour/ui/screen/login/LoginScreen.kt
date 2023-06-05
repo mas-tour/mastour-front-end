@@ -28,18 +28,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import com.mastour.mastour.R
+import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mastour.mastour.dummy.CategoryDatas2
-import com.mastour.mastour.ui.screen.homepage.HomePageContent2
 import com.mastour.mastour.util.UiState
 
 @Composable
 fun LoginScreen(
-    viewModel: AuthViewModel = viewModel(),
+    viewModel: AuthViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
+    navHostController: NavHostController,
 ){
     val email by viewModel.email
     val password by viewModel.password
@@ -55,15 +57,21 @@ fun LoginScreen(
                     onEmailTextChanged = viewModel::changeEmail,
                     onPasswordTextChanged = viewModel::changePassword,
                     onLoginClicked = viewModel::login,
-                    onRegisterClicked = { /*TODO*/ })
+                    onRegisterClicked = {
+                        navHostController.navigate(Screen.Register.route){
+                        popUpTo(navHostController.graph.findStartDestination().id){
+                            saveState = true
+                        }
+                        restoreState = true
+                        launchSingleTop = true
+                    } })
             }
             is UiState.Success ->{
-                HomePageContent2(
-                    moveToCategoryDetail = {},
-                    moveToMatchMaking = { /*TODO*/ },
-                    placeData = CategoryDatas2.place,
-                    categoryData = CategoryDatas2.category,
-                )
+                //TODO: How to create fresh stack?
+                navHostController.navigate(Screen.Home.route){
+                    restoreState = true
+                    launchSingleTop = true
+                }
             }
             //Toast muncul beberapa kali, need fix
             is UiState.Failure ->{
@@ -73,7 +81,15 @@ fun LoginScreen(
                     onEmailTextChanged = viewModel::changeEmail,
                     onPasswordTextChanged = viewModel::changePassword,
                     onLoginClicked = viewModel::login,
-                    onRegisterClicked = { /*TODO*/ })
+                    onRegisterClicked = {
+                        navHostController.navigate(Screen.Register.route){
+                            popUpTo(navHostController.graph.findStartDestination().id){
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    })
                 Toast.makeText(context, uiState.e?.message, Toast.LENGTH_SHORT).show()
             }
         }

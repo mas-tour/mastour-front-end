@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mastour.mastour.MainJetpack
 import com.mastour.mastour.R
 import com.mastour.mastour.dummy.CategoryData
 import com.mastour.mastour.dummy.CategoryData2
@@ -26,7 +27,12 @@ import com.mastour.mastour.ui.theme.MasTourTheme
 
 @Composable
 fun HomePageScreen(modifier: Modifier = Modifier){
-
+    HomePageContent2(
+        moveToCategoryDetail = {},
+        moveToMatchMaking = {},
+        placeData = CategoryDatas2.place,
+        categoryData = CategoryDatas2.category,
+    )
 }
 @Composable
 fun HomePageContent(

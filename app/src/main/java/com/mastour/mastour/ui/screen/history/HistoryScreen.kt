@@ -26,7 +26,7 @@ import com.mastour.mastour.ui.theme.MasTourTheme
 
 @Composable
 fun HistoryScreen(modifier: Modifier = Modifier) {
-
+    HistoryContent(orderData = OrderData.orders)
 }
 
 @Composable
@@ -52,7 +52,9 @@ fun HistoryContent(
         )
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = modifier.padding(16.dp).fillMaxSize()
+            modifier = modifier
+                .padding(16.dp)
+                .fillMaxSize()
         ) {
             items(orderData) { order ->
                 OrderComponent(

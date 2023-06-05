@@ -34,7 +34,7 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     }
     fun login(){
         viewModelScope.launch {
-            repository.login(_email.value, _password.value).collect{
+            repository.login(email.value, password.value).collect{
                 _loginResponse.value = it
             }
         }

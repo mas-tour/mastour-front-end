@@ -31,7 +31,13 @@ import com.mastour.mastour.ui.theme.MasTourTheme
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
-
+    SearchContent(
+        search = "",
+        onSearchTextChanged = {},
+        moveToGuideDetail = {},
+        guideData = GuideData.guides,
+        result = GuideData.guides.size,
+    )
 }
 
 @Composable
