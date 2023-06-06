@@ -1,12 +1,7 @@
 package com.mastour.mastour.ui.screen.register
 
-import android.Manifest
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -25,13 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -48,25 +41,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mastour.mastour.R
-import com.mastour.mastour.ui.screen.login.LoginScreen
-import com.mastour.mastour.ui.theme.MasTourTheme
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
 import com.mastour.mastour.util.UiState
 
 @Composable
-fun RegisterScreen(viewModel: AuthViewModel = viewModel()) {
+fun RegisterScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
+    navHostController: NavHostController
+) {
     val email by viewModel.emailRegister
     val username by viewModel.usernameRegister
     val name by viewModel.nameRegister
     val password by viewModel.passwordRegister
     val confirmPassword by viewModel.passwordConfirm
     val imageUri by viewModel.imageUri
+
+    val launcher = rememberLauncherForActivityResult(contract =
+    ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            viewModel.changeUri(uri)
+        }
+    }
 
     viewModel.registerResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when(uiState) {
@@ -77,23 +76,25 @@ fun RegisterScreen(viewModel: AuthViewModel = viewModel()) {
                     email = email,
                     password = password,
                     confirmPassword = confirmPassword,
-                    viewModel = viewModel,
-//                    imageUri = imageUri,
+                    imageUri = imageUri,
                     onEmailTextChanged = viewModel::changeEmailRegister,
                     onPasswordTextChanged = viewModel::changePasswordRegister,
                     onNameTextChanged = viewModel::changeNameRegister,
                     onConfirmTextChanged = viewModel::changePasswordConfirm,
                     onUsernameTextChanged = viewModel::changeUsernameRegister,
-                    onEditClicked = {  }, // viewModel::changePicture
-                    onRegisterClicked = { },
+                    onEditClicked = {
+                        launcher.launch("image/*")
+                    },
+                    onRegisterClicked =viewModel::register,
                     onBackClicked = { /*TODO*/ }
                 )
             }
             is UiState.Success -> {
-//                LoginScreen() // TODO: Ganti jadi navigasi
+                // TODO: Toast or dialogue, Register succeed
+                navHostController.popBackStack()
             }
             is UiState.Failure -> {
-                // TODO: Toast or something
+                // TODO: Toast or dialogue, Register failed
             }
         }
     }
@@ -112,8 +113,7 @@ fun RegisterContent(
     onPasswordTextChanged: (String) -> Unit,
     onConfirmTextChanged: (String) -> Unit,
     onRegisterClicked: () -> Unit,
-    viewModel: AuthViewModel,
-//    imageUri: Uri?,
+    imageUri: Uri?,
     onBackClicked: () -> Unit,
     onEditClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -129,47 +129,31 @@ fun RegisterContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        val picture by viewModel.picture
-//
-        var imageUri by remember {
-            mutableStateOf<Uri?>(null)
-        }
-
-        val launcher = rememberLauncherForActivityResult(contract =
-        ActivityResultContracts.GetContent()) { uri: Uri? ->
-            imageUri = uri
-        }
-
         val context = LocalContext.current
-
         val initialBitmap = BitmapFactory.decodeResource(
             context.resources,
             R.drawable.profile_picture
         )
 
-//        val bitmap =  remember {
-//            mutableStateOf<Bitmap?>(null)
-//        }
-
         Box(modifier = modifier) {
-            imageUri?.let {
-                viewModel.changePicture(
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-                )
+            Image(
+                bitmap =
+                    if (imageUri != null) {
+                        val inputStream = context.contentResolver.openInputStream(imageUri)
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        bitmap.asImageBitmap()
+                    } else {
+                        initialBitmap.asImageBitmap()
+                    },
+                contentDescription = "Profile Picture",
+                contentScale = ContentScale.FillHeight,
+                modifier = modifier
+                    .size(136.dp)
+                    .clip(CircleShape)
+            )
 
-                viewModel.picture.value?.let {
-                    Image(
-                        bitmap = picture?.asImageBitmap() ?: initialBitmap.asImageBitmap(),
-                        contentDescription = "Profile Picture",
-                        contentScale = ContentScale.FillHeight,
-                        modifier = modifier
-                            .size(136.dp)
-                            .clip(CircleShape)
-                    )
-                }
-            }
             Button(
-                onClick = { launcher.launch("image/*") }, // TODO: Ask for permission
+                onClick = onEditClicked, // TODO: Ask for permission
                 contentPadding = PaddingValues(),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),

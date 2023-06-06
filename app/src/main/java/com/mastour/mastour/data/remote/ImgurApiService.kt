@@ -11,7 +11,7 @@ import retrofit2.http.Part
 interface ImgurApiService {
     @Multipart
     @Headers("Authorization: Client-ID 3bc735ced126e46")
-    @POST("/3/upload")
+    @POST("/3/image")
     suspend fun uploadFile(
         @Part image: MultipartBody.Part?,
         @Part("name") name: RequestBody? = null

@@ -39,5 +39,5 @@ data class Register(
 	val username: String? = null,
 
 	@field:SerializedName("email")
-	val email: String? = null
+	val email: String? = null,
 )

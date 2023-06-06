@@ -1,10 +1,11 @@
 package com.mastour.mastour.ui.viewmodel
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mastour.mastour.R
@@ -12,7 +13,6 @@ import com.mastour.mastour.data.remote.LoginResponses
 import com.mastour.mastour.data.remote.RegisterResponses
 import com.mastour.mastour.data.repository.Repository
 import com.mastour.mastour.util.UiState
-import com.mastour.mastour.util.convertBitmapToBase64
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -67,6 +67,9 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _passwordConfirm = mutableStateOf("")
     val passwordConfirm: State<String> get() = _passwordConfirm
 
+    private val _imageUri = mutableStateOf<Uri?>(null)
+    val imageUri: State<Uri?> get() = _imageUri
+
     fun changeEmailRegister(email: String){
         _emailRegister.value = email
     }
@@ -87,42 +90,31 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
         _passwordConfirm.value = password
     }
 
-    // Change Picture versi bitmap
-    private val _picture = mutableStateOf<Bitmap?>(null)
-    val picture: State<Bitmap?> get() = _picture
-    fun changePicture(picture: Bitmap) {
-        _picture.value = picture
+    fun changeUri(uri: Uri) {
+        _imageUri.value = uri
     }
 
-    // Change picture Uri
-    private val _imageUri = mutableStateOf<Uri?>(null)
-    val imageUri: State<Uri?> get() = _imageUri
-//    fun changeUri(uri: Uri) {
-//        _imageUri.value = imageUri
-//    }
+    fun register() {
+        viewModelScope.launch {
+            // TODO: Handle if no photo is selected, maybe default url
+            val result = imageUri.value?.let { repository.uploadImage(it) }
 
-    // Klik register -> Upload foto ImgurAPI -> Get Link from result -> terus POST ke MasTourAPI
-//    fun register() {
-//        viewModelScope.launch {
-//            val pictureLink = picture.value?.let { uploadImage(it) }
-//
-//            repository.register(
-//                emailRegister.value,
-//                usernameRegister.value,
-//                nameRegister.value,
-//                passwordRegister.value,
-//                pictureLink
-//            ).collect {
-//                _registerResponse.value = it
-//            }
-//        }
-//    }
-
-    // Imgur API
-//    fun uploadImage(bitmap: Bitmap) {
-//        val image = convertBitmapToBase64(bitmap)
-//        viewModelScope.launch {
-//            repository.uploadImage(image)
-//        }
-//    }
+            val link = (result?.fold(
+                onSuccess = { value ->
+                        repository.register(
+                            emailRegister.value,
+                            usernameRegister.value,
+                            nameRegister.value,
+                            passwordRegister.value,
+                            value
+                        ).collect {
+                            _registerResponse.value = it
+                        }
+                },
+                onFailure = { exception ->
+                    // ...
+                }
+            ) ?: "Error occured").toString()
+        }
+    }
 }
