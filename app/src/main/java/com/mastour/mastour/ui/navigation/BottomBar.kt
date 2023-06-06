@@ -1,5 +1,7 @@
 package com.mastour.mastour.ui.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -11,13 +13,17 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mastour.mastour.MainJetpack
 import com.mastour.mastour.ui.theme.MasTourTheme
+import com.mastour.mastour.ui.theme.md_theme_dark_primaryContainer
 
 @Composable
 fun BottomBar(
@@ -51,10 +57,16 @@ fun BottomBar(
             )
         )
 
-        BottomNavigation {
+        BottomNavigation(modifier
+            .background(Color.White)
+            .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))) {
             navigationItem.map {
                 BottomNavigationItem(
-                    icon = { Icon(imageVector = it.icon, contentDescription = it.title)},
+                    icon = {
+                        Icon(
+                            imageVector = it.icon,
+                            contentDescription = it.title
+                        )},
                     onClick = {
                         navHostController.navigate(it.screen.route){
                             popUpTo(navHostController.graph.findStartDestination().id){
@@ -64,6 +76,9 @@ fun BottomBar(
                             launchSingleTop = true
                         } },
                     selected = currentRoute == it.screen.route,
+                    selectedContentColor = md_theme_dark_primaryContainer,
+                    unselectedContentColor = Color(0x507147B1),
+                    modifier = modifier.background(Color.White)
                 )
             }
         }

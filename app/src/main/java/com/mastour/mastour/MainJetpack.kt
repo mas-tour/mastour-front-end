@@ -45,13 +45,13 @@ fun MainJetpack(
                         .height(65.dp)
                         .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
                     cutoutShape = CircleShape,
-                    elevation = 22.dp
+                    elevation = 22.dp,
+                    backgroundColor = Color.White
                 ) {
                     BottomBar(navHostController = navController)
                 }
             }
-        }
-        ,
+        },
             floatingActionButtonPosition = FabPosition.Center,
             isFloatingActionButtonDocked = true,
             floatingActionButton = {
@@ -64,7 +64,9 @@ fun MainJetpack(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }, shape = CircleShape) {
+                    },
+                        shape = CircleShape,
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.CastConnected,
                             contentDescription = "Matchmaking",

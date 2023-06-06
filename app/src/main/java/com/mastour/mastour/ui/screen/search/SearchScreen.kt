@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -24,20 +25,31 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mastour.mastour.dummy.CategoryDatas2
 import com.mastour.mastour.dummy.Guide
 import com.mastour.mastour.dummy.GuideData
 import com.mastour.mastour.ui.components.UserComponent2
+import com.mastour.mastour.ui.navigation.HomeTopBar
+import com.mastour.mastour.ui.navigation.SearchTopBar
+import com.mastour.mastour.ui.screen.homepage.HomePageContent2
 import com.mastour.mastour.ui.theme.MasTourTheme
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
-    SearchContent(
-        search = "",
-        onSearchTextChanged = {},
-        moveToGuideDetail = {},
-        guideData = GuideData.guides,
-        result = GuideData.guides.size,
-    )
+    Scaffold(
+        topBar = {
+            SearchTopBar(search = "", onSearchTextChanged = {})
+        })
+    { it ->
+        SearchContent(
+            search = "",
+            onSearchTextChanged = {},
+            moveToGuideDetail = {},
+            guideData = GuideData.guides,
+            result = GuideData.guides.size,
+            contentPadding = it
+        )
+    }
 }
 
 @Composable
@@ -47,38 +59,43 @@ fun SearchContent(
     search: String,
     onSearchTextChanged: (String) -> Unit,
     moveToGuideDetail: (String) -> Unit,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    // TODO: Add scroll?
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
+            .padding(contentPadding)
     ) {
-        TextField(
-            value = search,
-            onValueChange = onSearchTextChanged,
-            shape = RoundedCornerShape(16.dp),
-            maxLines = 1,
-            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.White,
-                leadingIconColor = Color.Gray,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                placeholderColor = Color.Gray,
-                textColor = Color.Black,
-            ),
-            placeholder = { Text(text = "Search") },
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .shadow(elevation = 16.dp)
-        )
+
+        // TODO: Saved as backup, delete if actually not used
+//        SearchTopBar()
+//        TextField(
+//            value = search,
+//            onValueChange = onSearchTextChanged,
+//            shape = RoundedCornerShape(16.dp),
+//            maxLines = 1,
+//            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
+//            colors = TextFieldDefaults.textFieldColors(
+//                backgroundColor = Color.White,
+//                leadingIconColor = Color.Gray,
+//                focusedIndicatorColor = Color.Transparent,
+//                unfocusedIndicatorColor = Color.Transparent,
+//                placeholderColor = Color.Gray,
+//                textColor = Color.Black,
+//            ),
+//            placeholder = { Text(text = "Search") },
+//            modifier = modifier
+//                .fillMaxWidth()
+//                .offset(y = (-20).dp)
+//                .padding(horizontal = 15.dp)
+//                .shadow(elevation = 16.dp)
+//        )
 
         Box(modifier = modifier
             .fillMaxWidth()
-            .padding(start = 16.dp)) {
+            .padding(start = 18.dp, bottom = 5.dp)) {
             val text = buildAnnotatedString {
                 append("Displaying ")
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -99,7 +116,7 @@ fun SearchContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(160.dp)
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp, vertical = 5.dp)
                         .shadow(
                             elevation = 8.dp,
                             ambientColor = MaterialTheme.colors.primary,
@@ -126,6 +143,7 @@ fun SearchScreenPreview(){
             moveToGuideDetail = {},
             guideData = GuideData.guides,
             result = GuideData.guides.size,
+            contentPadding = PaddingValues(5.dp)
         )
     }
 }

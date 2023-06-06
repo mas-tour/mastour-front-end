@@ -97,15 +97,7 @@ fun ProfileContent(
                 colorFilter = ColorFilter.tint(Color(0xFF7147B1).copy(alpha = 0.3f), blendMode = BlendMode.Color),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .blur(
-                        2.dp,
-                        edgeTreatment = BlurredEdgeTreatment(
-                            RoundedCornerShape(
-                                bottomEndPercent = 10,
-                                bottomStartPercent = 10
-                            )
-                        )
-                    )
+                    .blur(2.dp)
             )
             Image(
                 painter = painterResource(photoUrl),
@@ -136,7 +128,7 @@ fun ProfileContent(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = modifier
                 .padding(horizontal = 15.dp)
-                .padding(top = 50.dp)) {
+                .padding(top = 25.dp)) {
 
             // Menu
             Button(
@@ -154,7 +146,7 @@ fun ProfileContent(
                     modifier = modifier.padding(horizontal = 15.dp)) {
                     Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
                     Spacer(modifier.width(14.dp))
-                    Text("$age years old")
+                    Text("$age years old", style = MaterialTheme.typography.subtitle2)
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -174,7 +166,7 @@ fun ProfileContent(
                     modifier = modifier.padding(horizontal = 15.dp)) {
                     Icon(Icons.Filled.Person, contentDescription = "Gender")
                     Spacer(modifier.width(14.dp))
-                    Text(gender) // TODO: Dummy, change later
+                    Text(gender, style = MaterialTheme.typography.subtitle2) // TODO: Dummy, change later
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -194,7 +186,7 @@ fun ProfileContent(
                     modifier = modifier.padding(horizontal = 15.dp)) {
                     Icon(Icons.Filled.Phone, contentDescription = "Phone Number")
                     Spacer(modifier.width(14.dp))
-                    Text(phoneNumber)
+                    Text(phoneNumber, style = MaterialTheme.typography.subtitle2)
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -214,7 +206,9 @@ fun ProfileContent(
                     modifier = modifier.padding(horizontal = 15.dp)) {
                     Icon(Icons.Filled.Logout, contentDescription = "Logout", tint = Color(0XFFB14747))
                     Spacer(modifier.width(14.dp))
-                    Text("Logout", color = Color(0XFFB14747)) // TODO: maybe include in Color.kt
+                    Text("Logout",
+                        style = MaterialTheme.typography.subtitle2,
+                        color = Color(0XFFB14747))
                     Spacer(modifier.weight(1f))
                 }
             }
