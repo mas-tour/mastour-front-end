@@ -1,5 +1,9 @@
 package com.mastour.mastour.ui.screen.register
 
+import android.graphics.BitmapFactory
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,36 +20,84 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mastour.mastour.R
-import com.mastour.mastour.ui.theme.MasTourTheme
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.mastour.mastour.ui.viewmodel.AuthViewModel
+import com.mastour.mastour.util.UiState
 
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier) {
+fun RegisterScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
+    navHostController: NavHostController
+) {
+    val email by viewModel.emailRegister
+    val username by viewModel.usernameRegister
+    val name by viewModel.nameRegister
+    val password by viewModel.passwordRegister
+    val confirmPassword by viewModel.passwordConfirm
+    val imageUri by viewModel.imageUri
 
+    val launcher = rememberLauncherForActivityResult(contract =
+    ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            viewModel.changeUri(uri)
+        }
+    }
+
+    viewModel.registerResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when(uiState) {
+            is UiState.Loading -> {
+                RegisterContent(
+                    username = username,
+                    name = name,
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    imageUri = imageUri,
+                    onEmailTextChanged = viewModel::changeEmailRegister,
+                    onPasswordTextChanged = viewModel::changePasswordRegister,
+                    onNameTextChanged = viewModel::changeNameRegister,
+                    onConfirmTextChanged = viewModel::changePasswordConfirm,
+                    onUsernameTextChanged = viewModel::changeUsernameRegister,
+                    onEditClicked = {
+                        launcher.launch("image/*")
+                    },
+                    onRegisterClicked =viewModel::register,
+                    onBackClicked = { /*TODO*/ }
+                )
+            }
+            is UiState.Success -> {
+                // TODO: Toast or dialogue, Register succeed
+                navHostController.popBackStack()
+            }
+            is UiState.Failure -> {
+                // TODO: Toast or dialogue, Register failed
+            }
+        }
+    }
 }
 
 @Composable
@@ -61,6 +113,7 @@ fun RegisterContent(
     onPasswordTextChanged: (String) -> Unit,
     onConfirmTextChanged: (String) -> Unit,
     onRegisterClicked: () -> Unit,
+    imageUri: Uri?,
     onBackClicked: () -> Unit,
     onEditClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -76,17 +129,31 @@ fun RegisterContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        val context = LocalContext.current
+        val initialBitmap = BitmapFactory.decodeResource(
+            context.resources,
+            R.drawable.profile_picture
+        )
+
         Box(modifier = modifier) {
             Image(
-                painter = painterResource(R.drawable.profile_picture),
+                bitmap =
+                    if (imageUri != null) {
+                        val inputStream = context.contentResolver.openInputStream(imageUri)
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        bitmap.asImageBitmap()
+                    } else {
+                        initialBitmap.asImageBitmap()
+                    },
                 contentDescription = "Profile Picture",
                 contentScale = ContentScale.FillHeight,
                 modifier = modifier
                     .size(136.dp)
                     .clip(CircleShape)
             )
+
             Button(
-                onClick = onEditClicked,
+                onClick = onEditClicked, // TODO: Ask for permission
                 contentPadding = PaddingValues(),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -246,12 +313,13 @@ fun RegisterContent(
         }
     }
 
-    IconButton(onClick = onBackClicked) {
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Go Back"
-        )
-    }
+//    TODO: Bug on back button, fix later
+//    IconButton(onClick = onBackClicked) {
+//        Icon(
+//            imageVector = Icons.Default.ArrowBack,
+//            contentDescription = "Go Back"
+//        )
+//    }
 
     Text(text = "Register",
         style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
@@ -260,13 +328,13 @@ fun RegisterContent(
     )
 }
 
-@Preview(showBackground = true, device = Devices.PIXEL_4)
-@Composable
-fun RegisterScreenPreview() {
-    MasTourTheme {
-        RegisterContent(username = "", name = "", email = "", password = "", confirmPassword = "",
-            onEmailTextChanged = {}, onPasswordTextChanged = {}, onNameTextChanged = {},
-            onConfirmTextChanged = {}, onUsernameTextChanged = {}, onRegisterClicked = {},
-            onBackClicked = {}, onEditClicked = {})
-    }
-}
+//@Preview(showBackground = true, device = Devices.PIXEL_4)
+//@Composable
+//fun RegisterScreenPreview() {
+//    MasTourTheme {
+//        RegisterContent(username = "", name = "", email = "", password = "", confirmPassword = "",
+//            onEmailTextChanged = {}, onPasswordTextChanged = {}, onNameTextChanged = {},
+//            onConfirmTextChanged = {}, onUsernameTextChanged = {}, onRegisterClicked = {},
+//            onBackClicked = {}, onEditClicked = {})
+//    }
+//}

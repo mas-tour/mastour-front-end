@@ -23,3 +23,21 @@ data class Login(
 	@field:SerializedName("token")
 	val token: String? = null
 )
+
+data class RegisterResponses(
+	@field:SerializedName("message")
+	val message: String? = null,
+	@field:SerializedName("data")
+	val data: Register? = null
+)
+
+data class Register(
+	@field:SerializedName("id")
+	val id: String? = null,
+
+	@field:SerializedName("username")
+	val username: String? = null,
+
+	@field:SerializedName("email")
+	val email: String? = null,
+)
