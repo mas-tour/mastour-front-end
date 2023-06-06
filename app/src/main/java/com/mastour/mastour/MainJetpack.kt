@@ -74,7 +74,7 @@ fun MainJetpack(
                 }
             }
 
-    ) {innerPadding ->
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             //TODO: Change if shared pref user exist, do Screen.Home.route instead
@@ -85,7 +85,7 @@ fun MainJetpack(
                 LoginScreen(navHostController = navController)
             }
             composable(Screen.Register.route){
-                RegisterScreen()
+                RegisterScreen(navHostController = navController)
             }
             composable(Screen.Home.route){
                 HomePageScreen()
