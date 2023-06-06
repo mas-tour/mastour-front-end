@@ -23,16 +23,24 @@ import com.mastour.mastour.dummy.CategoryData2
 import com.mastour.mastour.dummy.CategoryDatas2
 import com.mastour.mastour.ui.components.CategoryComponent
 import com.mastour.mastour.ui.components.CategoryComponent2
+import com.mastour.mastour.ui.navigation.HomeTopBar
 import com.mastour.mastour.ui.theme.MasTourTheme
 
 @Composable
 fun HomePageScreen(modifier: Modifier = Modifier){
-    HomePageContent2(
-        moveToCategoryDetail = {},
-        moveToMatchMaking = {},
-        placeData = CategoryDatas2.place,
-        categoryData = CategoryDatas2.category,
-    )
+    Scaffold(
+        topBar = {
+            HomeTopBar()
+        })
+    { it ->
+        HomePageContent2(
+            moveToCategoryDetail = {},
+            moveToMatchMaking = {},
+            placeData = CategoryDatas2.place,
+            categoryData = CategoryDatas2.category,
+            contentPadding = it
+        )
+    }
 }
 @Composable
 fun HomePageContent(
@@ -42,14 +50,10 @@ fun HomePageContent(
     categoryData: List<CategoryData>,
     modifier: Modifier = Modifier,
 ){
-    Column(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(R.drawable.wayang_logo),
-            contentDescription = stringResource(R.string.app_name),
-            modifier = Modifier
-                .size(200.dp)
-                .padding(16.dp)
-        )
+    Column(modifier = modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = "Popular Places",
             style = MaterialTheme.typography.h5.copy(
@@ -117,18 +121,15 @@ fun HomePageContent2(
     moveToMatchMaking: () -> Unit,
     placeData: List<CategoryData2>,
     categoryData: List<CategoryData2>,
+    contentPadding: PaddingValues, // Warning: This is new!
     modifier: Modifier = Modifier,
 ){
     Column(modifier = modifier
         .fillMaxSize()
-        .verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(R.drawable.wayang_logo),
-            contentDescription = stringResource(R.string.app_name),
-            modifier = Modifier
-                .size(200.dp)
-                .padding(16.dp)
-        )
+        .padding(contentPadding)
+        .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Text(
             text = "Popular Places",
             style = MaterialTheme.typography.h5.copy(
@@ -152,7 +153,7 @@ fun HomePageContent2(
         }
         CategoryComponent2(
             name = "Use Our Matchmaking Technology",
-            photoUrl = R.drawable.match_bg,
+            photoUrl = R.drawable.match_home,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp)
@@ -199,6 +200,7 @@ fun HomePageScreenPreview(){
             moveToMatchMaking = {},
             placeData = CategoryDatas2.place,
             categoryData = CategoryDatas2.category,
+            contentPadding = PaddingValues(5.dp)
         )
     }
 }

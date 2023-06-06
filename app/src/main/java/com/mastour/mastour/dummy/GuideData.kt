@@ -81,6 +81,58 @@ object GuideData {
                     "is incomprehensible by the human mind. A realm where you are driven to insanity by immense, Lovecraftian horrors " +
                     "and an infinitely expanding pit of enveloping darkness.",
             98
+        ),
+        Guide(
+            "5",
+            "Siti Wodjonegoro",
+            R.drawable.dummy_user,
+            "Bandung",
+            "Horror Attraction",
+            2000000,
+            "Jerma has never spoken using his real voice. Fans theorize that his real voice was a " +
+                    "supernatural weapon of some kind where upon hearing it, you are immediately transported to a realm of existence that " +
+                    "is incomprehensible by the human mind. A realm where you are driven to insanity by immense, Lovecraftian horrors " +
+                    "and an infinitely expanding pit of enveloping darkness.",
+            98
+        ),
+        Guide(
+            "5",
+            "Siti Wodjonegoro",
+            R.drawable.dummy_user,
+            "Bandung",
+            "Horror Attraction",
+            2000000,
+            "Jerma has never spoken using his real voice. Fans theorize that his real voice was a " +
+                    "supernatural weapon of some kind where upon hearing it, you are immediately transported to a realm of existence that " +
+                    "is incomprehensible by the human mind. A realm where you are driven to insanity by immense, Lovecraftian horrors " +
+                    "and an infinitely expanding pit of enveloping darkness.",
+            98
+        ),
+        Guide(
+            "5",
+            "Siti Wodjonegoro",
+            R.drawable.dummy_user,
+            "Bandung",
+            "Horror Attraction",
+            2000000,
+            "Jerma has never spoken using his real voice. Fans theorize that his real voice was a " +
+                    "supernatural weapon of some kind where upon hearing it, you are immediately transported to a realm of existence that " +
+                    "is incomprehensible by the human mind. A realm where you are driven to insanity by immense, Lovecraftian horrors " +
+                    "and an infinitely expanding pit of enveloping darkness.",
+            98
+        ),
+        Guide(
+            "5",
+            "Siti Wodjonegoro",
+            R.drawable.dummy_user,
+            "Bandung",
+            "Horror Attraction",
+            2000000,
+            "Jerma has never spoken using his real voice. Fans theorize that his real voice was a " +
+                    "supernatural weapon of some kind where upon hearing it, you are immediately transported to a realm of existence that " +
+                    "is incomprehensible by the human mind. A realm where you are driven to insanity by immense, Lovecraftian horrors " +
+                    "and an infinitely expanding pit of enveloping darkness.",
+            98
         )
     )
 }
