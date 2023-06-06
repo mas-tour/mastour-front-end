@@ -37,6 +37,7 @@ fun MainJetpack(
 ){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
     Scaffold(
         bottomBar = {
             if (currentRoute == Screen.Home.route || currentRoute == Screen.Profile.route || currentRoute == Screen.Search.route || currentRoute == Screen.History.route) {
@@ -75,12 +76,11 @@ fun MainJetpack(
                     }
                 }
             }
-
     ) { innerPadding ->
         NavHost(
             navController = navController,
             //TODO: Change if shared pref user exist, do Screen.Home.route instead
-            startDestination = Screen.Home.route,
+            startDestination = Screen.Login.route,
             modifier = Modifier.padding(innerPadding)){
             //TODO: Add the arguments route
             composable(Screen.Login.route){
@@ -99,7 +99,7 @@ fun MainJetpack(
                 SearchScreen()
             }
             composable(Screen.Profile.route){
-                ProfileScreen()
+                ProfileScreen(navHostController = navController)
             }
             composable(Screen.Matchmaking.route){
                 MatchmakingContent(nextOnClicked = {})

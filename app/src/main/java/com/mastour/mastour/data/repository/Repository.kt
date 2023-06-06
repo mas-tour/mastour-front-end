@@ -1,14 +1,13 @@
 package com.mastour.mastour.data.repository
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
+import com.mastour.mastour.data.preferences.SessionPreferences
 import com.mastour.mastour.data.remote.ImgurApiService
 import com.mastour.mastour.data.remote.LoginResponses
 import com.mastour.mastour.data.remote.MasTourApiService
 import com.mastour.mastour.data.remote.RegisterResponses
-import com.mastour.mastour.data.remote.Upload
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.uriToFile
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -16,20 +15,32 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import javax.inject.Inject
 
 class Repository @Inject constructor(
+    private val preferences: SessionPreferences,
     private val masTourApiService: MasTourApiService,
     private val imgurApiService: ImgurApiService,
     @ApplicationContext private val context: Context
 ) {
+
+    fun getUserExist(): Flow<Boolean>{
+        return preferences.getUserExist()
+    }
+
+    fun getUserToken(): Flow<String>{
+        return preferences.getUserToken()
+    }
+
+    suspend fun deleteSession(){
+        preferences.deleteSession()
+    }
+
 
     fun login(email: String, password: String) : Flow<UiState<LoginResponses>> {
         val jsonObject = JSONObject()
@@ -43,6 +54,7 @@ class Repository @Inject constructor(
             try {
                 emit(UiState.Loading)
                 val responseLogin = masTourApiService.login(requestBody)
+                responseLogin.data?.token?.let { preferences.startSession(true, it) }
                 emit(UiState.Success(responseLogin))
             }
             catch (e : Exception){

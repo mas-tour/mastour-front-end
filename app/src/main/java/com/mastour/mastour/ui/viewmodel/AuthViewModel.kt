@@ -1,14 +1,10 @@
 package com.mastour.mastour.ui.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mastour.mastour.R
 import com.mastour.mastour.data.remote.LoginResponses
 import com.mastour.mastour.data.remote.RegisterResponses
 import com.mastour.mastour.data.repository.Repository
@@ -32,6 +28,9 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _password = mutableStateOf("")
     val password: State<String> get() = _password
 
+    private val _userExist = mutableStateOf(false)
+    val userExist: State<Boolean> get() = _userExist
+
     fun changeEmail(email: String){
         _email.value = email
     }
@@ -42,6 +41,13 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
         viewModelScope.launch {
             repository.login(email.value, password.value).collect{
                 _loginResponse.value = it
+            }
+        }
+    }
+    fun tryUserExist(){
+        viewModelScope.launch {
+            repository.getUserExist().collect{
+                _userExist.value = it
             }
         }
     }

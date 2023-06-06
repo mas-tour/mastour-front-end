@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mastour.mastour.MainJetpack
@@ -69,7 +68,7 @@ fun BottomBar(
                         )},
                     onClick = {
                         navHostController.navigate(it.screen.route){
-                            popUpTo(navHostController.graph.findStartDestination().id){
+                            popUpTo(Screen.Home.route){
                                 saveState = true
                             }
                             restoreState = true

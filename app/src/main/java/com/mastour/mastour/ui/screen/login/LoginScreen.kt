@@ -10,9 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,8 +44,21 @@ fun LoginScreen(
     val email by viewModel.email
     val password by viewModel.password
 
-    val context = LocalContext.current
+    val userExist by viewModel.userExist
 
+    val context = LocalContext.current
+    SideEffect {
+        viewModel.tryUserExist()
+    }
+    LaunchedEffect(userExist) {
+        if (userExist) {
+            if (navHostController.graph.findStartDestination().route == Screen.Login.route) {
+                navHostController.navigate(Screen.Home.route) {
+                    popUpTo(0)
+                }
+            }
+        }
+    }
     viewModel.loginResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when(uiState){
             is UiState.Loading ->{
@@ -67,13 +78,21 @@ fun LoginScreen(
                     } })
             }
             is UiState.Success ->{
-                //TODO: How to create fresh stack?
-                navHostController.navigate(Screen.Home.route){
-                    restoreState = true
-                    launchSingleTop = true
-                }
+                LoginContent(
+                    email = email,
+                    password = password,
+                    onEmailTextChanged = viewModel::changeEmail,
+                    onPasswordTextChanged = viewModel::changePassword,
+                    onLoginClicked = viewModel::login,
+                    onRegisterClicked = {
+                        navHostController.navigate(Screen.Register.route){
+                            popUpTo(navHostController.graph.findStartDestination().id){
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        } })
             }
-            //Toast muncul beberapa kali, need fix
             is UiState.Failure ->{
                 LoginContent(
                     email = email,
