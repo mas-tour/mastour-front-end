@@ -81,7 +81,7 @@ fun MainJetpack(
         NavHost(
             navController = navController,
             //TODO: Change if shared pref user exist, do Screen.Home.route instead
-            startDestination = Screen.Home.route,
+            startDestination = Screen.Login.route,
             modifier = Modifier.padding(innerPadding)){
             //TODO: Add the arguments route
             composable(Screen.Login.route){
