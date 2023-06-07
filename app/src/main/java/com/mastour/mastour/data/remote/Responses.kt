@@ -42,6 +42,54 @@ data class Register(
 	val email: String? = null,
 )
 
+data class SurveyResponse(
+
+	@field:SerializedName("data")
+	val data: Data
+)
+
+data class Data(
+
+	@field:SerializedName("gender")
+	val gender: String,
+
+	@field:SerializedName("birth_date")
+	val birthDate: Int,
+
+	@field:SerializedName("answers")
+	val answers: List<Int>,
+
+	@field:SerializedName("created_at")
+	val createdAt: Int,
+
+	@field:SerializedName("picture")
+	val picture: String,
+
+	@field:SerializedName("password")
+	val password: String,
+
+	@field:SerializedName("personality")
+	val personality: Int,
+
+	@field:SerializedName("updated_at")
+	val updatedAt: Int,
+
+	@field:SerializedName("name")
+	val name: String,
+
+	@field:SerializedName("phone_number")
+	val phoneNumber: String,
+
+	@field:SerializedName("id")
+	val id: String,
+
+	@field:SerializedName("email")
+	val email: String,
+
+	@field:SerializedName("username")
+	val username: String
+)
+
 data class ResponseGuides(
 
 	@field:SerializedName("data")
