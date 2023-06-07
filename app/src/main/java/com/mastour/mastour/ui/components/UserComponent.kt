@@ -30,7 +30,7 @@ fun UserComponent(
     photoUrl: String,
     place: String,
     specialization: String,
-    price: Int,
+    price: Long,
     modifier: Modifier = Modifier
 ){
     Card(shape = RoundedCornerShape(16.dp), modifier = modifier) {
@@ -55,9 +55,11 @@ fun UserComponent(
                 )
                 Row (modifier = Modifier.padding(end = 8.dp)){
                     TagComponent(name = place, color = MaterialTheme.colors.primaryVariant, modifier = Modifier.padding(end = 4.dp))
-                    TagComponent(name = specialization, color = MaterialTheme.colors.secondaryVariant)
+                    TagComponent(name = specialization, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
                 }
                 Text(
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     text = "IDR $price",
                     style = MaterialTheme.typography.subtitle2.copy(
                         fontWeight = FontWeight.ExtraBold,
