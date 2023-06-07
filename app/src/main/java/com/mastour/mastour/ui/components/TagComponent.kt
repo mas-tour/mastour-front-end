@@ -1,10 +1,7 @@
 package com.mastour.mastour.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -13,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mastour.mastour.ui.theme.MasTourTheme
@@ -27,9 +25,8 @@ fun TagComponent(
         .clip(shape = RoundedCornerShape(8.dp))
         .background(color = color)){
         Row {
-            Spacer(modifier = Modifier.size(10.dp))
-            Text(text = name, style = MaterialTheme.typography.caption)
-            Spacer(modifier = Modifier.size(10.dp))
+
+            Text(text = name, style = MaterialTheme.typography.caption, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, start = 10.dp, end = 10.dp))
         }
     }
 }

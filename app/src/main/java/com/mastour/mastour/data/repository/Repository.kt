@@ -3,6 +3,9 @@ package com.mastour.mastour.data.repository
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import com.mastour.mastour.data.pagingsource.GuidePagingSource
 import com.mastour.mastour.data.preferences.SessionPreferences
 import com.mastour.mastour.data.remote.ImgurApiService
 import com.mastour.mastour.data.remote.LoginResponses
@@ -28,6 +31,12 @@ class Repository @Inject constructor(
     private val imgurApiService: ImgurApiService,
     @ApplicationContext private val context: Context
 ) {
+    fun getGuides(bearer : String) = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+        ),
+        pagingSourceFactory = {GuidePagingSource(masTourApiService, bearer)}
+    ).flow
 
     fun getUserExist(): Flow<Boolean>{
         return preferences.getUserExist()
