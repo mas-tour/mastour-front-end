@@ -7,11 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.mastour.mastour.data.pagingsource.GuidePagingSource
 import com.mastour.mastour.data.preferences.SessionPreferences
-import com.mastour.mastour.data.remote.ImgurApiService
-import com.mastour.mastour.data.remote.LoginResponses
-import com.mastour.mastour.data.remote.MasTourApiService
-import com.mastour.mastour.data.remote.RegisterResponses
-import com.mastour.mastour.data.remote.SurveyResponse
+import com.mastour.mastour.data.remote.*
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.uriToFile
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -149,6 +145,19 @@ class Repository @Inject constructor(
                 emit(UiState.Success(responseSurvey))
             }
             catch (e : Exception){
+                emit(UiState.Failure(e))
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun detailedGuides(id: String, token: String) : Flow<UiState<DetailGuidesResponse>>{
+        return flow {
+            try {
+                emit(UiState.Loading)
+                val responseDetailGuide = masTourApiService.getDetailedGuide("Bearer $token", id)
+                emit(UiState.Success(responseDetailGuide))
+            }
+            catch (e: Exception){
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)

@@ -15,13 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.mastour.mastour.ui.navigation.BottomBar
 import com.mastour.mastour.ui.navigation.Screen
-import com.mastour.mastour.ui.screen.MatchmakingResultScreen
+import com.mastour.mastour.ui.screen.detail.DetailScreen
+import com.mastour.mastour.ui.screen.matchmaking.MatchmakingResultScreen
 import com.mastour.mastour.ui.screen.history.HistoryScreen
 import com.mastour.mastour.ui.screen.homepage.HomePageScreen
 import com.mastour.mastour.ui.screen.login.LoginScreen
@@ -97,7 +100,9 @@ fun MainJetpack(
                 HistoryScreen()
             }
             composable(Screen.Search.route){
-                SearchScreen()
+                SearchScreen(moveToGuideDetail = {
+                    navController.navigate(Screen.Detail.createRoute(it))
+                })
             }
             composable(Screen.Profile.route){
                 ProfileScreen(navHostController = navController)
@@ -112,6 +117,18 @@ fun MainJetpack(
             }
             composable(Screen.Survey.route){
                 SurveyScreen(navHostController = navController)
+            }
+            composable(
+                route = Screen.Detail.route,
+                arguments = listOf(navArgument("detailId"){type = NavType.StringType}),
+            ){
+                val id = it.arguments?.getString("detailId") ?: ""
+                DetailScreen(
+                    id = id,
+                    onBackClicked = {
+                        navController.navigateUp() },
+                    onHireClicked = { /*TODO*/ },
+                    onContactClicked = { /*TODO*/ })
             }
         }
     }

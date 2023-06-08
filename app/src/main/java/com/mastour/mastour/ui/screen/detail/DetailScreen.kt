@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,32 +27,67 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.mastour.mastour.R
-import com.mastour.mastour.dummy.CategoryData
+import com.mastour.mastour.data.remote.DataDetailGuides
 import com.mastour.mastour.dummy.CategoryData2
 import com.mastour.mastour.dummy.CategoryDatas2
 import com.mastour.mastour.ui.components.CategoryComponent
 import com.mastour.mastour.ui.components.CategoryComponent2
 import com.mastour.mastour.ui.components.TagComponent
 import com.mastour.mastour.ui.theme.MasTourTheme
+import com.mastour.mastour.ui.viewmodel.GuidesViewModel
+import com.mastour.mastour.util.UiState
 
 @Composable
-fun DetailScreen(){
+fun DetailScreen(
+    id: String,
+    onBackClicked: () -> Unit,
+    onHireClicked: () -> Unit,
+    onContactClicked: () -> Unit,
+    viewModel: GuidesViewModel = hiltViewModel()
+){
+    viewModel.detailResponse.collectAsState(UiState.Loading).value.let {uiState->
+        when(uiState){
+            is UiState.Loading ->{
+                viewModel.getDetailedGuide(id)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(8.dp),
+                        text = "Loading"
+                    )
 
+                    CircularProgressIndicator(color = Color.Black)
+                }
+            }
+            is UiState.Success ->{
+                uiState.data?.data?.let {
+                    DetailContent(
+                        dataDetailGuides = it,
+                        onBackClicked = onBackClicked,
+                        onHireClicked = onHireClicked,
+                        onContactClicked = onContactClicked,
+                    )
+                }
+            }
+            is UiState.Failure ->{
+                //TODO
+            }
+        }
+    }
 }
 
 @Composable
 fun DetailContent(
+    dataDetailGuides: DataDetailGuides,
     modifier: Modifier = Modifier,
-    name: String,
-    age: Int,
-    photoUrl: String,
-    place: String,
-    price: Int,
-    topData: List<CategoryData>,
-    description: String,
-    specialization: String,
     onBackClicked: () -> Unit,
     onHireClicked: () -> Unit,
     onContactClicked: () -> Unit,
@@ -70,7 +106,7 @@ fun DetailContent(
                         .height(300.dp)
                 ) {
                     AsyncImage(
-                        model = photoUrl,
+                        model = dataDetailGuides.detailPicture,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -106,9 +142,9 @@ fun DetailContent(
                             .background(color = Color.White)
                     ) {
                         Row(modifier = Modifier.padding(8.dp)) {
-                            Spacer(modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.size(8.dp))
                             Text(
-                                text = "$name, $age",
+                                text = "${dataDetailGuides.name}, ${dataDetailGuides.gender}",
                                 style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold),
                                 color = MaterialTheme.colors.secondary
                             )
@@ -126,12 +162,12 @@ fun DetailContent(
 
                 Row(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
                     TagComponent(
-                        name = place,
+                        name = dataDetailGuides.city.toString(),
                         color = MaterialTheme.colors.primaryVariant,
                         modifier = Modifier.padding(end = 4.dp)
                     )
                     TagComponent(
-                        name = specialization,
+                        name = dataDetailGuides.categories?.get(0)?.name.toString(),
                         color = MaterialTheme.colors.secondaryVariant
                     )
                 }
@@ -144,7 +180,7 @@ fun DetailContent(
                 )
 
                 Text(
-                    text = description,
+                    text = dataDetailGuides.description.toString(),
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -160,14 +196,16 @@ fun DetailContent(
                 )
 
                 LazyRow(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)) {
-                    items(topData) { top ->
-                        CategoryComponent(
-                            name = top.name,
-                            photoUrl = top.photoUrl,
-                            modifier = Modifier
-                                .size(160.dp)
-                                .padding(8.dp)
-                        )
+                    items(dataDetailGuides.topPlaces) { top ->
+                        top.picture?.let {
+                            CategoryComponent(
+                                name = top.name.toString(),
+                                photoUrl = it,
+                                modifier = Modifier
+                                    .size(160.dp)
+                                    .padding(8.dp)
+                            )
+                        }
                     }
                 }
 
@@ -177,7 +215,8 @@ fun DetailContent(
                 .height(80.dp)) {
                 OutlinedButton(onClick = onContactClicked, shape = RoundedCornerShape(16.dp), modifier = Modifier
                     .padding(top = 16.dp, bottom = 16.dp, end = 8.dp, start = 8.dp)
-                    .height(48.dp).width(this@BoxWithConstraints.maxWidth/2)) {
+                    .height(48.dp)
+                    .width(this@BoxWithConstraints.maxWidth / 2)) {
                     Text(
                         text = "Contact",
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp),
@@ -190,7 +229,8 @@ fun DetailContent(
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     modifier = Modifier
                         .padding(top = 16.dp, bottom = 16.dp, end = 8.dp)
-                        .height(48.dp).width(this@BoxWithConstraints.maxWidth/2),
+                        .height(48.dp)
+                        .width(this@BoxWithConstraints.maxWidth / 2),
                     contentPadding = PaddingValues()
 
                 ) {
@@ -208,7 +248,7 @@ fun DetailContent(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Hire IDR $price",
+                            text = "Hire IDR ${dataDetailGuides.pricePerDay}",
                             color = Color.White,
                             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                             overflow = TextOverflow.Ellipsis,
@@ -359,7 +399,8 @@ fun DetailContent2(
                 .height(80.dp)) {
                 OutlinedButton(onClick = onContactClicked, shape = RoundedCornerShape(16.dp), modifier = Modifier
                     .padding(top = 16.dp, bottom = 16.dp, end = 8.dp, start = 8.dp)
-                    .height(48.dp).width(this@BoxWithConstraints.maxWidth/2)) {
+                    .height(48.dp)
+                    .width(this@BoxWithConstraints.maxWidth / 2)) {
                     Text(
                         text = "Contact",
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp),
@@ -372,7 +413,8 @@ fun DetailContent2(
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     modifier = Modifier
                         .padding(top = 16.dp, bottom = 16.dp, end = 8.dp)
-                        .height(48.dp).width(this@BoxWithConstraints.maxWidth/2),
+                        .height(48.dp)
+                        .width(this@BoxWithConstraints.maxWidth / 2),
                     contentPadding = PaddingValues()
 
                 ) {

@@ -25,7 +25,12 @@ import com.mastour.mastour.ui.navigation.SearchTopBar
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier, viewModel: GuidesViewModel = hiltViewModel()) {
+fun SearchScreen(
+    modifier: Modifier = Modifier,
+    viewModel: GuidesViewModel = hiltViewModel(),
+    moveToGuideDetail: (String) -> Unit,
+)
+{
     SideEffect {
         viewModel.tryUserToken()
     }
@@ -37,7 +42,7 @@ fun SearchScreen(modifier: Modifier = Modifier, viewModel: GuidesViewModel = hil
     { it ->
         SearchContent(
             search = "",
-            moveToGuideDetail = {},
+            moveToGuideDetail = moveToGuideDetail,
             guides = viewModel.getGuides().collectAsLazyPagingItems(),
             contentPadding = it,
             modifier = modifier

@@ -23,4 +23,10 @@ interface MasTourApiService {
         @Query("size") size: Int
     ) : ResponseGuides
 
+    @GET("guides/{id}")
+    suspend fun getDetailedGuide(
+        @Header("Authorization") bearer: String,
+        @Path("id") id: String
+    ) : DetailGuidesResponse
+
 }
