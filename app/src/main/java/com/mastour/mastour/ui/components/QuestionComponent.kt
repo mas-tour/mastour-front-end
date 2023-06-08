@@ -14,6 +14,7 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,13 +31,13 @@ import com.mastour.mastour.ui.theme.MasTourTheme
 @Composable
 fun QuestionComponent(
     modifier: Modifier = Modifier,
-    question: String
+    question: String,
+    selectedValue: MutableState<Int>
 ) {
-    val items = listOf("1", "2", "3", "4", "5")
+    val items = listOf(0, 1, 2, 3, 4)
 
-    val selectedValue = remember { mutableStateOf(items[2]) }
-    val isSelectedItem: (String) -> Boolean = { selectedValue.value == it }
-    val onChangeState: (String) -> Unit = { selectedValue.value = it }
+    val isSelectedItem: (Int) -> Boolean = { selectedValue.value == it }
+    val onChangeState: (Int) -> Unit = { selectedValue.value = it }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -59,7 +60,8 @@ fun QuestionComponent(
                     Column(verticalArrangement = Arrangement.Bottom,
                         modifier = modifier.height(40.dp)
                     ) {
-                        Text(text = item,
+                        val number = item + 1
+                        Text(text = number.toString(),
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 color = Color.Gray
@@ -95,6 +97,8 @@ fun QuestionComponent(
 @Preview(showBackground = true)
 fun PreviewQuestionComponent() {
     MasTourTheme {
-        QuestionComponent(question = "Apakah anda suka terbang?")
+        QuestionComponent(question = "Apakah anda suka terbang?", selectedValue = remember {
+            mutableStateOf(3)
+        })
     }
 }

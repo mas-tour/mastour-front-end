@@ -10,10 +10,17 @@ interface MasTourApiService {
     @POST("auth/sign-up")
     suspend fun register(@Body requestBody: RequestBody) : RegisterResponses
 
+    @POST("matchmaking/survey")
+    suspend fun submitSurvey(
+        @Header("Authorization") token: String,
+        @Body requestBody: RequestBody
+    ) : SurveyResponse
+
     @GET("guides")
     suspend fun getGuides(
         @Header("Authorization") bearer: String,
         @Query("page") page: Int,
         @Query("size") size: Int
     ) : ResponseGuides
+
 }

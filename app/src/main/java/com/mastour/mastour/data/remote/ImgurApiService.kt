@@ -17,7 +17,3 @@ interface ImgurApiService {
         @Part("name") name: RequestBody? = null
     ): Response<ImgurResponse>
 }
-
-object ApiKeys {
-    const val CLIENT_ID = "3bc735ced126e46"
-}

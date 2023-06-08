@@ -2,6 +2,7 @@ package com.mastour.mastour.ui.screen.register
 
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -45,8 +46,10 @@ import androidx.compose.ui.unit.dp
 import com.mastour.mastour.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
 import com.mastour.mastour.util.UiState
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
@@ -66,6 +69,8 @@ fun RegisterScreen(
             viewModel.changeUri(uri)
         }
     }
+
+    val context = LocalContext.current
 
     viewModel.registerResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when(uiState) {
@@ -91,10 +96,17 @@ fun RegisterScreen(
             }
             is UiState.Success -> {
                 // TODO: Toast or dialogue, Register succeed
-                navHostController.popBackStack()
+                rememberCoroutineScope().launch {
+                    navHostController.navigate(Screen.Login.route) {
+                        popUpTo(0)
+                    }
+                }
             }
             is UiState.Failure -> {
                 // TODO: Toast or dialogue, Register failed
+                rememberCoroutineScope().launch {
+                    Toast.makeText(context, uiState.e?.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

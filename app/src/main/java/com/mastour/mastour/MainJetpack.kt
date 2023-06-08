@@ -29,6 +29,7 @@ import com.mastour.mastour.ui.screen.matchmaking.MatchmakingContent
 import com.mastour.mastour.ui.screen.profile.ProfileScreen
 import com.mastour.mastour.ui.screen.register.RegisterScreen
 import com.mastour.mastour.ui.screen.search.SearchScreen
+import com.mastour.mastour.ui.screen.survey.SurveyScreen
 
 @Composable
 fun MainJetpack(
@@ -102,13 +103,15 @@ fun MainJetpack(
                 ProfileScreen(navHostController = navController)
             }
             composable(Screen.Matchmaking.route){
-                MatchmakingContent(nextOnClicked = {})
+                MatchmakingContent(nextOnClicked = {
+                    navController.navigate(Screen.Survey.route)
+                })
             }
             composable(Screen.MatchmakingResults.route){
                 MatchmakingResultScreen()
             }
             composable(Screen.Survey.route){
-                //TODO: Add Screen
+                SurveyScreen(navHostController = navController)
             }
         }
     }

@@ -11,6 +11,7 @@ import com.mastour.mastour.data.remote.ImgurApiService
 import com.mastour.mastour.data.remote.LoginResponses
 import com.mastour.mastour.data.remote.MasTourApiService
 import com.mastour.mastour.data.remote.RegisterResponses
+import com.mastour.mastour.data.remote.SurveyResponse
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.uriToFile
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,6 +23,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -130,5 +132,25 @@ class Repository @Inject constructor(
         } catch (e: Exception){
             Result.failure(e)
         }
+    }
+
+    fun survey(answers: List<Int>, token: String): Flow<UiState<SurveyResponse>> {
+        val jsonObject = JSONObject()
+        val jsonArray = JSONArray(answers)
+        jsonObject.put("answers", jsonArray)
+
+        val requestBody =
+            jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+        return flow {
+            try {
+                emit(UiState.Loading)
+                val responseSurvey = masTourApiService.submitSurvey("Bearer $token", requestBody)
+                emit(UiState.Success(responseSurvey))
+            }
+            catch (e : Exception){
+                emit(UiState.Failure(e))
+            }
+        }.flowOn(Dispatchers.IO)
     }
 }

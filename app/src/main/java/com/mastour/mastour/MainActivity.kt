@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.mastour.mastour.ui.screen.category.CategoryScreen
+import com.mastour.mastour.ui.screen.survey.SurveyScreen
 import com.mastour.mastour.ui.theme.MasTourTheme
 import dagger.hilt.android.AndroidEntryPoint
 
