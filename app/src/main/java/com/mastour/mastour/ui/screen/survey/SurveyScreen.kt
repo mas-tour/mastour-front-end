@@ -1,6 +1,7 @@
 package com.mastour.mastour.ui.screen.survey
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,12 +32,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +57,7 @@ import com.mastour.mastour.ui.screen.register.RegisterContent
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.viewmodel.SurveyViewModel
 import com.mastour.mastour.util.UiState
+import kotlinx.coroutines.launch
 
 @Composable
 fun SurveyScreen(
@@ -70,6 +74,8 @@ fun SurveyScreen(
     val answers: List<MutableState<Int>> = List(5) {
         mutableStateOf(0)
     }
+
+    val context = LocalContext.current
 
     viewModel.surveyResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when(uiState) {
@@ -90,7 +96,7 @@ fun SurveyScreen(
             }
             is UiState.Success -> {
                 // TODO: Navigate to Matchmaking Results
-                navHostController.navigate(Screen.Home.route){
+                navHostController.navigate(Screen.Home.route) {
                     popUpTo(navHostController.graph.findStartDestination().id){
                         saveState = true
                     }
@@ -99,7 +105,9 @@ fun SurveyScreen(
                 }
             }
             is UiState.Failure -> {
-                // TODO: Toast o dialogue, Register failed
+                rememberCoroutineScope().launch {
+                    Toast.makeText(context, uiState.e?.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

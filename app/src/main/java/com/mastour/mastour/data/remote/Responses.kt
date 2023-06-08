@@ -60,7 +60,7 @@ data class Data(
 	val answers: List<Int>,
 
 	@field:SerializedName("created_at")
-	val createdAt: Int,
+	val createdAt: Long,
 
 	@field:SerializedName("picture")
 	val picture: String,
@@ -72,7 +72,7 @@ data class Data(
 	val personality: Int,
 
 	@field:SerializedName("updated_at")
-	val updatedAt: Int,
+	val updatedAt: Long,
 
 	@field:SerializedName("name")
 	val name: String,
