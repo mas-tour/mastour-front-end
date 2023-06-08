@@ -151,7 +151,7 @@ fun DetailContent(
                 }
 
                 Text(
-                    text = "Specialization",
+                    text = "Cities",
                     style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold),
                     color = MaterialTheme.colors.secondary,
                     modifier = Modifier.padding(start = 16.dp, top = 32.dp)
@@ -163,9 +163,29 @@ fun DetailContent(
                         color = MaterialTheme.colors.primaryVariant,
                         modifier = Modifier.padding(end = 4.dp)
                     )
+                }
+                Text(
+                    text = "Specialization",
+                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold),
+                    color = MaterialTheme.colors.secondary,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                )
+
+                Row(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
                     TagComponent(
                         name = dataDetailGuides.categories?.get(0)?.name.toString(),
-                        color = MaterialTheme.colors.secondaryVariant
+                        color = MaterialTheme.colors.secondaryVariant,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    TagComponent(
+                        name = dataDetailGuides.categories?.get(1)?.name.toString(),
+                        color = MaterialTheme.colors.secondaryVariant,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    TagComponent(
+                        name = dataDetailGuides.categories?.get(2)?.name.toString(),
+                        color = MaterialTheme.colors.secondaryVariant,
+                        modifier = Modifier.padding(end = 4.dp)
                     )
                 }
 
