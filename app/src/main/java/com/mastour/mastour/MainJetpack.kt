@@ -127,8 +127,15 @@ fun MainJetpack(
                     id = id,
                     onBackClicked = {
                         navController.navigateUp() },
-                    onHireClicked = { /*TODO*/ },
-                    onContactClicked = { /*TODO*/ })
+                    onHireClicked = {
+                        navController.navigate(Screen.History.route){
+                            popUpTo(Screen.Home.route){
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        } },
+                )
             }
         }
     }

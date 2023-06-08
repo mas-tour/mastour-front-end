@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -31,19 +32,19 @@ fun SearchScreen(
     moveToGuideDetail: (String) -> Unit,
 )
 {
+    val query by viewModel.query
+
     SideEffect {
         viewModel.tryUserToken()
     }
     Scaffold(
         topBar = {
-            //TODO Search for paging
-            SearchTopBar(search = "", onSearchTextChanged = {})
+            SearchTopBar(search = query, onSearchTextChanged = viewModel::changeQuery)
         })
-    { it ->
+    {
         SearchContent(
-            search = "",
             moveToGuideDetail = moveToGuideDetail,
-            guides = viewModel.getGuides().collectAsLazyPagingItems(),
+            guides = viewModel.getGuides(query = query).collectAsLazyPagingItems(),
             contentPadding = it,
             modifier = modifier
         )
@@ -53,7 +54,6 @@ fun SearchScreen(
 @Composable
 fun SearchContent(
     guides: LazyPagingItems<DataGuides>,
-    search: String,
     moveToGuideDetail: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier

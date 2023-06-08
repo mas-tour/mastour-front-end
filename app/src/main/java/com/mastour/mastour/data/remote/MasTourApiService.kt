@@ -20,7 +20,9 @@ interface MasTourApiService {
     suspend fun getGuides(
         @Header("Authorization") bearer: String,
         @Query("page") page: Int,
-        @Query("size") size: Int
+        @Query("size") size: Int,
+        @Query("search_by") searchBy: String = "users.name",
+        @Query("search_query") query: String = ""
     ) : ResponseGuides
 
     @GET("guides/{id}")

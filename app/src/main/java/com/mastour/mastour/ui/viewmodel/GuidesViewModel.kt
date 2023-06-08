@@ -1,5 +1,6 @@
 package com.mastour.mastour.ui.viewmodel
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +25,13 @@ class GuidesViewModel @Inject constructor(private val repository: Repository): V
     val detailResponse: StateFlow<UiState<DetailGuidesResponse>>
         get() = _detailResponse
 
+    private val _query = mutableStateOf("")
+    val query: State<String> get() = _query
+
+    fun changeQuery(query: String){
+        _query.value = query
+    }
+
     fun tryUserToken(){
         viewModelScope.launch {
             repository.getUserToken().collect{
@@ -32,7 +40,7 @@ class GuidesViewModel @Inject constructor(private val repository: Repository): V
         }
     }
 
-    fun getGuides(): Flow<PagingData<DataGuides>> = repository.getGuides("Bearer ${_userToken.value}").cachedIn(viewModelScope)
+    fun getGuides(query: String = ""): Flow<PagingData<DataGuides>> = repository.getGuides(bearer = "Bearer ${_userToken.value}", query = query).cachedIn(viewModelScope)
     fun getDetailedGuide(id: String){
         viewModelScope.launch {
             repository.detailedGuides(id, _userToken.value).collect{
