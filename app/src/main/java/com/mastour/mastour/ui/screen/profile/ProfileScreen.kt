@@ -92,7 +92,7 @@ fun ProfileScreen(
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         val timestamp = localDateTime.toEpochSecond(ZoneOffset.UTC)
         viewModel.changeBirthDate(timestamp)
-        viewModel.updateProfile()
+        viewModel.putBirthDate()
     }
 
     // GenderDialog UI
@@ -107,7 +107,7 @@ fun ProfileScreen(
         genderOptions = genders,
         onSubmitClicked = {
             viewModel.changeGender(selectedItem.value)
-            viewModel.updateProfile()
+            viewModel.putGender()
             genderDialog.value = false
         }
     )
@@ -118,7 +118,7 @@ fun ProfileScreen(
         phoneNumber = phoneNumber,
         onPhoneNumberChanged = viewModel::changeNumber,
         onSubmitClicked = {
-            viewModel.updateProfile()
+            viewModel.putNumber()
             phoneNumberDialog.value = false
         }
     )
