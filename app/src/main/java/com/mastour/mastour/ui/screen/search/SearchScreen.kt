@@ -92,7 +92,7 @@ fun SearchContent(
                         Text(
                             modifier = Modifier
                                 .padding(8.dp),
-                            text = "Refresh Loading"
+                            text = "Loading"
                         )
 
                         CircularProgressIndicator(color = Color.Black)
@@ -114,7 +114,7 @@ fun SearchContent(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
-                        Text(text = "Pagination Loading")
+                        Text(text = "Loading")
 
                         CircularProgressIndicator(color = Color.Black)
                     }

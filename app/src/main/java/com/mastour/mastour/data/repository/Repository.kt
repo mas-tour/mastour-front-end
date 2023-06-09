@@ -9,6 +9,7 @@ import com.mastour.mastour.data.local.UserData
 import com.mastour.mastour.data.pagingsource.GuidePagingSource
 import com.mastour.mastour.data.preferences.SessionPreferences
 import com.mastour.mastour.data.remote.*
+import com.mastour.mastour.util.AuthUiState
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.uriToFile
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -51,7 +52,7 @@ class Repository @Inject constructor(
         preferences.deleteSession()
     }
 
-    fun login(email: String, password: String) : Flow<UiState<LoginResponses>> {
+    fun login(email: String, password: String) : Flow<AuthUiState<LoginResponses>> {
         val jsonObject = JSONObject()
         jsonObject.put("email", email)
         jsonObject.put("password", password)
@@ -61,13 +62,14 @@ class Repository @Inject constructor(
 
         return flow {
             try {
-                emit(UiState.Loading)
+                emit(AuthUiState.Idle)
+                emit(AuthUiState.Load)
                 val responseLogin = masTourApiService.login(requestBody)
                 responseLogin.data?.token?.let { preferences.startSession(true, it) }
-                emit(UiState.Success(responseLogin))
+                emit(AuthUiState.Success(responseLogin))
             }
             catch (e : Exception){
-                emit(UiState.Failure(e))
+                emit(AuthUiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
     }
@@ -78,7 +80,7 @@ class Repository @Inject constructor(
         name: String,
         password: String,
         picture: String
-    ) : Flow<UiState<RegisterResponses>> {
+    ) : Flow<AuthUiState<RegisterResponses>> {
         val jsonObject = JSONObject()
         jsonObject.put("username", username)
         jsonObject.put("email", email)
@@ -97,12 +99,13 @@ class Repository @Inject constructor(
 
         return flow {
             try {
-                emit(UiState.Loading)
+                emit(AuthUiState.Idle)
+                emit(AuthUiState.Load)
                 val responseRegister = masTourApiService.register(requestBody)
-                emit(UiState.Success(responseRegister))
+                emit(AuthUiState.Success(responseRegister))
             }
             catch (e : Exception){
-                emit(UiState.Failure(e))
+                emit(AuthUiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
     }

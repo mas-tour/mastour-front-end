@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mastour.mastour.data.remote.LoginResponses
 import com.mastour.mastour.data.remote.RegisterResponses
 import com.mastour.mastour.data.repository.Repository
+import com.mastour.mastour.util.AuthUiState
 import com.mastour.mastour.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     // Login
-    private val _loginResponse: MutableStateFlow<UiState<LoginResponses>> = MutableStateFlow(UiState.Loading)
-    val loginResponse: StateFlow<UiState<LoginResponses>>
+    private val _loginResponse: MutableStateFlow<AuthUiState<LoginResponses>> = MutableStateFlow(AuthUiState.Idle)
+    val loginResponse: StateFlow<AuthUiState<LoginResponses>>
         get() = _loginResponse
 
     private val _email = mutableStateOf("")
@@ -53,9 +54,9 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
     // Register
-    private val _registerResponse: MutableStateFlow<UiState<RegisterResponses>> = MutableStateFlow(UiState.Loading)
+    private val _registerResponse: MutableStateFlow<AuthUiState<RegisterResponses>> = MutableStateFlow(AuthUiState.Idle)
 
-    val registerResponse: StateFlow<UiState<RegisterResponses>>
+    val registerResponse: StateFlow<AuthUiState<RegisterResponses>>
         get() = _registerResponse
 
     private val _emailRegister = mutableStateOf("")
