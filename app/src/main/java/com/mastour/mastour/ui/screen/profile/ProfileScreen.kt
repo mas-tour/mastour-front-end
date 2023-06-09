@@ -56,7 +56,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
+import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -87,6 +89,7 @@ fun ProfileScreen(
 
     // Date picker UI
     val datePicker = DatePickerDialog(context)
+    datePicker.datePicker.maxDate = Calendar.getInstance().timeInMillis
     datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
