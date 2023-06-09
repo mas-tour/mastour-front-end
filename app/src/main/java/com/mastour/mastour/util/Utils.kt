@@ -26,13 +26,17 @@ suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatcher
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun getAgeFromTimestamp(timestamp: Long): Int {
+fun getAgeFromTimestamp(timestamp: Long): Long {
     Log.d("CalculateStamp", "$timestamp")
     val currentDate = LocalDate.now()
     Log.d("CalculateStamp", "$currentDate")
-    val birthDate = Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate()
+    val birthDate = if (timestamp >= 0) {
+        Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate()
+    } else {
+        Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1)
+    }
     Log.d("CalculateStamp", "$birthDate")
-    val age = ChronoUnit.YEARS.between(birthDate, currentDate).toInt()
+    val age = ChronoUnit.YEARS.between(birthDate, currentDate)
     return age
 }
 
