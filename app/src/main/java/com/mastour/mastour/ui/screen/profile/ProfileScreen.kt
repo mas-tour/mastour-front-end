@@ -89,7 +89,10 @@ fun ProfileScreen(
 
     // Date picker UI
     val datePicker = DatePickerDialog(context)
-    datePicker.datePicker.maxDate = Calendar.getInstance().timeInMillis
+    val calendar = Calendar.getInstance()
+    datePicker.datePicker.maxDate = calendar.timeInMillis
+    calendar.add(Calendar.YEAR, -100)
+    datePicker.datePicker.minDate = calendar.timeInMillis
     datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)

@@ -12,6 +12,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatchers.IO) {
@@ -27,17 +28,10 @@ suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatcher
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getAgeFromTimestamp(timestamp: Long): Long {
-    Log.d("CalculateStamp", "$timestamp")
     val currentDate = LocalDate.now()
-    Log.d("CalculateStamp", "$currentDate")
-    val birthDate = if (timestamp >= 0) {
-        Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate()
-    } else {
-        Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1)
-    }
-    Log.d("CalculateStamp", "$birthDate")
-    val age = ChronoUnit.YEARS.between(birthDate, currentDate)
-    return age
+    val birthDate = LocalDate.ofEpochDay(timestamp / (24 * 60 * 60)).atStartOfDay(ZoneOffset.UTC).toLocalDate()
+    val age = (currentDate.year - birthDate.year).toLong()
+    return if (birthDate.plusYears(age) > currentDate) age - 1 else age
 }
 
 
