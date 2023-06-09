@@ -289,3 +289,4 @@ fun DetailContent(
         }
     }
 }
+

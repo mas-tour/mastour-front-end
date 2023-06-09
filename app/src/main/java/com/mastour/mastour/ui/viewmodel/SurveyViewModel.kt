@@ -26,8 +26,8 @@ class SurveyViewModel @Inject constructor(private val repository: Repository): V
     private val _answers = mutableStateListOf<Int>()
     val answers: SnapshotStateList<Int> get() = _answers
 
-    private val _token = mutableStateOf("")
-    private val token: State<String> get() = _token
+    private val _userToken = mutableStateOf("")
+    private val userToken: State<String> get() = _userToken
 
     fun addAnswers(answers: List<MutableState<Int>>) {
         answers.forEach { answer ->
@@ -38,8 +38,8 @@ class SurveyViewModel @Inject constructor(private val repository: Repository): V
     fun postAnswers() {
         viewModelScope.launch {
             repository.getUserToken().collect() {
-                _token.value = it
-                repository.survey(answers.toList(), token.value).collect { uiState ->
+                _userToken.value = it
+                repository.survey(answers.toList(), userToken.value).collect { uiState ->
                     _surveyResponse.value = uiState
                 }
             }

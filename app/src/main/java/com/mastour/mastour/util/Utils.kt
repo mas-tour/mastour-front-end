@@ -1,15 +1,21 @@
 package com.mastour.mastour.util
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.util.Base64
-import java.io.ByteArrayOutputStream
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.time.Instant
+import java.time.LocalDate
+import java.time.Period
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 
-fun uriToFile(uri: Uri, context: Context): File? {
+suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatchers.IO) {
     val inputStream = context.contentResolver.openInputStream(uri)
     val file = createTempFile(context)
     inputStream?.use { input ->
@@ -17,8 +23,17 @@ fun uriToFile(uri: Uri, context: Context): File? {
             input.copyTo(output)
         }
     }
-    return file
+    return@withContext file
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun getAgeFromTimestamp(timestamp: Long): Long {
+    val currentDate = LocalDate.now()
+    val birthDate = LocalDate.ofEpochDay(timestamp / (24 * 60 * 60)).atStartOfDay(ZoneOffset.UTC).toLocalDate()
+    val age = (currentDate.year - birthDate.year).toLong()
+    return if (birthDate.plusYears(age) > currentDate) age - 1 else age
+}
+
 
 private fun createTempFile(context: Context): File {
     val fileName = "temp_file"

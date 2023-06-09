@@ -5,9 +5,16 @@ import android.net.Uri
 import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.mastour.mastour.data.local.UserData
 import com.mastour.mastour.data.pagingsource.GuidePagingSource
 import com.mastour.mastour.data.preferences.SessionPreferences
-import com.mastour.mastour.data.remote.*
+import com.mastour.mastour.data.remote.DetailGuidesResponse
+import com.mastour.mastour.data.remote.ImgurApiService
+import com.mastour.mastour.data.remote.LoginResponses
+import com.mastour.mastour.data.remote.MasTourApiService
+import com.mastour.mastour.data.remote.ProfileResponse
+import com.mastour.mastour.data.remote.RegisterResponses
+import com.mastour.mastour.data.remote.SurveyResponse
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.uriToFile
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -44,10 +51,11 @@ class Repository @Inject constructor(
         return preferences.getUserToken()
     }
 
+
+
     suspend fun deleteSession(){
         preferences.deleteSession()
     }
-
 
     fun login(email: String, password: String) : Flow<UiState<LoginResponses>> {
         val jsonObject = JSONObject()
@@ -110,7 +118,7 @@ class Repository @Inject constructor(
             val file = uriToFile(image, context)
 
             val filePart = MultipartBody.Part.
-            createFormData("image", null, file!!.asRequestBody())
+            createFormData("image", null, file.asRequestBody())
 
             val response = imgurApiService.uploadFile(
                 filePart
@@ -128,6 +136,51 @@ class Repository @Inject constructor(
         } catch (e: Exception){
             Result.failure(e)
         }
+    }
+
+    fun getProfile(bearer: String): Flow<UiState<ProfileResponse>> {
+        return flow {
+            try {
+                emit(UiState.Loading)
+                val responseLogin = masTourApiService.getProfile(bearer)
+                emit(UiState.Success(responseLogin))
+            }
+            catch (e : Exception){
+                emit(UiState.Failure(e))
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun updateProfile(userData: UserData, bearer: String): Flow<UiState<ProfileResponse>> {
+        val jsonObject = JSONObject()
+        jsonObject.put("username", userData.username)
+        jsonObject.put("email", userData.email)
+        jsonObject.put("name", userData.name)
+        jsonObject.put("phone_number", userData.phoneNumber)
+        jsonObject.put("gender", userData.gender)
+        jsonObject.put("birth_date", userData.birthDate)
+        jsonObject.put("picture", userData.picture)
+
+        val requestBody =
+            jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+        Log.d("PhoneNumber", jsonObject.toString())
+
+        return flow {
+            Log.d("PhoneNumber", "Outside of try")
+            try {
+                Log.d("PhoneNumber", "Inside of try")
+                emit(UiState.Loading)
+                Log.d("PhoneNumber", requestBody.toString())
+                val responseProfile = masTourApiService.putProfile("Bearer $bearer", requestBody)
+                Log.d("PhoneNumber", responseProfile.toString())
+                emit(UiState.Success(responseProfile))
+            }
+            catch (e : Exception){
+                Log.d("PhoneNumber", "Error!")
+                emit(UiState.Failure(e))
+            }
+        }.flowOn(Dispatchers.IO)
     }
 
     fun survey(answers: List<Int>, token: String): Flow<UiState<SurveyResponse>> {
