@@ -50,7 +50,7 @@ fun HomePageScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "Profile Loading")
+                        Text(text = "Loading")
                         CircularProgressIndicator(color = Color.Black)
                     }
                 }
