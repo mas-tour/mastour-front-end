@@ -1,4 +1,4 @@
-package com.mastour.mastour.ui.screen
+package com.mastour.mastour.ui.screen.matchmaking
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -25,20 +26,25 @@ import com.mastour.mastour.ui.navigation.SearchTopBar
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier, viewModel: GuidesViewModel = hiltViewModel()) {
+fun SearchScreen(
+    modifier: Modifier = Modifier,
+    viewModel: GuidesViewModel = hiltViewModel(),
+    moveToGuideDetail: (String) -> Unit,
+)
+{
+    val query by viewModel.query
+
     SideEffect {
         viewModel.tryUserToken()
     }
     Scaffold(
         topBar = {
-            //TODO Search for paging
-            SearchTopBar(search = "", onSearchTextChanged = {})
+            SearchTopBar(search = query, onSearchTextChanged = viewModel::changeQuery)
         })
-    { it ->
+    {
         SearchContent(
-            search = "",
-            moveToGuideDetail = {},
-            guides = viewModel.getGuides().collectAsLazyPagingItems(),
+            moveToGuideDetail = moveToGuideDetail,
+            guides = viewModel.getGuides(query = query).collectAsLazyPagingItems(),
             contentPadding = it,
             modifier = modifier
         )
@@ -48,7 +54,6 @@ fun SearchScreen(modifier: Modifier = Modifier, viewModel: GuidesViewModel = hil
 @Composable
 fun SearchContent(
     guides: LazyPagingItems<DataGuides>,
-    search: String,
     moveToGuideDetail: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
