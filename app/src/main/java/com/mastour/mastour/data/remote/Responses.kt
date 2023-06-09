@@ -140,8 +140,8 @@ data class CategoriesItem(
 	@field:SerializedName("id")
 	val id: String,
 
-	@field:SerializedName("slug")
-	val slug: String
+	@field:SerializedName("picture")
+	val picture: String
 )
 
 data class ProfileResponse(
@@ -274,4 +274,16 @@ data class DataDetailGuides(
 
 	@field:SerializedName("city_id")
 	val cityId: String? = null
+)
+
+data class CitiesResponse(
+
+	@field:SerializedName("data")
+	val data: List<CategoriesItem>
+)
+
+data class SpecResponse(
+
+	@field:SerializedName("data")
+	val data: List<CategoriesItem>
 )

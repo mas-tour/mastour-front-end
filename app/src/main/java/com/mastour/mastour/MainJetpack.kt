@@ -1,5 +1,7 @@
 package com.mastour.mastour
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -13,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,16 +25,17 @@ import androidx.navigation.navArgument
 import com.mastour.mastour.ui.navigation.BottomBar
 import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.screen.detail.DetailScreen
-import com.mastour.mastour.ui.screen.matchmaking.MatchmakingResultScreen
 import com.mastour.mastour.ui.screen.history.HistoryScreen
 import com.mastour.mastour.ui.screen.homepage.HomePageScreen
 import com.mastour.mastour.ui.screen.login.LoginScreen
 import com.mastour.mastour.ui.screen.matchmaking.MatchmakingContent
+import com.mastour.mastour.ui.screen.matchmaking.MatchmakingResultScreen
 import com.mastour.mastour.ui.screen.profile.ProfileScreen
 import com.mastour.mastour.ui.screen.register.RegisterScreen
 import com.mastour.mastour.ui.screen.search.SearchScreen
 import com.mastour.mastour.ui.screen.survey.SurveyScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainJetpack(
     modifier: Modifier = Modifier,
@@ -63,7 +65,7 @@ fun MainJetpack(
                 if (currentRoute == Screen.Home.route || currentRoute == Screen.Profile.route || currentRoute == Screen.Search.route || currentRoute == Screen.History.route) {
                     FloatingActionButton(onClick = {
                         navController.navigate(Screen.Matchmaking.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
+                            popUpTo(Screen.Home.route) {
                                 saveState = true
                             }
                             launchSingleTop = true
@@ -94,7 +96,7 @@ fun MainJetpack(
                 RegisterScreen(navHostController = navController)
             }
             composable(Screen.Home.route){
-                HomePageScreen()
+                HomePageScreen(navHostController = navController)
             }
             composable(Screen.History.route){
                 HistoryScreen()

@@ -41,7 +41,7 @@ fun CategoryComponent(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(8.dp)),
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary, blendMode = BlendMode.Screen)
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary, blendMode = BlendMode.Softlight)
             )
             Text(
                 text = name,
