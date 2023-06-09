@@ -317,10 +317,10 @@ fun UserComponentPreview2(){
     MasTourTheme {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             UserComponent2(
-                name = "Jeremy Albertson",
-                photoUrl = R.drawable.asylum,
-                place = "Ujung Kulon" ,
-                specialization = "Horror Attraction",
+                name = "Bagus Wijaya",
+                photoUrl = R.drawable.dummy_user,
+                place = "Bandung" ,
+                specialization = "Sightseeing",
                 price = 200000,
                 modifier = Modifier
                     .padding(top = 16.dp)

@@ -141,11 +141,6 @@ fun SurveyContent(
     )
     {
         // TODO: [NOTE] Don't know how to acquire data when using LazyColumn, using the scuffed solutions for now
-//        LazyColumn(verticalArrangement = Arrangement.spacedBy(11.dp)) {
-//            items(surveyData) { survey ->
-//                QuestionComponent(question = survey.question, selectedValue = selectedValue)
-//            }
-//        }
         QuestionComponent(question = surveyData[0].question, selectedValue = answer[0])
         QuestionComponent(question = surveyData[1].question, selectedValue = answer[1])
         QuestionComponent(question = surveyData[2].question, selectedValue = answer[2])

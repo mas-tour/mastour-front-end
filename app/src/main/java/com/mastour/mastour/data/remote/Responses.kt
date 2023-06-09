@@ -45,10 +45,10 @@ data class Register(
 data class SurveyResponse(
 
 	@field:SerializedName("data")
-	val data: Data
+	val data: SurveyData
 )
 
-data class Data(
+data class SurveyData(
 
 	@field:SerializedName("gender")
 	val gender: String,
@@ -142,6 +142,50 @@ data class CategoriesItem(
 
 	@field:SerializedName("slug")
 	val slug: String
+)
+
+data class ProfileResponse(
+	@field:SerializedName("data")
+	val profileBody: Profile,
+)
+
+data class Profile(
+
+	@field:SerializedName("gender")
+	val gender: String,
+
+	@field:SerializedName("personality")
+	val personality: Any,
+
+	@field:SerializedName("updated_at")
+	val updatedAt: Long,
+
+	@field:SerializedName("birth_date")
+	val birthDate: Int,
+
+	@field:SerializedName("name")
+	val name: String,
+
+	@field:SerializedName("answers")
+	val answers: Any,
+
+	@field:SerializedName("created_at")
+	val createdAt: Long,
+
+	@field:SerializedName("phone_number")
+	val phoneNumber: String,
+
+	@field:SerializedName("id")
+	val id: String,
+
+	@field:SerializedName("email")
+	val email: String,
+
+	@field:SerializedName("picture")
+	val picture: String,
+
+	@field:SerializedName("username")
+	val username: String
 )
 
 data class DetailGuidesResponse(

@@ -31,4 +31,14 @@ interface MasTourApiService {
         @Path("id") id: String
     ) : DetailGuidesResponse
 
+    @GET("profile")
+    suspend fun getProfile(
+        @Header("Authorization") bearer: String
+    ) : ProfileResponse
+
+    @PUT("profile")
+    suspend fun putProfile(
+        @Header("Authorization") bearer: String,
+        @Body requestBody: RequestBody
+    ) : ProfileResponse
 }
