@@ -41,4 +41,10 @@ interface MasTourApiService {
         @Header("Authorization") bearer: String,
         @Body requestBody: RequestBody
     ) : ProfileResponse
+
+    @GET("cities/")
+    suspend fun getCities() : CitiesResponse
+
+    @GET("categories")
+    suspend fun getCategories() : SpecResponse
 }

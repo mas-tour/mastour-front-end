@@ -137,7 +137,7 @@ fun ProfileScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "Profile Loading")
+                        Text(text = "Loading")
                         CircularProgressIndicator(color = Color.Black)
                     }
             }
@@ -181,8 +181,8 @@ fun ProfileScreen(
             is UiState.Failure -> {
                 // TODO: Toast or dialogue, Register failed
                 // TODO: find a better way of handling errors...
-                rememberCoroutineScope().launch {
-                    Toast.makeText(context, UiState.e?.message, Toast.LENGTH_SHORT).show()
+                LaunchedEffect(key1 = true) {
+                    Toast.makeText(context, "Update failed, please check your internet", Toast.LENGTH_SHORT).show()
                 }
                 viewModel.deleteSession()
             }

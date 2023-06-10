@@ -18,13 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
@@ -48,13 +42,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
+import com.mastour.mastour.util.AuthUiState
 import com.mastour.mastour.util.UiState
 import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     val email by viewModel.emailRegister
     val username by viewModel.usernameRegister
@@ -72,9 +68,9 @@ fun RegisterScreen(
 
     val context = LocalContext.current
 
-    viewModel.registerResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+    viewModel.registerResponse.collectAsState(initial = AuthUiState.Idle).value.let { uiState ->
         when(uiState) {
-            is UiState.Loading -> {
+            is AuthUiState.Idle ->{
                 RegisterContent(
                     username = username,
                     name = name,
@@ -94,18 +90,30 @@ fun RegisterScreen(
                     onBackClicked = { /*TODO*/ }
                 )
             }
-            is UiState.Success -> {
+            is AuthUiState.Load -> {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Loading")
+                    CircularProgressIndicator(color = Color.Black)
+                }
+            }
+            is AuthUiState.Success -> {
                 // TODO: Toast or dialogue, Register succeed
-                rememberCoroutineScope().launch {
+                LaunchedEffect(key1 = true){
+                    Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT).show()
                     navHostController.navigate(Screen.Login.route) {
                         popUpTo(0)
                     }
                 }
             }
-            is UiState.Failure -> {
+            is AuthUiState.Failure -> {
                 // TODO: Toast or dialogue, Register failed
-                rememberCoroutineScope().launch {
-                    Toast.makeText(context, uiState.e?.message, Toast.LENGTH_SHORT).show()
+                LaunchedEffect(key1 = true){
+                    Toast.makeText(context, "Failed please check if input correct, or check your internet", Toast.LENGTH_SHORT).show()
                 }
             }
         }

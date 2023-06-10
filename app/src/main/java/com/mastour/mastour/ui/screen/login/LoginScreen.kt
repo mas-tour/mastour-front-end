@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -33,6 +35,7 @@ import com.mastour.mastour.R
 import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
+import com.mastour.mastour.util.AuthUiState
 import com.mastour.mastour.util.UiState
 
 @Composable
@@ -59,25 +62,9 @@ fun LoginScreen(
             }
         }
     }
-    viewModel.loginResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+    viewModel.loginResponse.collectAsState(initial = AuthUiState.Idle).value.let { uiState ->
         when(uiState){
-            is UiState.Loading ->{
-                LoginContent(
-                    email = email,
-                    password = password,
-                    onEmailTextChanged = viewModel::changeEmail,
-                    onPasswordTextChanged = viewModel::changePassword,
-                    onLoginClicked = viewModel::login,
-                    onRegisterClicked = {
-                        navHostController.navigate(Screen.Register.route){
-                        popUpTo(navHostController.graph.findStartDestination().id){
-                            saveState = true
-                        }
-                        restoreState = true
-                        launchSingleTop = true
-                    } })
-            }
-            is UiState.Success ->{
+            is AuthUiState.Idle ->{
                 LoginContent(
                     email = email,
                     password = password,
@@ -93,7 +80,37 @@ fun LoginScreen(
                             launchSingleTop = true
                         } })
             }
-            is UiState.Failure ->{
+            is AuthUiState.Load ->{
+                Column(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Loading")
+                    CircularProgressIndicator(color = Color.Black)
+                }
+            }
+            is AuthUiState.Success ->{
+                LoginContent(
+                    email = email,
+                    password = password,
+                    onEmailTextChanged = viewModel::changeEmail,
+                    onPasswordTextChanged = viewModel::changePassword,
+                    onLoginClicked = viewModel::login,
+                    onRegisterClicked = {
+                        navHostController.navigate(Screen.Register.route){
+                            popUpTo(navHostController.graph.findStartDestination().id){
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        } })
+                LaunchedEffect(key1 = true){
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                }
+            }
+            is AuthUiState.Failure ->{
                 LoginContent(
                     email = email,
                     password = password,
@@ -109,7 +126,9 @@ fun LoginScreen(
                             launchSingleTop = true
                         }
                     })
-                Toast.makeText(context, uiState.e?.message, Toast.LENGTH_SHORT).show()
+                LaunchedEffect(key1 = true){
+                    Toast.makeText(context, "Failed please check if input correct, or check your internet", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -131,15 +150,17 @@ fun LoginContent(
             .fillMaxSize()
             .paint(
                 painter = painterResource(R.drawable.wayang_background),
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 alpha = 0.15F
-            ),
+            )
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Image(
             painter = painterResource(R.drawable.wayang_logo),
             contentDescription = stringResource(R.string.app_name),
+            modifier = Modifier.size(300.dp)
         )
         Text(
             text = stringResource(R.string.app_name),
