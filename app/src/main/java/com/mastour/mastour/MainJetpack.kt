@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mastour.mastour.ui.navigation.BottomBar
 import com.mastour.mastour.ui.navigation.Screen
+import com.mastour.mastour.ui.screen.category.CategoryScreen
 import com.mastour.mastour.ui.screen.detail.DetailScreen
 import com.mastour.mastour.ui.screen.history.HistoryScreen
 import com.mastour.mastour.ui.screen.homepage.HomePageScreen
@@ -137,6 +138,24 @@ fun MainJetpack(
                             restoreState = true
                             launchSingleTop = true
                         } },
+                )
+            }
+            composable(
+                route = Screen.Results.route,
+                arguments = listOf(
+                    navArgument("isCity"){type = NavType.BoolType},
+                    navArgument("resultsId"){type = NavType.StringType}
+                )
+            ){
+                val isCity = it.arguments?.getBoolean("isCity") ?: true
+                val id = it.arguments?.getString("resultsId") ?: ""
+
+                CategoryScreen(
+                    isCity = isCity,
+                    id = id,
+                    moveToGuideDetail = {idDetail ->
+                    navController.navigate(Screen.Detail.createRoute(idDetail)) },
+                    onBackClicked = {navController.navigateUp()}
                 )
             }
         }

@@ -65,7 +65,7 @@ fun SearchContent(
                     name = guide.name,
                     photoUrl = guide.picture,
                     place = guide.city ,
-                    specialization = guide.categories[0].name,
+                    specialization = guide.categories,
                     price = guide.pricePerDay,
                     modifier = Modifier
                         .fillMaxWidth()

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.mastour.mastour.data.remote.CategoriesHelper
 import com.mastour.mastour.data.remote.DataGuides
 import com.mastour.mastour.data.remote.DetailGuidesResponse
 import com.mastour.mastour.data.repository.Repository
@@ -28,6 +29,11 @@ class GuidesViewModel @Inject constructor(private val repository: Repository): V
     private val _query = mutableStateOf("")
     val query: State<String> get() = _query
 
+    private val _categoriesResponse: MutableStateFlow<UiState<CategoriesHelper>> = MutableStateFlow(UiState.Loading)
+    val categoriesResponse: StateFlow<UiState<CategoriesHelper>>
+        get() = _categoriesResponse
+
+
     fun changeQuery(query: String){
         _query.value = query
     }
@@ -40,11 +46,19 @@ class GuidesViewModel @Inject constructor(private val repository: Repository): V
         }
     }
 
-    fun getGuides(query: String = ""): Flow<PagingData<DataGuides>> = repository.getGuides(bearer = "Bearer ${_userToken.value}", query = query).cachedIn(viewModelScope)
+    fun getGuides(query: String = "", cityId: String? = null, categoryId: String? = null): Flow<PagingData<DataGuides>> =
+        repository.getGuides(bearer = "Bearer ${_userToken.value}", query = query, cityId = cityId, categoryId = categoryId).cachedIn(viewModelScope)
     fun getDetailedGuide(id: String){
         viewModelScope.launch {
             repository.detailedGuides(id, _userToken.value).collect{
                 _detailResponse.value = it
+            }
+        }
+    }
+    fun getCategories(){
+        viewModelScope.launch {
+            repository.getCategories().collect{
+                _categoriesResponse.value = it
             }
         }
     }

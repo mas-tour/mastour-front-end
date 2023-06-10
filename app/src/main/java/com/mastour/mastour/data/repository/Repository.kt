@@ -31,11 +31,11 @@ class Repository @Inject constructor(
     private val imgurApiService: ImgurApiService,
     @ApplicationContext private val context: Context
 ) {
-    fun getGuides(bearer : String, query: String = "") = Pager(
+    fun getGuides(bearer : String, query: String = "", cityId: String? = null, categoryId: String? = null) = Pager(
         config = PagingConfig(
             pageSize = 20,
         ),
-        pagingSourceFactory = {GuidePagingSource(masTourApiService, bearer, query = query)}
+        pagingSourceFactory = {GuidePagingSource(masTourApiService, bearer, query = query, cityId = cityId, categoryId = categoryId)}
     ).flow
 
     fun getUserExist(): Flow<Boolean>{

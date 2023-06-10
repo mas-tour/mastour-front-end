@@ -7,7 +7,9 @@ import com.mastour.mastour.data.remote.MasTourApiService
 class GuidePagingSource(
     private val masTourApiService: MasTourApiService,
     private val bearer: String,
-    private val query: String = ""
+    private val query: String = "",
+    private val cityId: String? = null,
+    private val categoryId: String? = null
     ): PagingSource<Int, DataGuides>() {
     private companion object {
         const val INITIAL_PAGE_INDEX = 1
@@ -22,7 +24,7 @@ class GuidePagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataGuides> {
         return try {
             val position = params.key ?: INITIAL_PAGE_INDEX
-            val responseData = masTourApiService.getGuides(bearer, page = position, size = params.loadSize, query = query)
+            val responseData = masTourApiService.getGuides(bearer, page = position, size = params.loadSize, query = query, cityId = cityId, categoryId = categoryId)
 
             LoadResult.Page(
                 data = responseData.data,

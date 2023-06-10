@@ -58,7 +58,8 @@ fun HomePageScreen(
                     uiState.data?.citiesResponse?.let {
                         uiState.data.specResponse.let { it1 ->
                             HomePageContent(
-                                moveToCategoryDetail = {},
+                                moveToCategoryDetail = {isCity, id ->
+                                    navHostController.navigate(Screen.Results.createRoute(isCity, id))},
                                 moveToMatchMaking = { navHostController.navigate(Screen.Matchmaking.route) {
                                     popUpTo(Screen.Home.route) {
                                         saveState = true
@@ -82,7 +83,7 @@ fun HomePageScreen(
 }
 @Composable
 fun HomePageContent(
-    moveToCategoryDetail: (String) -> Unit,
+    moveToCategoryDetail: (Boolean, String) -> Unit,
     moveToMatchMaking: () -> Unit,
     placeData: List<CategoriesItem>,
     categoryData: List<CategoriesItem>,
@@ -108,7 +109,7 @@ fun HomePageContent(
                     .size(160.dp)
                     .padding(8.dp)
                     .clickable {
-                        moveToCategoryDetail(place.id)
+                        moveToCategoryDetail(true, place.id)
                     }
                 )
             }
@@ -144,7 +145,7 @@ fun HomePageContent(
                         .size(160.dp)
                         .padding(8.dp)
                         .clickable {
-                            moveToCategoryDetail(category.id)
+                            moveToCategoryDetail(false, category.id)
                         }
                 )
             }
