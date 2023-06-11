@@ -2,7 +2,9 @@ package com.mastour.mastour.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -23,13 +25,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.R
+import com.mastour.mastour.data.remote.CategoriesItem
 
 @Composable
 fun UserComponent(
     name: String,
     photoUrl: String,
     place: String,
-    specialization: String,
+    specialization: List<CategoriesItem>,
     price: Long,
     modifier: Modifier = Modifier
 ){
@@ -53,9 +56,15 @@ fun UserComponent(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Row (modifier = Modifier.padding(end = 8.dp)){
-                    TagComponent(name = place, color = MaterialTheme.colors.primaryVariant, modifier = Modifier.padding(end = 4.dp))
-                    TagComponent(name = specialization, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
+                TagComponent(name = place, color = MaterialTheme.colors.primaryVariant, modifier = Modifier.padding(end = 4.dp))
+                Row (modifier = Modifier
+                    .padding(end = 8.dp, top = 4.dp)
+                    .horizontalScroll(
+                        rememberScrollState()
+                    )){
+                    TagComponent(name = specialization[0].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
+                    TagComponent(name = specialization[1].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
+                    TagComponent(name = specialization[2].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
                 }
                 Text(
                     maxLines = 1,
@@ -77,8 +86,8 @@ fun ExtendedUserComponent(
     name: String,
     photoUrl: String,
     place: String,
-    specialization: String,
-    price: Int,
+    specialization: List<CategoriesItem>,
+    price: Long,
     desc: String,
     percentage: Int,
     color: Color,
@@ -108,17 +117,17 @@ fun ExtendedUserComponent(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    Row(modifier = Modifier.padding(end = 8.dp)) {
-                        TagComponent(
-                            name = place,
-                            color = MaterialTheme.colors.primaryVariant,
-                            modifier = Modifier.padding(end = 4.dp)
-                        )
-                        TagComponent(
-                            name = specialization,
-                            color = MaterialTheme.colors.secondaryVariant
-                        )
+                    TagComponent(name = place, color = MaterialTheme.colors.primaryVariant, modifier = Modifier.padding(end = 4.dp))
+                    Row (modifier = Modifier
+                        .padding(end = 8.dp, top = 4.dp)
+                        .horizontalScroll(
+                            rememberScrollState()
+                        )){
+                        TagComponent(name = specialization[0].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
+                        TagComponent(name = specialization[1].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
+                        TagComponent(name = specialization[2].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
                     }
+
                     Text(
                         text = "IDR $price",
                         style = MaterialTheme.typography.subtitle2.copy(
@@ -200,7 +209,7 @@ fun ExtendedUserComponent2(
     name: String,
     photoUrl: Int,
     place: String,
-    specialization: String,
+    specialization: List<CategoriesItem>,
     price: Int,
     desc: String,
     percentage: Int,
@@ -231,16 +240,15 @@ fun ExtendedUserComponent2(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    Row(modifier = Modifier.padding(end = 8.dp)) {
-                        TagComponent(
-                            name = place,
-                            color = MaterialTheme.colors.primaryVariant,
-                            modifier = Modifier.padding(end = 4.dp)
-                        )
-                        TagComponent(
-                            name = specialization,
-                            color = MaterialTheme.colors.secondaryVariant
-                        )
+                    TagComponent(name = place, color = MaterialTheme.colors.primaryVariant, modifier = Modifier.padding(end = 4.dp))
+                    Row (modifier = Modifier
+                        .padding(end = 8.dp, top = 4.dp)
+                        .horizontalScroll(
+                            rememberScrollState()
+                        )){
+                        TagComponent(name = specialization[0].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
+                        TagComponent(name = specialization[1].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
+                        TagComponent(name = specialization[2].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
                     }
                     Text(
                         text = "IDR $price",
@@ -285,29 +293,6 @@ fun UserComponentPreview(){
             modifier = Modifier
                 .fillMaxWidth()
                 .height(128.dp))
-    }
-}
-
-@Composable
-@Preview(showBackground = false)
-fun ExTendedUserComponentPreview(){
-    MasTourTheme {
-        ExtendedUserComponent2(
-            name = "Borobudur",
-            photoUrl = R.drawable.asylum,
-            place = "Kediri" ,
-            specialization = "Horror Attraction",
-            price = 200000,
-            desc = "Jerma has never spoken using his real voice. Fans theorize that his real voice was a " +
-                "supernatural weapon of some kind where upon hearing it, you are immediately transported to a realm of existence that " +
-                "is incomprehensible by the human mind. A realm where you are driven to insanity by immense, Lovecraftian horrors " +
-                "and an infinitely expanding pit of enveloping darkness.",
-            percentage = 98,
-            color = Color.Green,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
     }
 }
 

@@ -22,7 +22,9 @@ interface MasTourApiService {
         @Query("page") page: Int,
         @Query("size") size: Int,
         @Query("search_by") searchBy: String = "users.name",
-        @Query("search_query") query: String = ""
+        @Query("search_query") query: String = "",
+        @Query("city_id") cityId: String? = null,
+        @Query("category_id") categoryId: String? = null
     ) : ResponseGuides
 
     @GET("guides/{id}")

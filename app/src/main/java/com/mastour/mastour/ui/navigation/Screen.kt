@@ -13,7 +13,7 @@ sealed class Screen(val route: String){
     object MatchmakingResults : Screen("matchmakingresults")
     object Profile : Screen("profile")
     object Survey : Screen("survey")
-    object Results : Screen("results/{resultsId}"){
-        fun createRoute(resultsId: String) = "resultsId/$resultsId"
+    object Results : Screen("results/{isCity}/{resultsId}"){
+        fun createRoute(isCity: Boolean, resultsId: String) = "results/$isCity/$resultsId"
     }
 }
