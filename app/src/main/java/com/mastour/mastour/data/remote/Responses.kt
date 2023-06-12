@@ -276,6 +276,112 @@ data class DataDetailGuides(
 	val cityId: String? = null
 )
 
+data class HistoryResponse(
+
+	@field:SerializedName("data")
+	val data: List<HistoryData>
+)
+
+data class HistoryData(
+
+	@field:SerializedName("end_date")
+	val endDate: Int,
+
+	@field:SerializedName("gender")
+	val gender: String,
+
+	@field:SerializedName("total_price")
+	val totalPrice: Int,
+
+	@field:SerializedName("city")
+	val city: String,
+
+	@field:SerializedName("birth_date")
+	val birthDate: Int,
+
+	@field:SerializedName("answers")
+	val answers: List<Int>,
+
+	@field:SerializedName("created_at")
+	val createdAt: Int,
+
+	@field:SerializedName("picture")
+	val picture: String,
+
+	@field:SerializedName("guide_id")
+	val guideId: String,
+
+	@field:SerializedName("password")
+	val password: String,
+
+	@field:SerializedName("personality")
+	val personality: Int,
+
+	@field:SerializedName("updated_at")
+	val updatedAt: Int,
+
+	@field:SerializedName("user_id")
+	val userId: String,
+
+	@field:SerializedName("name")
+	val name: String,
+
+	@field:SerializedName("phone_number")
+	val phoneNumber: String,
+
+	@field:SerializedName("count_day")
+	val countDay: Int,
+
+	@field:SerializedName("id")
+	val id: String,
+
+	@field:SerializedName("email")
+	val email: String,
+
+	@field:SerializedName("username")
+	val username: String,
+
+	@field:SerializedName("status")
+	val status: String,
+
+	@field:SerializedName("start_date")
+	val startDate: Int
+)
+
+data class BookGuidesResponse(
+
+	@field:SerializedName("data")
+	val data: BookingData
+)
+
+data class BookingData(
+
+	@field:SerializedName("end_date")
+	val endDate: Long,
+
+	@field:SerializedName("guide_id")
+	val guideId: String,
+
+	@field:SerializedName("updated_at")
+	val updatedAt: Long,
+
+	@field:SerializedName("user_id")
+	val userId: String,
+
+	@field:SerializedName("created_at")
+	val createdAt: Long,
+
+	@field:SerializedName("id")
+	val id: String,
+
+	@field:SerializedName("status")
+	val status: String,
+
+	@field:SerializedName("start_date")
+	val startDate: Long
+)
+
+
 data class CitiesResponse(
 
 	@field:SerializedName("data")

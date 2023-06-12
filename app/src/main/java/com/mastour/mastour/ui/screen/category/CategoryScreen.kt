@@ -35,7 +35,6 @@ fun CategoryScreen(
     moveToGuideDetail: (String) -> Unit,
     viewModel: GuidesViewModel = hiltViewModel(),
     onBackClicked: () -> Unit
-
 ) {
     val listState = rememberLazyListState()
 

@@ -33,6 +33,20 @@ interface MasTourApiService {
         @Path("id") id: String
     ) : DetailGuidesResponse
 
+    @POST("ordered_guides/book/{id}")
+    suspend fun bookGuide(
+        @Header("Authorization") bearer: String,
+        @Body requestBody: RequestBody,
+        @Path("id") id: String
+    ) : BookGuidesResponse
+
+    @GET("ordered_guides/history")
+    suspend fun getHistory(
+        @Header("Authorization") bearer: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ) : HistoryResponse
+
     @GET("profile")
     suspend fun getProfile(
         @Header("Authorization") bearer: String

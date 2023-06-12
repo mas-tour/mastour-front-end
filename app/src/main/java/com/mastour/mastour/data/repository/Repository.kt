@@ -7,6 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.mastour.mastour.data.local.UserData
 import com.mastour.mastour.data.pagingsource.GuidePagingSource
+import com.mastour.mastour.data.pagingsource.HistoryPagingSource
 import com.mastour.mastour.data.preferences.SessionPreferences
 import com.mastour.mastour.data.remote.*
 import com.mastour.mastour.util.AuthUiState
@@ -36,6 +37,13 @@ class Repository @Inject constructor(
             pageSize = 20,
         ),
         pagingSourceFactory = {GuidePagingSource(masTourApiService, bearer, query = query, cityId = cityId, categoryId = categoryId)}
+    ).flow
+
+    fun getHistory(bearer : String) = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+        ),
+        pagingSourceFactory = { HistoryPagingSource(masTourApiService, bearer) }
     ).flow
 
     fun getUserExist(): Flow<Boolean>{
@@ -175,6 +183,32 @@ class Repository @Inject constructor(
             }
             catch (e : Exception){
                 Log.d("PhoneNumber", "Error!")
+                emit(UiState.Failure(e))
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    // TODO: Maybe not UIState?
+    fun bookGuide(startDate: Long, endDate: Long, bearer: String, id: String): Flow<UiState<BookGuidesResponse>> {
+        val jsonObject = JSONObject()
+        jsonObject.put("start_date", startDate)
+        jsonObject.put("end_date", endDate)
+
+        val requestBody =
+            jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+        Log.d("Post", jsonObject.toString())
+        return flow {
+            try {
+                Log.d("Post", "Try, token: $bearer")
+                emit(UiState.Loading)
+                val responseBooking = masTourApiService.bookGuide("Bearer $bearer", requestBody, id)
+                emit(UiState.Success(responseBooking))
+                Log.d("Post", responseBooking.toString())
+            }
+            catch (e : Exception){
+                Log.d("Post", "Fail")
+                Log.d("Post", e.toString())
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)

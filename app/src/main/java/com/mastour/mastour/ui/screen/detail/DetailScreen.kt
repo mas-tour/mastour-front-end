@@ -1,9 +1,12 @@
 package com.mastour.mastour.ui.screen.detail
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -14,8 +17,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,25 +31,68 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.mastour.mastour.data.remote.DataDetailGuides
 import com.mastour.mastour.ui.components.CategoryComponent
 import com.mastour.mastour.ui.components.TagComponent
+import com.mastour.mastour.ui.navigation.Screen
+import com.mastour.mastour.ui.screen.profile.advancedShadow
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 import com.mastour.mastour.util.UiState
+import com.mastour.mastour.util.getAgeFromTimestamp
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneOffset
+import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(
     id: String,
     onBackClicked: () -> Unit,
-    onHireClicked: () -> Unit,
+    navController: NavHostController = rememberNavController(),
     viewModel: GuidesViewModel = hiltViewModel()
 ){
+    SideEffect {
+        viewModel.tryUserToken()
+    }
 
     val context = LocalContext.current
+    val popupControl = remember {
+        mutableStateOf(false)
+    }
+
+    ConfirmHirePopup(popupControl = popupControl, onConfirmClicked = {
+        viewModel.postBooking(id)
+    })
+
+    viewModel.bookGuideResponse.collectAsState(UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading ->{
+                // Empty?
+            }
+            is UiState.Success ->{
+                LaunchedEffect(key1 = true) {
+                    Toast.makeText(context, "Guide booked succesfully!", Toast.LENGTH_SHORT).show()
+                    popupControl.value = false
+                }
+            }
+            is UiState.Failure ->{
+                LaunchedEffect(key1 = true) {
+                    Toast.makeText(context, "Failed to book guide", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     viewModel.detailResponse.collectAsState(UiState.Loading).value.let {uiState->
-        when(uiState){
+        when (uiState){
             is UiState.Loading ->{
                 viewModel.getDetailedGuide(id)
                 Column(
@@ -69,13 +115,161 @@ fun DetailScreen(
                     DetailContent(
                         dataDetailGuides = it,
                         onBackClicked = onBackClicked,
-                        onHireClicked = onHireClicked,
+                        onHireClicked = {
+                            popupControl.value = true
+                        },
                         context = context
                     )
                 }
             }
             is UiState.Failure ->{
                 //TODO
+            }
+        }
+    }
+}
+
+// TODO: Move this and maybe change to AlertDialog for dimmed background
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ConfirmHirePopup(
+    popupControl: MutableState<Boolean>,
+    modifier: Modifier = Modifier,
+    viewModel: GuidesViewModel = hiltViewModel(),
+    onConfirmClicked: () -> Unit
+) {
+    val context = LocalContext.current
+
+    var startDate by remember {
+        mutableStateOf("Unset")
+    }
+
+    var endDate by remember {
+        mutableStateOf("Unset")
+    }
+
+    // TODO: Logic Start Date & End Date
+    val datePickerStart = DatePickerDialog(context)
+    val calendar = Calendar.getInstance()
+    datePickerStart.setOnDateSetListener { _, year, month, dayOfMonth ->
+        val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+        val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
+        startDate = "$dayOfMonth / $month / $year"
+        val timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        viewModel.changeStart(timestampStart)
+    }
+
+    val datePickerEnd = DatePickerDialog(context)
+    datePickerEnd.setOnDateSetListener { _, year, month, dayOfMonth ->
+        val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+        val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
+        endDate = "$dayOfMonth / $month / $year"
+        val timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        viewModel.changeEnd(timestampEnd)
+    }
+
+    if (popupControl.value) {
+        Popup(
+            alignment = Alignment.Center,
+            onDismissRequest = { popupControl.value = false }
+        ) {
+            Box(modifier = modifier
+                .fillMaxWidth(0.9F)
+                .background(Color.White)
+                .padding(10.dp)
+                .padding(horizontal = 15.dp)
+                .clip(RoundedCornerShape(16.dp))
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(text = "Booking Menu",
+                        style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
+                        modifier = modifier.padding(8.dp))
+                    Text(text = "Choose Tour Start Date!", modifier = modifier.align(Alignment.Start))
+                    Button(
+                        onClick = { datePickerStart.show() },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                        elevation = ButtonDefaults.elevation(0.dp),
+                        shape = RoundedCornerShape(30.dp),
+                        contentPadding = PaddingValues(10.dp),
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .advancedShadow(
+                                shadowRadius = 3.dp,
+                                borderRadius = 30.dp,
+                                offsetY = 3.dp
+                            )
+
+                    )
+                    {
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = modifier.padding(horizontal = 15.dp)) {
+                            Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
+                            Spacer(modifier.width(14.dp))
+                            Text(text = startDate, style = MaterialTheme.typography.subtitle2)
+                            Spacer(modifier.weight(1f))
+                        }
+                    }
+
+                    Text(text = "Choose Tour End Date!", modifier = modifier.align(Alignment.Start))
+                    Button(
+                        onClick = { datePickerEnd.show() },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                        elevation = ButtonDefaults.elevation(0.dp),
+                        shape = RoundedCornerShape(30.dp),
+                        contentPadding = PaddingValues(10.dp),
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .advancedShadow(
+                                shadowRadius = 3.dp,
+                                borderRadius = 30.dp,
+                                offsetY = 3.dp
+                            )
+                    )
+                    {
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = modifier.padding(horizontal = 15.dp)) {
+                            Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
+                            Spacer(modifier.width(14.dp))
+                            Text(text = endDate, style = MaterialTheme.typography.subtitle2)
+                            Spacer(modifier.weight(1f))
+                        }
+                    }
+
+                    Button(
+                        onClick = onConfirmClicked,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                        modifier = Modifier
+                            .padding(top = 16.dp, bottom = 16.dp, end = 8.dp)
+                            .height(48.dp)
+                            .width(200.dp),
+                        contentPadding = PaddingValues()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colors.primary,
+                                            MaterialTheme.colors.secondary
+                                        )
+                                    )
+                                )
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "Confirm Hire",
+                                color = Color.White,
+                                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -242,9 +436,9 @@ fun DetailContent(
                         }
                     },
                     shape = RoundedCornerShape(16.dp), modifier = Modifier
-                    .padding(top = 16.dp, bottom = 16.dp, end = 8.dp, start = 8.dp)
-                    .height(48.dp)
-                    .width(this@BoxWithConstraints.maxWidth / 2)) {
+                        .padding(top = 16.dp, bottom = 16.dp, end = 8.dp, start = 8.dp)
+                        .height(48.dp)
+                        .width(this@BoxWithConstraints.maxWidth / 2)) {
                     Text(
                         text = "Contact",
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp),
