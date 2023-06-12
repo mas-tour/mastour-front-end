@@ -103,7 +103,7 @@ class ProfileViewModel @Inject constructor(private val repository: Repository): 
         _userData.value.birthDate = _birthDate.value
         Log.d("PhoneNumber", _userToken.value)
         viewModelScope.launch {
-            repository.updateProfile(userData.value, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJhZTBhZDI4LWNlZmItNDM5NC05OTNiLTZmYTM5ZjYzMzI3NyIsImVtYWlsIjoiZmF1emFuQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiRmF1emFuIiwiaWF0IjoxNjg2NTg0Mzg4fQ.WFxE2guKMj_fuFmm4vRTMOclqLU3cxR99DZDB62D9z8").collect {
+            repository.updateProfile(userData.value, _userToken.value).collect {
                 _profileResponse.value = it
             }
         }

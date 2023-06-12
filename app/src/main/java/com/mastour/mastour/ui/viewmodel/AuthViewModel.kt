@@ -111,7 +111,10 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     fun register() {
         viewModelScope.launch {
             // TODO: Handle if no photo is selected, maybe default url
-            val result = imageUri.value?.let { repository.uploadImage(it) }
+            _registerResponse.value = AuthUiState.Load
+            val result = imageUri.value?.let {
+                repository.uploadImage(it)
+            }
 
             val link = (result?.fold(
                 onSuccess = { value ->
@@ -120,6 +123,7 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
                             usernameRegister.value,
                             nameRegister.value,
                             passwordRegister.value,
+                            gender = selectedGender.value,
                             value
                         ).collect {
                             _registerResponse.value = it

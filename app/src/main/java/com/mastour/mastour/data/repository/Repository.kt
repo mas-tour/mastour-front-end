@@ -87,6 +87,7 @@ class Repository @Inject constructor(
         username: String,
         name: String,
         password: String,
+        gender: String,
         picture: String
     ) : Flow<AuthUiState<RegisterResponses>> {
         val jsonObject = JSONObject()
@@ -97,7 +98,7 @@ class Repository @Inject constructor(
 
         // The api requires these property, dummy for now; Report later.
         jsonObject.put("phone_number", "")
-        jsonObject.put("gender", "male")
+        jsonObject.put("gender", gender)
         jsonObject.put("birth_date", 0)
 
         jsonObject.put("picture", picture)
@@ -165,7 +166,6 @@ class Repository @Inject constructor(
         jsonObject.put("gender", userData.gender)
         jsonObject.put("birth_date", userData.birthDate)
         jsonObject.put("picture", userData.picture)
-        jsonObject.put("pca", null)
 
         val requestBody =
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -178,7 +178,7 @@ class Repository @Inject constructor(
                 Log.d("PhoneNumber", bearer)
                 emit(UiState.Loading)
                 Log.d("PhoneNumber", requestBody.toString())
-                val responseProfile = masTourApiService.putProfile("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJhZTBhZDI4LWNlZmItNDM5NC05OTNiLTZmYTM5ZjYzMzI3NyIsImVtYWlsIjoiZmF1emFuQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiRmF1emFuIiwiaWF0IjoxNjg2NTg0Mzg4fQ.WFxE2guKMj_fuFmm4vRTMOclqLU3cxR99DZDB62D9z8", requestBody)
+                val responseProfile = masTourApiService.putProfile("Bearer $bearer", requestBody)
                 Log.d("PhoneNumber", responseProfile.toString())
                 emit(UiState.Success(responseProfile))
             }

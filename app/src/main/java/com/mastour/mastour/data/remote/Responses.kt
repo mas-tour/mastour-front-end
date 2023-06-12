@@ -60,10 +60,13 @@ data class SurveyData(
 	val answers: List<Int>,
 
 	@field:SerializedName("created_at")
-	val createdAt: Long,
+	val createdAt: Int,
 
 	@field:SerializedName("picture")
 	val picture: String,
+
+	@field:SerializedName("pca")
+	val pca: List<Int>,
 
 	@field:SerializedName("password")
 	val password: String,
@@ -72,7 +75,7 @@ data class SurveyData(
 	val personality: Int,
 
 	@field:SerializedName("updated_at")
-	val updatedAt: Long,
+	val updatedAt: Int,
 
 	@field:SerializedName("name")
 	val name: String,
@@ -297,10 +300,10 @@ data class HistoryData(
 	val city: String,
 
 	@field:SerializedName("birth_date")
-	val birthDate: Int,
+	val birthDate: Long,
 
 	@field:SerializedName("answers")
-	val answers: Any,
+	val answers: List<Int>,
 
 	@field:SerializedName("created_at")
 	val createdAt: Long,
@@ -309,7 +312,7 @@ data class HistoryData(
 	val picture: String,
 
 	@field:SerializedName("pca")
-	val pca: Any,
+	val pca: List<Any>,
 
 	@field:SerializedName("guide_id")
 	val guideId: String,
@@ -318,7 +321,7 @@ data class HistoryData(
 	val password: String,
 
 	@field:SerializedName("personality")
-	val personality: Any,
+	val personality: Int,
 
 	@field:SerializedName("updated_at")
 	val updatedAt: Long,

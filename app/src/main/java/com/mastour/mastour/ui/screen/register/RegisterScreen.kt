@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -184,9 +186,10 @@ fun RegisterContent(
                 painter = painterResource(id = R.drawable.page_background1),
                 contentScale = ContentScale.FillWidth,
                 alignment = Alignment.TopCenter
-            ),
+            )
+            .padding(top = 50.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         val context = LocalContext.current
         val initialBitmap = BitmapFactory.decodeResource(
@@ -309,40 +312,6 @@ fun RegisterContent(
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
-        Button(
-            onClick = onGenderSelected,
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-            elevation = ButtonDefaults.elevation(0.dp),
-            shape = RoundedCornerShape(30.dp),
-            contentPadding = PaddingValues(vertical = 10.dp),
-            modifier = modifier
-                .fillMaxWidth(0.67F)
-                .bottomBorder(1.dp, MaterialTheme.colors.secondary)
-                .padding(top = 16.dp)
-                .clip(shape = RoundedCornerShape(16.dp))
-        )
-        {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(if (gender == "male") {
-                        Icons.Filled.Male
-                    } else {
-                        Icons.Filled.Female
-                    }, contentDescription = "Gender", tint = MaterialTheme.colors.primary
-                )
-                Spacer(modifier.width(17.dp))
-                Text(
-                    gender.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-                    },
-                    style = MaterialTheme.typography.subtitle2,
-                    color = MaterialTheme.colors.primary
-                )
-                Spacer(modifier.weight(1f))
-            }
-        }
-
         TextField(
             value = password,
             onValueChange = onPasswordTextChanged,
@@ -384,6 +353,40 @@ fun RegisterContent(
         )
 
         Button(
+            onClick = onGenderSelected,
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+            elevation = ButtonDefaults.elevation(0.dp),
+            shape = RoundedCornerShape(30.dp),
+            contentPadding = PaddingValues(vertical = 10.dp),
+            modifier = modifier
+                .fillMaxWidth(0.67F)
+                .padding(top = 16.dp)
+                .clip(shape = RoundedCornerShape(16.dp))
+        )
+        {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier.weight(1f))
+                Icon(if (gender == "male") {
+                    Icons.Filled.Male
+                } else {
+                    Icons.Filled.Female
+                }, contentDescription = "Gender", tint = MaterialTheme.colors.primary
+                )
+                Spacer(modifier.width(17.dp))
+                Text(
+                    gender.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                    },
+                    style = MaterialTheme.typography.subtitle2,
+                    color = MaterialTheme.colors.primary
+                )
+                Spacer(modifier.weight(1f))
+            }
+        }
+
+        Button(
             onClick = onRegisterClicked,
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -411,22 +414,3 @@ fun RegisterContent(
         }
     }
 }
-
-fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(
-    factory = {
-        val density = LocalDensity.current
-        val strokeWidthPx = density.run { strokeWidth.toPx() }
-
-        Modifier.drawBehind {
-            val width = size.width
-            val height = size.height - strokeWidthPx/2
-
-            drawLine(
-                color = color,
-                start = Offset(x = 0f, y = height),
-                end = Offset(x = width - 5f , y = height),
-                strokeWidth = strokeWidthPx
-            )
-        }
-    }
-)
