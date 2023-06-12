@@ -77,7 +77,7 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _imageUri = mutableStateOf<Uri?>(null)
     val imageUri: State<Uri?> get() = _imageUri
 
-    private val _selectedGender = mutableStateOf("")
+    private val _selectedGender = mutableStateOf("male")
     val selectedGender: State<String> get() = _selectedGender
 
     fun changeGender(gender: String) {

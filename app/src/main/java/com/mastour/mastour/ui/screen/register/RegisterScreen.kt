@@ -86,6 +86,8 @@ fun RegisterScreen(
 
     val context = LocalContext.current
 
+    val dataValid = remember { mutableStateOf(false) }
+
     val genderDialog = remember { mutableStateOf(false) }
     val genders = listOf("male", "female")
     val selectedItem = remember {
@@ -126,6 +128,7 @@ fun RegisterScreen(
                     onRegisterClicked = {
                         viewModel.register()
                     },
+                    submitValid = dataValid,
                     onBackClicked = { /*TODO*/ }
                 )
             }
@@ -175,6 +178,7 @@ fun RegisterContent(
     onGenderSelected: () -> Unit,
     onRegisterClicked: () -> Unit,
     imageUri: Uri?,
+    submitValid: MutableState<Boolean>,
     onBackClicked: () -> Unit,
     onEditClicked: () -> Unit,
     modifier: Modifier = Modifier
