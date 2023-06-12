@@ -285,7 +285,7 @@ data class HistoryResponse(
 data class HistoryData(
 
 	@field:SerializedName("end_date")
-	val endDate: Int,
+	val endDate: Long,
 
 	@field:SerializedName("gender")
 	val gender: String,
@@ -300,13 +300,16 @@ data class HistoryData(
 	val birthDate: Int,
 
 	@field:SerializedName("answers")
-	val answers: List<Int>,
+	val answers: Any,
 
 	@field:SerializedName("created_at")
-	val createdAt: Int,
+	val createdAt: Long,
 
 	@field:SerializedName("picture")
 	val picture: String,
+
+	@field:SerializedName("pca")
+	val pca: Any,
 
 	@field:SerializedName("guide_id")
 	val guideId: String,
@@ -315,10 +318,10 @@ data class HistoryData(
 	val password: String,
 
 	@field:SerializedName("personality")
-	val personality: Int,
+	val personality: Any,
 
 	@field:SerializedName("updated_at")
-	val updatedAt: Int,
+	val updatedAt: Long,
 
 	@field:SerializedName("user_id")
 	val userId: String,
@@ -335,6 +338,9 @@ data class HistoryData(
 	@field:SerializedName("id")
 	val id: String,
 
+	@field:SerializedName("price_per_day")
+	val pricePerDay: Int,
+
 	@field:SerializedName("email")
 	val email: String,
 
@@ -345,7 +351,7 @@ data class HistoryData(
 	val status: String,
 
 	@field:SerializedName("start_date")
-	val startDate: Int
+	val startDate: Long
 )
 
 data class BookGuidesResponse(

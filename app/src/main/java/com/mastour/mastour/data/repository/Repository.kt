@@ -165,6 +165,7 @@ class Repository @Inject constructor(
         jsonObject.put("gender", userData.gender)
         jsonObject.put("birth_date", userData.birthDate)
         jsonObject.put("picture", userData.picture)
+        jsonObject.put("pca", null)
 
         val requestBody =
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -174,10 +175,10 @@ class Repository @Inject constructor(
         return flow {
             Log.d("PhoneNumber", "Outside of try")
             try {
-                Log.d("PhoneNumber", "Inside of try")
+                Log.d("PhoneNumber", bearer)
                 emit(UiState.Loading)
                 Log.d("PhoneNumber", requestBody.toString())
-                val responseProfile = masTourApiService.putProfile("Bearer $bearer", requestBody)
+                val responseProfile = masTourApiService.putProfile("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJhZTBhZDI4LWNlZmItNDM5NC05OTNiLTZmYTM5ZjYzMzI3NyIsImVtYWlsIjoiZmF1emFuQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiRmF1emFuIiwiaWF0IjoxNjg2NTg0Mzg4fQ.WFxE2guKMj_fuFmm4vRTMOclqLU3cxR99DZDB62D9z8", requestBody)
                 Log.d("PhoneNumber", responseProfile.toString())
                 emit(UiState.Success(responseProfile))
             }
