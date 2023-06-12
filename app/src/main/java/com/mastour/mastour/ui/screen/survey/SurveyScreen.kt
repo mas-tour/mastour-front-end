@@ -96,12 +96,15 @@ fun SurveyScreen(
             }
             is UiState.Success -> {
                 // TODO: Navigate to Matchmaking Results
-                navHostController.navigate(Screen.Home.route) {
-                    popUpTo(navHostController.graph.findStartDestination().id){
-                        saveState = true
+                rememberCoroutineScope().launch {
+                    Log.d("Survey", "Life is a highway")
+                    navHostController.navigate(Screen.Home.route) {
+                        popUpTo(navHostController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        restoreState = true
+                        launchSingleTop = true
                     }
-                    restoreState = true
-                    launchSingleTop = true
                 }
             }
             is UiState.Failure -> {

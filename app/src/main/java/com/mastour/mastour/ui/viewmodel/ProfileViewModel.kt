@@ -55,7 +55,6 @@ class ProfileViewModel @Inject constructor(private val repository: Repository): 
         }
     }
 
-
     private val _userData = mutableStateOf(UserData())
     private val userData: State<UserData> get() = _userData
 

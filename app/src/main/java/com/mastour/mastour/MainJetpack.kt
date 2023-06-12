@@ -129,15 +129,8 @@ fun MainJetpack(
                 DetailScreen(
                     id = id,
                     onBackClicked = {
-                        navController.navigateUp() },
-                    onHireClicked = {
-                        navController.navigate(Screen.History.route){
-                            popUpTo(Screen.Home.route){
-                                saveState = true
-                            }
-                            restoreState = true
-                            launchSingleTop = true
-                        } },
+                        navController.navigateUp()
+                    }
                 )
             }
             composable(

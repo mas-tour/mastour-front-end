@@ -97,6 +97,7 @@ fun ProfileScreen(
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         val timestamp = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        viewModel.tryUserToken()
         viewModel.changeBirthDate(timestamp)
         viewModel.putBirthDate()
     }
@@ -112,6 +113,7 @@ fun ProfileScreen(
         selectedItem = selectedItem,
         genderOptions = genders,
         onSubmitClicked = {
+            viewModel.tryUserToken()
             viewModel.changeGender(selectedItem.value)
             viewModel.putGender()
             genderDialog.value = false
@@ -124,6 +126,7 @@ fun ProfileScreen(
         phoneNumber = phoneNumber,
         onPhoneNumberChanged = viewModel::changeNumber,
         onSubmitClicked = {
+            viewModel.tryUserToken()
             viewModel.putNumber()
             phoneNumberDialog.value = false
         }
@@ -227,7 +230,7 @@ fun ProfileContent(
             AsyncImage(
                 model = photoUrl,
                 contentDescription = "Profile Picture",
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.Crop,
                 modifier = modifier
                     .size(136.dp)
                     .align(Alignment.BottomCenter)

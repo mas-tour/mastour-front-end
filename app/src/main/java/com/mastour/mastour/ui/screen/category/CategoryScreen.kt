@@ -35,8 +35,11 @@ fun CategoryScreen(
     moveToGuideDetail: (String) -> Unit,
     viewModel: GuidesViewModel = hiltViewModel(),
     onBackClicked: () -> Unit
-
 ) {
+    SideEffect {
+        viewModel.tryUserToken()
+    }
+
     val listState = rememberLazyListState()
 
     val isCollapsed: Boolean by remember {

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.mastour.mastour.R
 import com.mastour.mastour.ui.theme.MasTourTheme
 
@@ -34,7 +35,7 @@ fun OrderComponent(
     status: String,
     price: Int,
     duration: Int,
-    photoUrl: Int, // TODO: Change later
+    photoUrl: String,
     modifier: Modifier = Modifier
 ){
     Card(shape = RoundedCornerShape(16.dp), modifier = modifier
@@ -45,7 +46,7 @@ fun OrderComponent(
             horizontalArrangement = Arrangement.Start,
             modifier = modifier.fillMaxWidth()
         ) {
-            Image(painter = painterResource(photoUrl),
+            AsyncImage(model = photoUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -98,20 +99,5 @@ fun OrderComponent(
                 }
             }
         }
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun PreviewOrderComponent() {
-    MasTourTheme {
-        OrderComponent(
-            guideName = "M. Thariq Dorong",
-            location = "Bandung",
-            status = "complete",
-            price = 200000,
-            duration = 8,
-            photoUrl = R.drawable.dummy_user
-        )
     }
 }
