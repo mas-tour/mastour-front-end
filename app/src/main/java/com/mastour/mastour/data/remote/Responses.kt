@@ -60,13 +60,13 @@ data class SurveyData(
 	val answers: List<Int>,
 
 	@field:SerializedName("created_at")
-	val createdAt: Int,
+	val createdAt: Long,
 
 	@field:SerializedName("picture")
 	val picture: String,
 
 	@field:SerializedName("pca")
-	val pca: List<Int>,
+	val pca: Any,
 
 	@field:SerializedName("password")
 	val password: String,
@@ -75,7 +75,7 @@ data class SurveyData(
 	val personality: Int,
 
 	@field:SerializedName("updated_at")
-	val updatedAt: Int,
+	val updatedAt: Long,
 
 	@field:SerializedName("name")
 	val name: String,
