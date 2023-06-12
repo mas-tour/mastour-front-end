@@ -3,6 +3,7 @@ package com.mastour.mastour.ui.viewmodel
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mastour.mastour.data.remote.LoginResponses
@@ -55,7 +56,6 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
 
     // Register
     private val _registerResponse: MutableStateFlow<AuthUiState<RegisterResponses>> = MutableStateFlow(AuthUiState.Idle)
-
     val registerResponse: StateFlow<AuthUiState<RegisterResponses>>
         get() = _registerResponse
 
@@ -76,6 +76,13 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
 
     private val _imageUri = mutableStateOf<Uri?>(null)
     val imageUri: State<Uri?> get() = _imageUri
+
+    private val _selectedGender = mutableStateOf("")
+    val selectedGender: State<String> get() = _selectedGender
+
+    fun changeGender(gender: String) {
+        _selectedGender.value = gender
+    }
 
     fun changeEmailRegister(email: String){
         _emailRegister.value = email

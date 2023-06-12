@@ -58,7 +58,7 @@ interface MasTourApiService {
         @Body requestBody: RequestBody
     ) : ProfileResponse
 
-    @GET("cities/")
+    @GET("cities")
     suspend fun getCities() : CitiesResponse
 
     @GET("categories")

@@ -155,7 +155,8 @@ fun ConfirmHirePopup(
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         startDate = "$dayOfMonth / $month / $year"
-        val timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        var timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        timestampStart *= 1000
         viewModel.changeStart(timestampStart)
     }
 
@@ -164,7 +165,8 @@ fun ConfirmHirePopup(
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         endDate = "$dayOfMonth / $month / $year"
-        val timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        var timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        timestampEnd *= 1000
         viewModel.changeEnd(timestampEnd)
     }
 

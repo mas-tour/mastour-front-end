@@ -227,7 +227,7 @@ fun ProfileContent(
             AsyncImage(
                 model = photoUrl,
                 contentDescription = "Profile Picture",
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.Crop,
                 modifier = modifier
                     .size(136.dp)
                     .align(Alignment.BottomCenter)
