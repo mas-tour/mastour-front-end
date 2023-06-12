@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -27,10 +28,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -150,7 +154,15 @@ fun ConfirmHirePopup(
 
     // TODO: Logic Start Date & End Date
     val datePickerStart = DatePickerDialog(context)
-    val calendar = Calendar.getInstance()
+    val datePickerEnd = DatePickerDialog(context)
+
+    val startDateFilled = remember {
+        mutableStateOf(false)
+    }
+    val endDateFilled = remember {
+        mutableStateOf(false)
+    }
+
     datePickerStart.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
@@ -158,9 +170,10 @@ fun ConfirmHirePopup(
         var timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
         timestampStart *= 1000
         viewModel.changeStart(timestampStart)
+        datePickerEnd.datePicker.minDate = timestampStart
+        startDateFilled.value = true
     }
 
-    val datePickerEnd = DatePickerDialog(context)
     datePickerEnd.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
@@ -168,112 +181,98 @@ fun ConfirmHirePopup(
         var timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
         timestampEnd *= 1000
         viewModel.changeEnd(timestampEnd)
+        endDateFilled.value = true
     }
 
     if (popupControl.value) {
-        Popup(
-            alignment = Alignment.Center,
-            onDismissRequest = { popupControl.value = false }
-        ) {
-            Box(modifier = modifier
-                .fillMaxWidth(0.9F)
-                .background(Color.White)
-                .padding(10.dp)
-                .padding(horizontal = 15.dp)
-                .clip(RoundedCornerShape(16.dp))
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+        AlertDialog(
+            onDismissRequest = {
+                popupControl.value = false
+            },
+            title = {
+                Text(text = "Booking Menu",
+                    style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
+                    modifier = modifier.padding(8.dp))
+            },
+            text = {
+                Box(modifier = modifier
+                    .fillMaxWidth(0.9F)
+                    .background(Color.White)
                 ) {
-                    Text(text = "Booking Menu",
-                        style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
-                        modifier = modifier.padding(8.dp))
-                    Text(text = "Choose Tour Start Date!", modifier = modifier.align(Alignment.Start))
-                    Button(
-                        onClick = { datePickerStart.show() },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                        elevation = ButtonDefaults.elevation(0.dp),
-                        shape = RoundedCornerShape(30.dp),
-                        contentPadding = PaddingValues(10.dp),
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .advancedShadow(
-                                shadowRadius = 3.dp,
-                                borderRadius = 30.dp,
-                                offsetY = 3.dp
-                            )
-
-                    )
-                    {
-                        Row(verticalAlignment = Alignment.CenterVertically,
-                            modifier = modifier.padding(horizontal = 15.dp)) {
-                            Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
-                            Spacer(modifier.width(14.dp))
-                            Text(text = startDate, style = MaterialTheme.typography.subtitle2)
-                            Spacer(modifier.weight(1f))
-                        }
-                    }
-
-                    Text(text = "Choose Tour End Date!", modifier = modifier.align(Alignment.Start))
-                    Button(
-                        onClick = { datePickerEnd.show() },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                        elevation = ButtonDefaults.elevation(0.dp),
-                        shape = RoundedCornerShape(30.dp),
-                        contentPadding = PaddingValues(10.dp),
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .advancedShadow(
-                                shadowRadius = 3.dp,
-                                borderRadius = 30.dp,
-                                offsetY = 3.dp
-                            )
-                    )
-                    {
-                        Row(verticalAlignment = Alignment.CenterVertically,
-                            modifier = modifier.padding(horizontal = 15.dp)) {
-                            Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
-                            Spacer(modifier.width(14.dp))
-                            Text(text = endDate, style = MaterialTheme.typography.subtitle2)
-                            Spacer(modifier.weight(1f))
-                        }
-                    }
-
-                    Button(
-                        onClick = onConfirmClicked,
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                        modifier = Modifier
-                            .padding(top = 16.dp, bottom = 16.dp, end = 8.dp)
-                            .height(48.dp)
-                            .width(200.dp),
-                        contentPadding = PaddingValues()
+                    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colors.primary,
-                                            MaterialTheme.colors.secondary
-                                        )
-                                    )
+                        Text(text = "Choose Tour Start Date!", modifier = modifier.align(Alignment.Start))
+                        Button(
+                            onClick = { datePickerStart.show() },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                            elevation = ButtonDefaults.elevation(0.dp),
+                            shape = RoundedCornerShape(30.dp),
+                            contentPadding = PaddingValues(10.dp),
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .advancedShadow(
+                                    shadowRadius = 3.dp,
+                                    borderRadius = 30.dp,
+                                    offsetY = 3.dp
                                 )
-                                .fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = "Confirm Hire",
-                                color = Color.White,
-                                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                            )
+
+                        )
+                        {
+                            Row(verticalAlignment = Alignment.CenterVertically,
+                                modifier = modifier.padding(horizontal = 15.dp)) {
+                                Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
+                                Spacer(modifier.width(14.dp))
+                                Text(text = startDate, style = MaterialTheme.typography.subtitle2)
+                                Spacer(modifier.weight(1f))
+                            }
+                        }
+
+                        Text(text = "Choose Tour End Date!", modifier = modifier.align(Alignment.Start))
+                        Button(
+                            onClick = { datePickerEnd.show() },
+                            enabled = startDateFilled.value,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                            elevation = ButtonDefaults.elevation(0.dp),
+                            shape = RoundedCornerShape(30.dp),
+                            contentPadding = PaddingValues(10.dp),
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .advancedShadow(
+                                    shadowRadius = 3.dp,
+                                    borderRadius = 30.dp,
+                                    offsetY = 3.dp
+                                )
+                        )
+                        {
+                            Row(verticalAlignment = Alignment.CenterVertically,
+                                modifier = modifier.padding(horizontal = 15.dp)) {
+                                Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
+                                Spacer(modifier.width(14.dp))
+                                Text(text = endDate, style = MaterialTheme.typography.subtitle2)
+                                Spacer(modifier.weight(1f))
+                            }
                         }
                     }
                 }
+            },
+            confirmButton = {
+                Button(
+                    onClick = onConfirmClicked,
+                    enabled = endDateFilled.value
+                ) {
+                    Text("Confirm Hire")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        popupControl.value = false
+                    }) {
+                    Text("Dismiss")
+                }
             }
-        }
+        )
     }
 }
 
