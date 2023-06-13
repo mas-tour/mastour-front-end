@@ -89,12 +89,12 @@ fun ExtendedUserComponent(
     specialization: List<CategoriesItem>,
     price: Long,
     desc: String,
-    percentage: Int,
+    percentage: Double,
     color: Color,
     modifier: Modifier = Modifier
 ){
     Card(shape = RoundedCornerShape(16.dp), modifier = modifier) {
-        Column {
+        Column(Modifier.padding(top = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -139,19 +139,19 @@ fun ExtendedUserComponent(
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
             ){
                 Text(text = desc,
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier
-                        .width(240.dp)
+                        .width(200.dp)
                         .padding(end = 16.dp, start = 8.dp, top = 16.dp, bottom = 16.dp),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.weight(1F))
-                TagComponent(name = "$percentage%", color = color, modifier = Modifier
+                Spacer(modifier = Modifier.size(8.dp))
+                TagComponent(name = "${percentage.toInt()}%", color = color, modifier = Modifier
                     .size(98.dp)
                     .padding(16.dp)
                     .align(Alignment.Bottom))
@@ -200,83 +200,6 @@ fun UserComponent2(
                     ),
                     modifier = Modifier.padding(top = 8.dp)
                 )
-            }
-        }
-    }
-}
-@Composable
-fun ExtendedUserComponent2(
-    name: String,
-    photoUrl: Int,
-    place: String,
-    specialization: List<CategoriesItem>,
-    price: Int,
-    desc: String,
-    percentage: Int,
-    color: Color,
-    modifier: Modifier = Modifier
-){
-    Card(shape = RoundedCornerShape(16.dp), modifier = modifier) {
-        Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Image(
-                    painter = painterResource(photoUrl),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .height(98.dp)
-                        .width(128.dp)
-                        .padding(end = 16.dp, start = 8.dp, top = 16.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
-                Column {
-                    Text(
-                        text = name,
-                        style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.ExtraBold),
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    TagComponent(name = place, color = MaterialTheme.colors.primaryVariant, modifier = Modifier.padding(end = 4.dp))
-                    Row (modifier = Modifier
-                        .padding(end = 8.dp, top = 4.dp)
-                        .horizontalScroll(
-                            rememberScrollState()
-                        )){
-                        TagComponent(name = specialization[0].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
-                        TagComponent(name = specialization[1].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
-                        TagComponent(name = specialization[2].name, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.padding(end = 4.dp))
-                    }
-                    Text(
-                        text = "IDR $price",
-                        style = MaterialTheme.typography.subtitle2.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colors.primary,
-                        ),
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
-                }
-            }
-            Row(verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start, 
-                modifier = Modifier.fillMaxWidth()
-            ){
-                Text(text = desc,
-                    style = MaterialTheme.typography.caption,
-                    modifier = Modifier
-                        .width(240.dp)
-                        .padding(end = 16.dp, start = 8.dp, top = 16.dp, bottom = 16.dp),
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(modifier = Modifier.weight(1F))
-                TagComponent(name = "$percentage%", color = color, modifier = Modifier
-                    .size(98.dp)
-                    .padding(16.dp)
-                    .align(Alignment.Bottom))
             }
         }
     }

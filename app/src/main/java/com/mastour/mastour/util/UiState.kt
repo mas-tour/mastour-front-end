@@ -24,3 +24,4 @@ sealed class AuthUiState <out T>{
         val e: Exception?
     ): AuthUiState<Nothing>()
 }
+

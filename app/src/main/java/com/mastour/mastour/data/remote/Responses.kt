@@ -402,3 +402,43 @@ data class SpecResponse(
 	@field:SerializedName("data")
 	val data: List<CategoriesItem>
 )
+
+data class ResponseSurveyResults(
+
+	@field:SerializedName("data")
+	val data: List<SurveyResults>
+)
+
+data class SurveyResults(
+
+	@field:SerializedName("city")
+	val city: String,
+
+	@field:SerializedName("percentage")
+	val percentage: Double,
+
+	@field:SerializedName("name")
+	val name: String,
+
+	@field:SerializedName("detail_picture")
+	val detailPicture: String,
+
+	@field:SerializedName("description")
+	val description: String,
+
+	@field:SerializedName("id")
+	val id: String,
+
+	@field:SerializedName("categories")
+	val categories: List<CategoriesItem>,
+
+	@field:SerializedName("price_per_day")
+	val pricePerDay: Int,
+
+	@field:SerializedName("picture")
+	val picture: String,
+
+	@field:SerializedName("username")
+	val username: String
+)
+

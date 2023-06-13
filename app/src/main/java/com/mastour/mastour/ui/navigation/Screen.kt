@@ -10,7 +10,7 @@ sealed class Screen(val route: String){
     }
     object History : Screen("history")
     object Matchmaking : Screen("matchmaking")
-    object MatchmakingResults : Screen("matchmakingresults")
+    object PostMatchmaking: Screen("postmatchmaking")
     object Profile : Screen("profile")
     object Survey : Screen("survey")
     object Results : Screen("results/{isCity}/{resultsId}"){

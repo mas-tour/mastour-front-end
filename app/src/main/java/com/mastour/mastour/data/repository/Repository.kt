@@ -235,6 +235,28 @@ class Repository @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
+    fun getSurveyResults(cityId: String, pickedCategories: List<Int>, token: String): Flow<UiState<ResponseSurveyResults>> {
+        val jsonObject = JSONObject()
+        val jsonArray = JSONArray(pickedCategories)
+        jsonObject.put("city_id", cityId)
+        jsonObject.put("categories", jsonArray)
+
+        val requestBody =
+            jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+        return flow {
+            try{
+                emit(UiState.Loading)
+                val responseSurveyResults = masTourApiService.getSurvey("Bearer $token", requestBody)
+                emit(UiState.Success(responseSurveyResults))
+            }
+            catch (e: Exception){
+                emit(UiState.Failure(e))
+            }
+        }
+    }
+
+
     fun detailedGuides(id: String, token: String) : Flow<UiState<DetailGuidesResponse>>{
         return flow {
             try {
