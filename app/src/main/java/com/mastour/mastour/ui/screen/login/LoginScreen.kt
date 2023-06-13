@@ -60,11 +60,10 @@ fun LoginScreen(
     }
     LaunchedEffect(userExist) {
         if (userExist) {
-            if (navHostController.graph.findStartDestination().route == Screen.Login.route) {
-                navHostController.navigate(Screen.Home.route) {
-                    popUpTo(0)
-                }
+            navHostController.navigate(Screen.Home.route) {
+                popUpTo(0)
             }
+
         }
     }
     viewModel.loginResponse.collectAsState(initial = AuthUiState.Idle).value.let { uiState ->

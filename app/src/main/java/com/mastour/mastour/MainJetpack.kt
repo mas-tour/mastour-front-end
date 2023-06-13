@@ -38,6 +38,7 @@ import com.mastour.mastour.ui.screen.matchmaking.MatchmakingResultsScreen
 import com.mastour.mastour.ui.screen.profile.ProfileScreen
 import com.mastour.mastour.ui.screen.register.RegisterScreen
 import com.mastour.mastour.ui.screen.search.SearchScreen
+import com.mastour.mastour.ui.screen.splashscreen.SplashScreen
 import com.mastour.mastour.ui.screen.survey.SurveyScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -90,10 +91,13 @@ fun MainJetpack(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            //TODO: Change if shared pref user exist, do Screen.Home.route instead
-            startDestination = Screen.Login.route,
+            startDestination = Screen.Splash.route,
             modifier = Modifier.padding(innerPadding)){
-            //TODO: Add the arguments route
+
+            composable(Screen.Splash.route){
+                SplashScreen(navHostController = navController)
+            }
+
             composable(Screen.Login.route){
                 LoginScreen(navHostController = navController)
             }
