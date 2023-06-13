@@ -7,8 +7,10 @@ import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.util.Locale
 
 suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatchers.IO) {
     val inputStream = context.contentResolver.openInputStream(uri)
@@ -21,6 +23,10 @@ suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatcher
     return@withContext file
 }
 
+fun formatNumber(number: Long): String {
+    val numberFormat = NumberFormat.getNumberInstance(Locale("id"))
+    return numberFormat.format(number)
+}
 fun isEmailValid(email: String): Boolean {
     val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
     return email.matches(emailRegex)

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.mastour.mastour.R
 import com.mastour.mastour.ui.theme.MasTourTheme
+import com.mastour.mastour.util.formatNumber
 
 @Composable
 fun OrderComponent(
@@ -75,7 +76,7 @@ fun OrderComponent(
 
                 Row(Modifier.padding(top = 15.dp)) {
                     Text(
-                        text = "IDR $price",
+                        text = "IDR " + formatNumber(price.toLong()),
                         style = MaterialTheme.typography.subtitle2.copy(
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colors.primary,

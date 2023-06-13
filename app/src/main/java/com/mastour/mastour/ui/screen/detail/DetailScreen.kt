@@ -48,6 +48,7 @@ import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.screen.profile.advancedShadow
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 import com.mastour.mastour.util.UiState
+import com.mastour.mastour.util.formatNumber
 import com.mastour.mastour.util.getAgeFromTimestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -471,14 +472,13 @@ fun DetailContent(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Hire IDR ${dataDetailGuides.pricePerDay}",
+                            text = "Hire IDR " + dataDetailGuides.pricePerDay?.let { formatNumber(it) },
                             color = Color.White,
                             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
                         )
                     }
-
                 }
             }
         }

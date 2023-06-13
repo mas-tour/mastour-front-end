@@ -26,6 +26,7 @@ import coil.compose.AsyncImage
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.R
 import com.mastour.mastour.data.remote.CategoriesItem
+import com.mastour.mastour.util.formatNumber
 
 @Composable
 fun UserComponent(
@@ -69,7 +70,7 @@ fun UserComponent(
                 Text(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    text = "IDR $price",
+                    text = "IDR " + formatNumber(price) + " / Day",
                     style = MaterialTheme.typography.subtitle2.copy(
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colors.primary,
@@ -129,7 +130,7 @@ fun ExtendedUserComponent(
                     }
 
                     Text(
-                        text = "IDR $price",
+                        text = "IDR " + formatNumber(price) + " / Day",
                         style = MaterialTheme.typography.subtitle2.copy(
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colors.primary,
