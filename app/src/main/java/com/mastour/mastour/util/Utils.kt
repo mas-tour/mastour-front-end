@@ -21,6 +21,11 @@ suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatcher
     return@withContext file
 }
 
+fun isEmailValid(email: String): Boolean {
+    val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
+    return email.matches(emailRegex)
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun getAgeFromTimestamp(timestamp: Long): Long {
     val currentDate = LocalDate.now()

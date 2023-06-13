@@ -168,10 +168,14 @@ fun UserComponent2(
     specialization: String,
     price: Int,
     modifier: Modifier = Modifier
-){
+) {
     Card(shape = RoundedCornerShape(16.dp), modifier = modifier) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
-            Image(painter = painterResource(photoUrl),
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Image(
+                painter = painterResource(photoUrl),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -188,9 +192,16 @@ fun UserComponent2(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Row (modifier = Modifier.padding(end = 8.dp)){
-                    TagComponent(name = place, color = MaterialTheme.colors.primaryVariant, modifier = Modifier.padding(end = 4.dp))
-                    TagComponent(name = specialization, color = MaterialTheme.colors.secondaryVariant)
+                Row(modifier = Modifier.padding(end = 8.dp)) {
+                    TagComponent(
+                        name = place,
+                        color = MaterialTheme.colors.primaryVariant,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    TagComponent(
+                        name = specialization,
+                        color = MaterialTheme.colors.secondaryVariant
+                    )
                 }
                 Text(
                     text = "IDR $price",
@@ -201,43 +212,6 @@ fun UserComponent2(
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
-        }
-    }
-}
-
-@Composable
-@Preview(showBackground = false)
-fun UserComponentPreview(){
-    MasTourTheme {
-        UserComponent2(name = "Borobudur", photoUrl = R.drawable.asylum,
-            place = "Kediri",
-            specialization = "Horror Attraction",
-            price = 200000,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(128.dp))
-    }
-}
-
-@Composable
-@Preview(showBackground = true, device = Devices.PIXEL_4, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun UserComponentPreview2(){
-    MasTourTheme {
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            UserComponent2(
-                name = "Bagus Wijaya",
-                photoUrl = R.drawable.dummy_user,
-                place = "Bandung" ,
-                specialization = "Sightseeing",
-                price = 200000,
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .shadow(
-                        elevation = 8.dp,
-                        ambientColor = MaterialTheme.colors.primary,
-                        spotColor = MaterialTheme.colors.primary
-                    )
-            )
         }
     }
 }

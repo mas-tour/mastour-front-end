@@ -2,6 +2,7 @@ package com.mastour.mastour.ui.screen.survey
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -44,7 +45,7 @@ fun SurveyScreen(
     val visibleQuestions = QuestionsData.questions.subList(startIndex, endIndex)
 
     val answers: List<MutableState<Int>> = List(5) {
-        mutableStateOf(0)
+        mutableStateOf(2)
     }
 
     val context = LocalContext.current
@@ -109,7 +110,7 @@ fun SurveyContent(
             .fillMaxSize()
             .padding(horizontal = 5.dp)
             .padding(top = 10.dp)
-            .verticalScroll(rememberScrollState()) // TODO: Make it scroll to 0 after every next
+            .verticalScroll(ScrollState(0)) // TODO: Make it scroll to 0 after every next
     )
     {
         // TODO: [NOTE] Don't know how to acquire data when using LazyColumn, using the scuffed solutions for now

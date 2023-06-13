@@ -2,6 +2,7 @@ package com.mastour.mastour.ui.screen.register
 
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -36,6 +38,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.paint
@@ -49,6 +52,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,6 +67,7 @@ import com.mastour.mastour.ui.screen.profile.advancedShadow
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
 import com.mastour.mastour.util.AuthUiState
 import com.mastour.mastour.util.UiState
+import com.mastour.mastour.util.isEmailValid
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -86,12 +93,13 @@ fun RegisterScreen(
 
     val context = LocalContext.current
 
-    val dataValid = remember { mutableStateOf(false) }
-
+    val dataValid = remember {
+        mutableListOf(false, false, false, false, false, false)
+    }
     val genderDialog = remember { mutableStateOf(false) }
     val genders = listOf("male", "female")
     val selectedItem = remember {
-        mutableStateOf(genders[0])
+        mutableStateOf("")
     }
     GenderSelectionDialog(
         openDialog = genderDialog,
@@ -105,7 +113,7 @@ fun RegisterScreen(
 
     viewModel.registerResponse.collectAsState(initial = AuthUiState.Idle).value.let { uiState ->
         when(uiState) {
-            is AuthUiState.Idle ->{
+            is AuthUiState.Idle -> {
                 RegisterContent(
                     username = username,
                     name = name,
@@ -128,11 +136,31 @@ fun RegisterScreen(
                     onRegisterClicked = {
                         viewModel.register()
                     },
-                    submitValid = dataValid,
+                    checkValid = dataValid,
                     onBackClicked = { /*TODO*/ }
                 )
             }
             is AuthUiState.Load -> {
+                RegisterContent(
+                    username = username,
+                    name = name,
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    imageUri = imageUri,
+                    gender = selectedItem.value,
+                    onEmailTextChanged = { },
+                    onPasswordTextChanged = { },
+                    onNameTextChanged = { },
+                    onGenderSelected = { },
+                    onConfirmTextChanged = { },
+                    onUsernameTextChanged = { },
+                    onEditClicked = { },
+                    onRegisterClicked = {},
+                    checkValid = dataValid,
+                    onBackClicked = { /*TODO*/ },
+                    modifier = modifier.alpha(0.3f)
+                )
                 Column(
                     modifier = modifier
                         .fillMaxSize(),
@@ -153,7 +181,31 @@ fun RegisterScreen(
                 }
             }
             is AuthUiState.Failure -> {
-                // TODO: Toast or dialogue, Register failed
+                RegisterContent(
+                    username = username,
+                    name = name,
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    imageUri = imageUri,
+                    gender = selectedItem.value,
+                    onEmailTextChanged = viewModel::changeEmailRegister,
+                    onPasswordTextChanged = viewModel::changePasswordRegister,
+                    onNameTextChanged = viewModel::changeNameRegister,
+                    onGenderSelected = {
+                        genderDialog.value = true
+                    },
+                    onConfirmTextChanged = viewModel::changePasswordConfirm,
+                    onUsernameTextChanged = viewModel::changeUsernameRegister,
+                    onEditClicked = {
+                        launcher.launch("image/*")
+                    },
+                    onRegisterClicked = {
+                        viewModel.register()
+                    },
+                    checkValid = dataValid,
+                    onBackClicked = { /*TODO*/ }
+                )
                 LaunchedEffect(key1 = true){
                     Toast.makeText(context, "Failed please check if input correct, or check your internet", Toast.LENGTH_SHORT).show()
                 }
@@ -162,6 +214,7 @@ fun RegisterScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RegisterContent(
     email: String,
@@ -178,11 +231,19 @@ fun RegisterContent(
     onGenderSelected: () -> Unit,
     onRegisterClicked: () -> Unit,
     imageUri: Uri?,
-    submitValid: MutableState<Boolean>,
+    checkValid: MutableList<Boolean>,
     onBackClicked: () -> Unit,
     onEditClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    checkValid[0] = email.isNotBlank() && isEmailValid(email)
+    checkValid[1] = username.isNotBlank()
+    checkValid[2] = name.isNotBlank()
+    checkValid[3] = password == confirmPassword && password.isNotBlank()
+    checkValid[4] = imageUri != null
+    checkValid[5] = gender.isNotBlank()
+    val allValid = checkValid.all { it }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -204,7 +265,9 @@ fun RegisterContent(
         Text(
             text = "Register",
             style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.fillMaxWidth().align(Alignment.Start)
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Start)
                 .padding(start = 30.dp, bottom = 10.dp)
         )
 
@@ -212,7 +275,7 @@ fun RegisterContent(
             Image(
                 bitmap =
                 if (imageUri != null) {
-                    val inputStream = context.contentResolver.openInputStream(imageUri)
+                    val inputStream = imageUri?.let { context.contentResolver.openInputStream(it) }
                     val bitmap = BitmapFactory.decodeStream(inputStream)
                     bitmap.asImageBitmap()
                 } else {
@@ -268,11 +331,15 @@ fun RegisterContent(
                 focusedIndicatorColor = MaterialTheme.colors.secondary,
                 unfocusedIndicatorColor = MaterialTheme.colors.secondary,
                 placeholderColor = Color.Gray,
-                textColor = Color.Black,
+                textColor = if (checkValid[0]) {
+                    Color.Black
+                } else {
+                    MaterialTheme.colors.error
+                },
             ),
             placeholder = { Text(text = "Email") },
             modifier = Modifier
-                .padding(top = 32.dp)
+                .padding(top = 24.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -316,23 +383,58 @@ fun RegisterContent(
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
+
+
+        Button(
+            onClick = onGenderSelected,
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+            elevation = ButtonDefaults.elevation(0.dp)
+        )
+        {
+            TextField(
+                value = gender.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                },
+                enabled = false,
+                onValueChange = {},
+                maxLines = 1,
+                placeholder = { Text(text = "Choose Gender") },
+                shape = RoundedCornerShape(16.dp),
+                leadingIcon = { if (gender == "male") {
+                    Icon(Icons.Filled.Male, contentDescription = null)
+                } else {
+                    Icon(Icons.Filled.Female, contentDescription = null)
+                } },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.White,
+                    disabledLeadingIconColor = MaterialTheme.colors.primary,
+                    disabledIndicatorColor = MaterialTheme.colors.secondary,
+                    disabledTextColor = MaterialTheme.colors.primary,
+                ),
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(16.dp))
+            )
+        }
+
         TextField(
             value = password,
             onValueChange = onPasswordTextChanged,
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
+            visualTransformation =  PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password") },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 leadingIconColor = MaterialTheme.colors.primary,
                 focusedIndicatorColor = MaterialTheme.colors.secondary,
                 unfocusedIndicatorColor = MaterialTheme.colors.secondary,
-                placeholderColor = Color.Gray,
+                disabledPlaceholderColor = Color.Gray,
                 textColor = Color.Black,
             ),
             placeholder = { Text(text = "Password") },
             modifier = Modifier
-                .padding(top = 16.dp)
+                .padding(top = 8.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -341,15 +443,21 @@ fun RegisterContent(
             onValueChange = onConfirmTextChanged,
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
+            visualTransformation =  PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Confirm Password") },
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.White,
-                leadingIconColor = MaterialTheme.colors.primary,
-                focusedIndicatorColor = MaterialTheme.colors.secondary,
-                unfocusedIndicatorColor = MaterialTheme.colors.secondary,
-                placeholderColor = Color.Gray,
-                textColor = Color.Black,
-            ),
+                    backgroundColor = Color.White,
+                    leadingIconColor = MaterialTheme.colors.primary,
+                    focusedIndicatorColor = MaterialTheme.colors.secondary,
+                    unfocusedIndicatorColor = MaterialTheme.colors.secondary,
+                    placeholderColor = Color.Gray,
+                    textColor = if (checkValid[3]) {
+                        Color.Black
+                    } else {
+                        MaterialTheme.colors.error
+                    },
+                ),
             placeholder = { Text(text = "Confirm Password") },
             modifier = Modifier
                 .padding(top = 16.dp)
@@ -357,60 +465,38 @@ fun RegisterContent(
         )
 
         Button(
-            onClick = onGenderSelected,
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-            elevation = ButtonDefaults.elevation(0.dp),
-            shape = RoundedCornerShape(30.dp),
-            contentPadding = PaddingValues(vertical = 10.dp),
-            modifier = modifier
-                .fillMaxWidth(0.67F)
-                .padding(top = 16.dp)
-                .clip(shape = RoundedCornerShape(16.dp))
-        )
-        {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier.weight(1f))
-                Icon(if (gender == "male") {
-                    Icons.Filled.Male
-                } else {
-                    Icons.Filled.Female
-                }, contentDescription = "Gender", tint = MaterialTheme.colors.primary
-                )
-                Spacer(modifier.width(17.dp))
-                Text(
-                    gender.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-                    },
-                    style = MaterialTheme.typography.subtitle2,
-                    color = MaterialTheme.colors.primary
-                )
-                Spacer(modifier.weight(1f))
-            }
-        }
-
-        Button(
             onClick = onRegisterClicked,
+            enabled = allValid,
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+            colors = if (allValid) {
+                ButtonDefaults.buttonColors(backgroundColor = Color.Transparent)
+            } else {
+                ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
+            },
             modifier = Modifier
-                .padding(top = 16.dp)
+                .padding(top = 24.dp)
                 .width(120.dp)
                 .height(48.dp),
             contentPadding = PaddingValues()
         ) {
             Box(
-                modifier = Modifier
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colors.primary,
-                                MaterialTheme.colors.secondary
+                modifier =
+                if (allValid) {
+                    Modifier
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colors.primary,
+                                    MaterialTheme.colors.secondary
+                                )
                             )
                         )
-                    )
-                    .fillMaxSize(),
+                        .fillMaxSize()
+                } else {
+                    Modifier
+                        .background(Color.Gray)
+                        .fillMaxSize()
+                },
                 contentAlignment = Alignment.Center,
             ) {
                 Text(text = "Register", color = Color.White)

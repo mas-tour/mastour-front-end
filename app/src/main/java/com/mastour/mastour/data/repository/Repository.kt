@@ -1,10 +1,12 @@
 package com.mastour.mastour.data.repository
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.mastour.mastour.R
 import com.mastour.mastour.data.local.UserData
 import com.mastour.mastour.data.pagingsource.GuidePagingSource
 import com.mastour.mastour.data.pagingsource.HistoryPagingSource
@@ -24,6 +26,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.Response
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -121,16 +124,31 @@ class Repository @Inject constructor(
 
     suspend fun uploadImage(image: Uri): Result<String> {
         return try {
-            val file = uriToFile(image, context)
+            val response: Response<ImgurResponse>
+            if (image == Uri.EMPTY) {
+                val file = uriToFile(image, context)
+                val filePart = MultipartBody.Part.
+                createFormData("image", null, file.asRequestBody())
 
-            val filePart = MultipartBody.Part.
-            createFormData("image", null, file.asRequestBody())
+                response = imgurApiService.uploadFile(
+                    filePart
+                )
+            } else {
+                val link = "https://i.imgur.com//AwpoAoG.png"
+                val jsonObject = JSONObject()
+                jsonObject.put("image", link)
 
-            val response = imgurApiService.uploadFile(
-                filePart
-            )
+                Log.d("UploadImage", jsonObject.toString())
 
-            if(response.isSuccessful){
+                val requestBody =
+                    jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
+                response = imgurApiService.uploadFile(
+                    requestBody
+                )
+            }
+
+            if(response.isSuccessful) {
                 val link = response.body()?.upload?.link ?: ""
                 Log.d("ImgurAPI", link)
                 Result.success(link)
@@ -170,20 +188,13 @@ class Repository @Inject constructor(
         val requestBody =
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
-        Log.d("PhoneNumber", jsonObject.toString())
-
         return flow {
-            Log.d("PhoneNumber", "Outside of try")
             try {
-                Log.d("PhoneNumber", bearer)
                 emit(UiState.Loading)
-                Log.d("PhoneNumber", requestBody.toString())
                 val responseProfile = masTourApiService.putProfile("Bearer $bearer", requestBody)
-                Log.d("PhoneNumber", responseProfile.toString())
                 emit(UiState.Success(responseProfile))
             }
             catch (e : Exception){
-                Log.d("PhoneNumber", "Error!")
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)

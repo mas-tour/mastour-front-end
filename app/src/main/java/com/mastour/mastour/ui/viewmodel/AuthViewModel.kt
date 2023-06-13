@@ -1,6 +1,7 @@
 package com.mastour.mastour.ui.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,8 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
 
     private val _userExist = mutableStateOf(false)
     val userExist: State<Boolean> get() = _userExist
+
+    val registerChecklist = mutableListOf(false, false, false, false)
 
     fun changeEmail(email: String){
         _email.value = email
@@ -78,7 +81,7 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     val imageUri: State<Uri?> get() = _imageUri
 
     private val _selectedGender = mutableStateOf("male")
-    val selectedGender: State<String> get() = _selectedGender
+    private val selectedGender: State<String> get() = _selectedGender
 
     fun changeGender(gender: String) {
         _selectedGender.value = gender
@@ -110,11 +113,8 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun register() {
         viewModelScope.launch {
-            // TODO: Handle if no photo is selected, maybe default url
             _registerResponse.value = AuthUiState.Load
-            val result = imageUri.value?.let {
-                repository.uploadImage(it)
-            }
+            val result = imageUri.value?.let { repository.uploadImage(it) }
 
             val link = (result?.fold(
                 onSuccess = { value ->
@@ -129,8 +129,8 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
                             _registerResponse.value = it
                         }
                 },
-                onFailure = { exception ->
-                    // ...
+                onFailure = { _ ->
+                    // TODO: ...
                 }
             ) ?: "Error occured").toString()
         }
