@@ -29,7 +29,6 @@ fun BottomBar(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
 ){
-    //TODO: Change Colors matching the Figma Color
     BottomNavigation(modifier = modifier) {
         val navBackStackEntry by navHostController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -81,13 +80,5 @@ fun BottomBar(
                 )
             }
         }
-    }
-}
-
-@Composable
-@Preview(showBackground = true, device = Devices.PIXEL_4)
-fun BottomBarPreview(){
-    MasTourTheme {
-        MainJetpack()
     }
 }
