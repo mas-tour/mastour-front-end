@@ -96,23 +96,3 @@ fun CategoryComponent2(
         }
     }
 }
-
-@Composable
-@Preview(showBackground = true)
-fun CategoryComponentPreview(){
-    MasTourTheme {
-        CategoryComponent2(name = "B Asylum", photoUrl = R.drawable.asylum, modifier = Modifier.width(120.dp).height(120.dp))
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun CategoryComponentPreview2(){
-    MasTourTheme {
-        CategoryComponent(
-            name = "Monas",
-            photoUrl = "https://upload.wikimedia.org/wikipedia/id/thumb/b/b1/Merdeka_Square_Monas_02.jpg/800px-Merdeka_Square_Monas_02.jpg",
-            modifier = Modifier.width(120.dp).height(120.dp)
-        )
-    }
-}

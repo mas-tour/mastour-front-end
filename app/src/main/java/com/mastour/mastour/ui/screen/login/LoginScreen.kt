@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,19 +39,22 @@ import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
 import com.mastour.mastour.util.AuthUiState
+import com.mastour.mastour.util.isEmailValid
 
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier,
     navHostController: NavHostController,
+    modifier: Modifier = Modifier
 ){
     val email by viewModel.email
     val password by viewModel.password
-
     val userExist by viewModel.userExist
-
     val context = LocalContext.current
+    val dataValid = remember {
+        mutableListOf(false, false)
+    }
+
     SideEffect {
         viewModel.tryUserExist()
     }
@@ -72,6 +76,7 @@ fun LoginScreen(
                     onEmailTextChanged = viewModel::changeEmail,
                     onPasswordTextChanged = viewModel::changePassword,
                     onLoginClicked = viewModel::login,
+                    checkValid = dataValid,
                     onRegisterClicked = {
                         navHostController.navigate(Screen.Register.route){
                             popUpTo(navHostController.graph.findStartDestination().id){
@@ -99,6 +104,7 @@ fun LoginScreen(
                     onEmailTextChanged = viewModel::changeEmail,
                     onPasswordTextChanged = viewModel::changePassword,
                     onLoginClicked = viewModel::login,
+                    checkValid = dataValid,
                     onRegisterClicked = {
                         navHostController.navigate(Screen.Register.route){
                             popUpTo(navHostController.graph.findStartDestination().id){
@@ -118,6 +124,7 @@ fun LoginScreen(
                     onEmailTextChanged = viewModel::changeEmail,
                     onPasswordTextChanged = viewModel::changePassword,
                     onLoginClicked = viewModel::login,
+                    checkValid = dataValid,
                     onRegisterClicked = {
                         navHostController.navigate(Screen.Register.route){
                             popUpTo(navHostController.graph.findStartDestination().id){
@@ -140,12 +147,17 @@ fun LoginScreen(
 fun LoginContent(
     email: String,
     password: String,
+    checkValid: MutableList<Boolean>,
     onEmailTextChanged: (String) -> Unit,
     onPasswordTextChanged: (String) -> Unit,
     onLoginClicked: () -> Unit,
     onRegisterClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ){
+    checkValid[0] = email.isNotBlank() && isEmailValid(email)
+    checkValid[1] = password.isNotBlank()
+    val allValid = checkValid.all { it }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -203,7 +215,8 @@ fun LoginContent(
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            visualTransformation =  PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password")},
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
@@ -231,21 +244,26 @@ fun LoginContent(
 
         ){
             Box(
-                modifier = Modifier
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colors.primary,
-                                MaterialTheme.colors.secondary
+                modifier = if (allValid) {
+                    Modifier
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colors.primary,
+                                        MaterialTheme.colors.secondary
+                                    )
+                                )
                             )
-                        )
-                    )
-                    .fillMaxSize(),
+                            .fillMaxSize()
+                    } else {
+                        Modifier
+                            .background(Color.Gray)
+                            .fillMaxSize()
+                    },
                     contentAlignment = Alignment.Center,
             ){
                 Text(text = "Login", color = Color.White)
             }
-
         }
         
         TextButton(onClick = onRegisterClicked) {
@@ -254,23 +272,5 @@ fun LoginContent(
                 style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Normal, color = MaterialTheme.colors.primary),
             )
         }
-
-
-    }
-}
-
-@Composable
-@Preview(showBackground = true, device = Devices.PIXEL_4)
-fun LoginScreenPreview(){
-    MasTourTheme {
-        LoginContent(email = "", password = "", onEmailTextChanged = {}, onPasswordTextChanged = {}, onLoginClicked = {}, onRegisterClicked = {})
-    }
-}
-
-@Composable
-@Preview(showBackground = true, device = Devices.PIXEL_4, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun LoginScreenPreviewDark(){
-    MasTourTheme {
-        LoginContent(email = "", password = "", onEmailTextChanged = {}, onPasswordTextChanged = {}, onLoginClicked = {}, onRegisterClicked = {})
     }
 }
