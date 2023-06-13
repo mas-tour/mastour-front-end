@@ -30,7 +30,7 @@ import com.mastour.mastour.ui.screen.history.HistoryScreen
 import com.mastour.mastour.ui.screen.homepage.HomePageScreen
 import com.mastour.mastour.ui.screen.login.LoginScreen
 import com.mastour.mastour.ui.screen.matchmaking.MatchmakingContent
-import com.mastour.mastour.ui.screen.matchmaking.MatchmakingResultScreen
+import com.mastour.mastour.ui.screen.matchmaking.MatchmakingResultsScreen
 import com.mastour.mastour.ui.screen.profile.ProfileScreen
 import com.mastour.mastour.ui.screen.register.RegisterScreen
 import com.mastour.mastour.ui.screen.search.SearchScreen
@@ -115,9 +115,6 @@ fun MainJetpack(
                     navController.navigate(Screen.Survey.route)
                 })
             }
-            composable(Screen.MatchmakingResults.route){
-                MatchmakingResultScreen()
-            }
             composable(Screen.Survey.route){
                 SurveyScreen(navHostController = navController)
             }
@@ -147,10 +144,17 @@ fun MainJetpack(
                     isCity = isCity,
                     id = id,
                     moveToGuideDetail = {idDetail ->
-                    navController.navigate(Screen.Detail.createRoute(idDetail)) },
+                        navController.navigate(Screen.Detail.createRoute(idDetail)) },
                     onBackClicked = {navController.navigateUp()}
                 )
             }
+
+            composable(Screen.PostMatchmaking.route){
+                MatchmakingResultsScreen(moveToGuideDetail = {
+                    navController.navigate(Screen.Detail.createRoute(it))
+                })
+            }
+
         }
     }
 }

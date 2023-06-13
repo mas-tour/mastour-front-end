@@ -16,6 +16,12 @@ interface MasTourApiService {
         @Body requestBody: RequestBody
     ) : SurveyResponse
 
+    @POST("matchmaking/search")
+    suspend fun getSurvey(
+        @Header("Authorization") token: String,
+        @Body requestBody: RequestBody
+    ) : ResponseSurveyResults
+
     @GET("guides")
     suspend fun getGuides(
         @Header("Authorization") bearer: String,

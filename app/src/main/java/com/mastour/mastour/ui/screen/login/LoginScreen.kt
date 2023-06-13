@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +38,6 @@ import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
 import com.mastour.mastour.util.AuthUiState
-import com.mastour.mastour.util.UiState
 
 @Composable
 fun LoginScreen(
@@ -179,6 +180,8 @@ fun LoginContent(
             onValueChange = onEmailTextChanged,
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email")},
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
@@ -199,6 +202,8 @@ fun LoginContent(
             onValueChange = onPasswordTextChanged,
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password")},
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,

@@ -3,17 +3,12 @@ package com.mastour.mastour.util
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.time.Instant
 import java.time.LocalDate
-import java.time.Period
-import java.time.ZoneId
 import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
 
 suspend fun uriToFile(uri: Uri, context: Context): File = withContext(Dispatchers.IO) {
     val inputStream = context.contentResolver.openInputStream(uri)
@@ -39,4 +34,8 @@ private fun createTempFile(context: Context): File {
     val fileName = "temp_file"
     val directory = context.cacheDir
     return File(directory, fileName)
+}
+
+fun booleanToInt(b: Boolean): Int {
+    return if (b) 1 else 0
 }
