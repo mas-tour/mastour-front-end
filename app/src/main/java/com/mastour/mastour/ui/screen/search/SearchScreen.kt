@@ -23,6 +23,7 @@ import androidx.paging.compose.items
 import com.mastour.mastour.data.remote.DataGuides
 import com.mastour.mastour.ui.components.UserComponent
 import com.mastour.mastour.ui.navigation.SearchTopBar
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 
 @Composable
@@ -79,7 +80,12 @@ fun SearchContent(
         }
         when(val state = guides.loadState.refresh){
             is LoadState.Error -> {
-                //TODO
+                item {
+                    FailureScreen(
+                        onRefreshClicked = { guides.refresh() },
+                        modifier = modifier.fillMaxSize()
+                    )
+                }
             }
             is LoadState.Loading -> {
                 item {
@@ -103,7 +109,12 @@ fun SearchContent(
         }
         when(val state = guides.loadState.append){
             is LoadState.Error -> {
-                //TODO
+                item {
+                    FailureScreen(
+                        onRefreshClicked = { guides.retry() },
+                        modifier = modifier.fillMaxWidth()
+                    )
+                }
             }
 
             is LoadState.Loading -> {

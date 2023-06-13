@@ -45,6 +45,7 @@ import com.mastour.mastour.data.remote.DataDetailGuides
 import com.mastour.mastour.ui.components.CategoryComponent
 import com.mastour.mastour.ui.components.TagComponent
 import com.mastour.mastour.ui.navigation.Screen
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.screen.profile.advancedShadow
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 import com.mastour.mastour.util.UiState
@@ -128,7 +129,7 @@ fun DetailScreen(
                 }
             }
             is UiState.Failure ->{
-                //TODO
+                FailureScreen(onRefreshClicked = {viewModel.getDetailedGuide(id)}, modifier = Modifier.fillMaxSize())
             }
         }
     }

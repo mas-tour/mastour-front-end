@@ -24,6 +24,7 @@ import com.mastour.mastour.data.remote.DataGuides
 import com.mastour.mastour.ui.components.UserComponent
 import com.mastour.mastour.ui.navigation.CollapsedTopBar
 import com.mastour.mastour.ui.navigation.ExpandedToolbar
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 import com.mastour.mastour.util.UiState
 
@@ -88,7 +89,7 @@ fun CategoryScreen(
 
             }
             is UiState.Failure ->{
-                //TODO
+                FailureScreen(onRefreshClicked = {viewModel.getCategories()}, modifier = modifier.fillMaxSize())
             }
         }
     }

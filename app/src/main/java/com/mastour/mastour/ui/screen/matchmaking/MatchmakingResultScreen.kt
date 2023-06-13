@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mastour.mastour.R
 import com.mastour.mastour.data.remote.SurveyResults
 import com.mastour.mastour.ui.components.ExtendedUserComponent
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.MatchViewModel
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.booleanToInt
@@ -243,10 +244,9 @@ fun MatchmakingResultsScreen(
 
                         }
                         is UiState.Failure ->{
-                            LaunchedEffect(key1 = true) {
-                                Toast.makeText(context, "${uiState.e?.message}", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
+                            FailureScreen(
+                                onRefreshClicked = { viewModel.getSurveyResults() },
+                                modifier = modifier.fillMaxSize())
                         }
                     }
                 }
