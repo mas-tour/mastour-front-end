@@ -46,7 +46,7 @@ fun SurveyScreen(
     val visibleQuestions = QuestionsData.questions.subList(startIndex, endIndex)
 
     val answers: List<MutableState<Int>> = List(5) {
-        mutableStateOf(2)
+        mutableStateOf(3)
     }
 
     val context = LocalContext.current
@@ -79,6 +79,7 @@ fun SurveyScreen(
                 }
             }
             is UiState.Failure -> {
+
                 FailureScreen(
                     onRefreshClicked = { viewModel.postAnswers() },
                     modifier = Modifier.fillMaxSize())

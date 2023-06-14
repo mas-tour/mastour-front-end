@@ -34,7 +34,7 @@ fun QuestionComponent(
     question: String,
     selectedValue: MutableState<Int>
 ) {
-    val items = listOf(0, 1, 2, 3, 4)
+    val items = listOf(1, 2, 3, 4, 5)
 
     val isSelectedItem: (Int) -> Boolean = { selectedValue.value == it }
     val onChangeState: (Int) -> Unit = { selectedValue.value = it }
@@ -60,7 +60,7 @@ fun QuestionComponent(
                     Column(verticalArrangement = Arrangement.Bottom,
                         modifier = modifier.height(40.dp)
                     ) {
-                        val number = item + 1
+                        val number = item
                         Text(text = number.toString(),
                             style = TextStyle(
                                 fontSize = 12.sp,
