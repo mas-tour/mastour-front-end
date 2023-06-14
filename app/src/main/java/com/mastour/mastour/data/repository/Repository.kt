@@ -138,8 +138,6 @@ class Repository @Inject constructor(
                 val jsonObject = JSONObject()
                 jsonObject.put("image", link)
 
-                Log.d("UploadImage", jsonObject.toString())
-
                 val requestBody =
                     jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
@@ -158,10 +156,8 @@ class Repository @Inject constructor(
 
             if (response.isSuccessful) {
                 val link = response.body()?.upload?.link ?: ""
-                Log.d("ImgurAPI", link)
                 Result.success(link)
             } else {
-                Log.d("ImgurAPI", "Error")
                 Result.failure(Exception("Unknown network Exception."))
             }
 
@@ -206,7 +202,6 @@ class Repository @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    // TODO: Maybe not UIState?
     fun bookGuide(
         startDate: Long,
         endDate: Long,
@@ -220,17 +215,12 @@ class Repository @Inject constructor(
         val requestBody =
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
-        Log.d("Post", jsonObject.toString())
         return flow {
             try {
-                Log.d("Post", "Try, token: $bearer")
                 emit(UiState.Loading)
                 val responseBooking = masTourApiService.bookGuide("Bearer $bearer", requestBody, id)
                 emit(UiState.Success(responseBooking))
-                Log.d("Post", responseBooking.toString())
             } catch (e: Exception) {
-                Log.d("Post", "Fail")
-                Log.d("Post", e.toString())
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)

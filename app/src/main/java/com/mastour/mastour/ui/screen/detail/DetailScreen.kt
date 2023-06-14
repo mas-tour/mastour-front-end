@@ -124,7 +124,6 @@ fun DetailScreen(
     }
 }
 
-// TODO: Move this and maybe change to AlertDialog for dimmed background
 @Composable
 fun ConfirmHirePopup(
     popupControl: MutableState<Boolean>,
@@ -142,7 +141,6 @@ fun ConfirmHirePopup(
         mutableStateOf("Unset")
     }
 
-    // TODO: Logic Start Date & End Date
     val datePickerStart = DatePickerDialog(context)
     val datePickerEnd = DatePickerDialog(context)
 

@@ -76,7 +76,6 @@ fun OrderComponent(
                     )
                     Spacer(modifier.weight(1f))
 
-                    // TODO: Change this logic later
                     val tagColor = if (status == "complete") {
                         Color(0x9996EB9E)
                     } else {

@@ -88,7 +88,6 @@ class GuidesViewModel @Inject constructor(private val repository: Repository) : 
         _endDate.value = endDate
     }
 
-    // TODO: Maybe doesn't have to be UIState?
     private val _bookGuideResponse: MutableStateFlow<UiState<BookGuidesResponse>> =
         MutableStateFlow(UiState.Loading)
     val bookGuideResponse: StateFlow<UiState<BookGuidesResponse>>

@@ -61,96 +61,96 @@ fun HistoryContent(
                 .padding(top = 60.dp, start = 16.dp)
                 .align(Alignment.Start)
         )
-        if (guides.itemCount > 0) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = modifier
-                    .padding(16.dp)
-                    .fillMaxSize()
-            ) {
-                items(items = guides, key = { it.id }) { guide ->
-                    if (guide != null) {
-                        OrderComponent(
-                            guideName = guide.name,
-                            location = guide.city,
-                            status = guide.status,
-                            price = guide.totalPrice,
-                            duration = guide.countDay,
-                            photoUrl = guide.picture
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = modifier
+                .padding(16.dp)
+                .fillMaxSize()
+        ) {
+            items(items = guides, key = { it.id }) { guide ->
+                if (guide != null) {
+                    OrderComponent(
+                        guideName = guide.name,
+                        location = guide.city,
+                        status = guide.status,
+                        price = guide.totalPrice,
+                        duration = guide.countDay,
+                        photoUrl = guide.picture
+                    )
+                }
+            }
+            when (guides.loadState.refresh) {
+                is LoadState.Error -> {
+                    item {
+                        FailureScreen(
+                            onRefreshClicked = { guides.refresh() },
+                            modifier = modifier.fillMaxSize()
                         )
                     }
                 }
-                when (guides.loadState.refresh) {
-                    is LoadState.Error -> {
-                        item {
-                            FailureScreen(
-                                onRefreshClicked = { guides.refresh() },
-                                modifier = modifier.fillMaxSize()
+
+                is LoadState.Loading -> {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillParentMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(8.dp),
+                                text = "Loading"
                             )
+
+                            CircularProgressIndicator(color = Color.Black)
                         }
                     }
+                }
 
-                    is LoadState.Loading -> {
+                is LoadState.NotLoading -> {
+                    if (guides.itemCount == 0) {
                         item {
                             Column(
                                 modifier = Modifier
-                                    .fillParentMaxSize(),
+                                    .fillMaxWidth()
+                                    .padding(top = 50.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center,
                             ) {
-                                Text(
-                                    modifier = Modifier
-                                        .padding(8.dp),
-                                    text = "Loading"
-                                )
-
-                                CircularProgressIndicator(color = Color.Black)
+                                Text(text = "This page is empty!")
                             }
                         }
                     }
-
-                    else -> {}
                 }
-                when (guides.loadState.append) {
-                    is LoadState.Error -> {
-                        item {
-                            FailureScreen(
-                                onRefreshClicked = { guides.retry() },
-                                modifier = modifier.fillMaxWidth()
-                            )
-                        }
-                    }
 
-                    is LoadState.Loading -> {
-                        item {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-                            ) {
-                                Text(text = "Loading")
-
-                                CircularProgressIndicator(color = Color.Black)
-                            }
-                        }
-                    }
-
-                    else -> {}
-                }
+                else -> {}
             }
-        } else {
-            Column(
-                modifier = modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "This Page is Empty, Book First!",
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center
-                )
+            when (guides.loadState.append) {
+                is LoadState.Error -> {
+                    item {
+                        FailureScreen(
+                            onRefreshClicked = { guides.retry() },
+                            modifier = modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                is LoadState.Loading -> {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text(text = "Loading")
+
+                            CircularProgressIndicator(color = Color.Black)
+                        }
+                    }
+                }
+                else -> {}
             }
         }
     }

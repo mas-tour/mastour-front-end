@@ -65,7 +65,6 @@ fun SurveyScreen(
             is UiState.Success -> {
 
                 LaunchedEffect(key1 = true) {
-                    Log.d("Survey", "Life is a highway")
                     navHostController.navigate(Screen.PostMatchmaking.route) {
                         popUpTo(Screen.Home.route)
                         launchSingleTop = true

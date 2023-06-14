@@ -81,7 +81,6 @@ class ProfileViewModel @Inject constructor(private val repository: Repository) :
 
     fun putNumber() {
         _userData.value.phoneNumber = _phoneNumber.value
-        Log.d("PhoneNumber", _userToken.value)
         viewModelScope.launch {
             repository.updateProfile(userData.value, _userToken.value).collect {
                 _profileResponse.value = it
@@ -91,7 +90,6 @@ class ProfileViewModel @Inject constructor(private val repository: Repository) :
 
     fun putGender() {
         _userData.value.gender = _gender.value
-        Log.d("PhoneNumber", _userToken.value)
         viewModelScope.launch {
             repository.updateProfile(userData.value, _userToken.value).collect {
                 _profileResponse.value = it
@@ -101,7 +99,6 @@ class ProfileViewModel @Inject constructor(private val repository: Repository) :
 
     fun putBirthDate() {
         _userData.value.birthDate = _birthDate.value
-        Log.d("PhoneNumber", _userToken.value)
         viewModelScope.launch {
             repository.updateProfile(userData.value, _userToken.value).collect {
                 _profileResponse.value = it

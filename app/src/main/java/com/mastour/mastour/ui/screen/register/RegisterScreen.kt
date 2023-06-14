@@ -144,7 +144,6 @@ fun RegisterScreen(
                 }
             }
             is AuthUiState.Success -> {
-                // TODO: Toast or dialogue, Register succeed
                 LaunchedEffect(key1 = true) {
                     Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT).show()
                     navHostController.navigate(Screen.Login.route) {
@@ -261,7 +260,7 @@ fun RegisterContent(
             )
 
             Button(
-                onClick = onEditClicked, // TODO: Ask for permission
+                onClick = onEditClicked,
                 contentPadding = PaddingValues(),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),

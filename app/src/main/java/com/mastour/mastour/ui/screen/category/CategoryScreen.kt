@@ -120,7 +120,6 @@ fun CategoryContent(
         CollapsedTopBar(modifier = modifier.zIndex(2f), title = title, isCollapsed = isCollapsed)
 
         LazyColumn(state = listState) {
-            // TODO: Change data to arguments
             item {
                 ExpandedToolbar(
                     title = title,
