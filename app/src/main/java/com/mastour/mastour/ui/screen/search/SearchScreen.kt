@@ -116,7 +116,7 @@ fun SearchContent(
                 item {
                     FailureScreen(
                         onRefreshClicked = { guides.retry() },
-                        modifier = modifier.fillMaxWidth()
+                        modifier = modifier.fillMaxWidth().padding(16.dp)
                     )
                 }
             }
