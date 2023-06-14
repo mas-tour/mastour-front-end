@@ -210,7 +210,8 @@ fun LoginContent(
             ),
             placeholder = { Text(text = "E-mail") },
             modifier = Modifier
-                .padding(top = 32.dp)
+                .fillMaxWidth()
+                .padding(top = 32.dp, start = 36.dp, end = 36.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -233,7 +234,8 @@ fun LoginContent(
             ),
             placeholder = { Text(text = "Password") },
             modifier = Modifier
-                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 36.dp, end = 36.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 

@@ -310,7 +310,8 @@ fun RegisterContent(
             ),
             placeholder = { Text(text = "Email") },
             modifier = Modifier
-                .padding(top = 24.dp)
+                .fillMaxWidth()
+                .padding(top = 24.dp, start = 36.dp, end = 36.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -330,7 +331,8 @@ fun RegisterContent(
             ),
             placeholder = { Text(text = "Username") },
             modifier = Modifier
-                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 36.dp, end = 36.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -350,7 +352,8 @@ fun RegisterContent(
             ),
             placeholder = { Text(text = "Display Name") },
             modifier = Modifier
-                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 36.dp, end = 36.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -385,6 +388,8 @@ fun RegisterContent(
                     disabledTextColor = MaterialTheme.colors.primary,
                 ),
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .clip(shape = RoundedCornerShape(16.dp))
             )
         }
@@ -407,7 +412,8 @@ fun RegisterContent(
             ),
             placeholder = { Text(text = "Password") },
             modifier = Modifier
-                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .padding(top = 8.dp, start = 36.dp, end = 36.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -433,7 +439,8 @@ fun RegisterContent(
             ),
             placeholder = { Text(text = "Confirm Password") },
             modifier = Modifier
-                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 36.dp, end = 36.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
         )
 
@@ -447,7 +454,7 @@ fun RegisterContent(
                 ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
             },
             modifier = Modifier
-                .padding(top = 24.dp)
+                .padding(top = 24.dp, bottom = 16.dp)
                 .width(120.dp)
                 .height(48.dp),
             contentPadding = PaddingValues()
