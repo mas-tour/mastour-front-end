@@ -1,11 +1,9 @@
 package com.mastour.mastour.ui.screen.survey
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -18,7 +16,6 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,7 +28,6 @@ import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.SurveyViewModel
 import com.mastour.mastour.util.UiState
-import kotlinx.coroutines.launch
 
 @Composable
 fun SurveyScreen(
@@ -49,10 +45,8 @@ fun SurveyScreen(
         mutableStateOf(3)
     }
 
-    val context = LocalContext.current
-
     viewModel.surveyResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
-        when(uiState) {
+        when (uiState) {
             is UiState.Loading -> {
                 SurveyContent(
                     page = currentPageIndex,
@@ -82,7 +76,8 @@ fun SurveyScreen(
 
                 FailureScreen(
                     onRefreshClicked = { viewModel.postAnswers() },
-                    modifier = Modifier.fillMaxSize())
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
@@ -112,10 +107,10 @@ fun SurveyContent(
             .fillMaxSize()
             .padding(horizontal = 5.dp)
             .padding(top = 10.dp)
-            .verticalScroll(ScrollState(0)) // TODO: Make it scroll to 0 after every next
+            .verticalScroll(ScrollState(0))
     )
     {
-        // TODO: [NOTE] Don't know how to acquire data when using LazyColumn, using the scuffed solutions for now
+
         QuestionComponent(question = surveyData[0].question, selectedValue = answer[0])
         QuestionComponent(question = surveyData[1].question, selectedValue = answer[1])
         QuestionComponent(question = surveyData[2].question, selectedValue = answer[2])
@@ -123,7 +118,8 @@ fun SurveyContent(
         QuestionComponent(question = surveyData[4].question, selectedValue = answer[4])
 
         Spacer(modifier.weight(1f))
-        Row(verticalAlignment = Alignment.CenterVertically,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .height(56.dp)
                 .padding(bottom = 20.dp, start = 12.dp, end = 5.dp)
@@ -150,7 +146,7 @@ fun SurveyContent(
                     .fillMaxHeight(),
                 contentPadding = PaddingValues()
 
-            ){
+            ) {
                 Box(
                     modifier = Modifier
                         .background(
@@ -163,13 +159,14 @@ fun SurveyContent(
                         )
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center,
-                ){
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = if (page.value == 4) {
-                            "Submit"
-                        } else {
-                            "Next  "
-                        },
+                        Text(
+                            text = if (page.value == 4) {
+                                "Submit"
+                            } else {
+                                "Next  "
+                            },
                             color = Color.White
                         )
                         Icon(
@@ -184,11 +181,3 @@ fun SurveyContent(
         }
     }
 }
-
-//@Preview(showBackground = true, device = Devices.PIXEL_4)
-//@Composable
-//fun SurveyScreenPreview() {
-//    MasTourTheme {
-//        SurveyContent(surveyData = QuestionData.questions, page = 1, onNextClicked = {})
-//    }
-//}

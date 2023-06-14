@@ -14,7 +14,7 @@ object MasTourApiConfig {
             .addInterceptor(loggingInterceptor)
             .build()
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://mastour-api-jvaiepw5pa-et.a.run.app/")
+            .baseUrl("https://mastour-api-gxuwo3uksq-et.a.run.app/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

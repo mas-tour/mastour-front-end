@@ -42,8 +42,8 @@ fun MatchmakingResultsScreen(
     }
     val context = LocalContext.current
 
-    viewModel.surveyResultsResponse.collectAsState(initial = UiState.Loading).value.let { uiState->
-        when(uiState){
+    viewModel.surveyResultsResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
             is UiState.Loading -> {
                 viewModel.getSurveyResults()
                 Column(
@@ -57,12 +57,17 @@ fun MatchmakingResultsScreen(
                 }
             }
             is UiState.Success -> {
-                uiState.data?.let { MatchmakingResultContent(userList = it.data, moveToGuideDetail = moveToGuideDetail ) }
+                uiState.data?.let {
+                    MatchmakingResultContent(
+                        userList = it.data,
+                        moveToGuideDetail = moveToGuideDetail
+                    )
+                }
             }
             is UiState.Failure -> {
-                viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let {secondState ->
-                    when(secondState){
-                        is UiState.Loading ->{
+                viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let { secondState ->
+                    when (secondState) {
+                        is UiState.Loading -> {
                             viewModel.getCategories()
                             Column(
                                 modifier = modifier
@@ -74,7 +79,7 @@ fun MatchmakingResultsScreen(
                                 CircularProgressIndicator(color = Color.Black)
                             }
                         }
-                        is UiState.Success ->{
+                        is UiState.Success -> {
                             var expanded by remember { mutableStateOf(false) }
                             var selectedText by remember {
                                 mutableStateOf(secondState.data?.citiesResponse?.data?.get(0)?.name.toString())
@@ -83,7 +88,8 @@ fun MatchmakingResultsScreen(
                                 secondState.data?.citiesResponse?.data?.get(0).let {
                                     if (it != null) {
                                         viewModel.changeIdCity(
-                                            it.id)
+                                            it.id
+                                        )
                                     }
                                 }
                             }
@@ -126,13 +132,17 @@ fun MatchmakingResultsScreen(
                                     ExposedDropdownMenu(
                                         expanded = expanded,
                                         onDismissRequest = { expanded = false }) {
-                                        secondState.data?.citiesResponse?.data?.forEach{ city ->
+                                        secondState.data?.citiesResponse?.data?.forEach { city ->
                                             DropdownMenuItem(
                                                 onClick = {
                                                     selectedText = city.name
                                                     viewModel.changeIdCity(city.id)
                                                     expanded = false
-                                                    Toast.makeText(context, "${viewModel.idCity}", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(
+                                                        context,
+                                                        "${viewModel.idCity}",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
 
                                                 },
                                             ) {
@@ -221,8 +231,13 @@ fun MatchmakingResultsScreen(
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         Text(
-                                            text = if(!viewModel.todoListState.all { it == 0 }){ "Submit" }else{"Choose 1"},
-                                            color = Color.White)
+                                            text = if (!viewModel.todoListState.all { it == 0 }) {
+                                                "Submit"
+                                            } else {
+                                                "Choose 1"
+                                            },
+                                            color = Color.White
+                                        )
                                     }
 
                                 }
@@ -243,10 +258,11 @@ fun MatchmakingResultsScreen(
                             }
 
                         }
-                        is UiState.Failure ->{
+                        is UiState.Failure -> {
                             FailureScreen(
                                 onRefreshClicked = { viewModel.getSurveyResults() },
-                                modifier = modifier.fillMaxSize())
+                                modifier = modifier.fillMaxSize()
+                            )
                         }
                     }
                 }
@@ -258,9 +274,9 @@ fun MatchmakingResultsScreen(
 @Composable
 fun MatchmakingResultContent(
     modifier: Modifier = Modifier,
-    userList : List<SurveyResults>,
+    userList: List<SurveyResults>,
     moveToGuideDetail: (String) -> Unit,
-){
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -282,7 +298,7 @@ fun MatchmakingResultContent(
             modifier = modifier
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
-            items(items = userList, key = {it.id}){guides->
+            items(items = userList, key = { it.id }) { guides ->
                 ExtendedUserComponent(
                     name = guides.name,
                     photoUrl = guides.picture,

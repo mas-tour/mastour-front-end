@@ -5,22 +5,22 @@ import retrofit2.http.*
 
 interface MasTourApiService {
     @POST("auth/sign-in")
-    suspend fun login(@Body requestBody: RequestBody) : LoginResponses
+    suspend fun login(@Body requestBody: RequestBody): LoginResponses
 
     @POST("auth/sign-up")
-    suspend fun register(@Body requestBody: RequestBody) : RegisterResponses
+    suspend fun register(@Body requestBody: RequestBody): RegisterResponses
 
     @POST("matchmaking/survey")
     suspend fun submitSurvey(
         @Header("Authorization") token: String,
         @Body requestBody: RequestBody
-    ) : SurveyResponse
+    ): SurveyResponse
 
     @POST("matchmaking/search")
     suspend fun getSurvey(
         @Header("Authorization") token: String,
         @Body requestBody: RequestBody
-    ) : ResponseSurveyResults
+    ): ResponseSurveyResults
 
     @GET("guides")
     suspend fun getGuides(
@@ -31,42 +31,42 @@ interface MasTourApiService {
         @Query("search_query") query: String = "",
         @Query("city_id") cityId: String? = null,
         @Query("category_id") categoryId: String? = null
-    ) : ResponseGuides
+    ): ResponseGuides
 
     @GET("guides/{id}")
     suspend fun getDetailedGuide(
         @Header("Authorization") bearer: String,
         @Path("id") id: String
-    ) : DetailGuidesResponse
+    ): DetailGuidesResponse
 
     @POST("ordered_guides/book/{id}")
     suspend fun bookGuide(
         @Header("Authorization") bearer: String,
         @Body requestBody: RequestBody,
         @Path("id") id: String
-    ) : BookGuidesResponse
+    ): BookGuidesResponse
 
     @GET("ordered_guides/history")
     suspend fun getHistory(
         @Header("Authorization") bearer: String,
         @Query("page") page: Int,
         @Query("size") size: Int
-    ) : HistoryResponse
+    ): HistoryResponse
 
     @GET("profile")
     suspend fun getProfile(
         @Header("Authorization") bearer: String
-    ) : ProfileResponse
+    ): ProfileResponse
 
     @PUT("profile")
     suspend fun putProfile(
         @Header("Authorization") bearer: String,
         @Body requestBody: RequestBody
-    ) : ProfileResponse
+    ): ProfileResponse
 
     @GET("cities")
-    suspend fun getCities() : CitiesResponse
+    suspend fun getCities(): CitiesResponse
 
     @GET("categories")
-    suspend fun getCategories() : SpecResponse
+    suspend fun getCategories(): SpecResponse
 }

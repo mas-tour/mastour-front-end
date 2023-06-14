@@ -14,13 +14,13 @@ class SessionPreferences @Inject constructor(private val dataStore: DataStore<Pr
     private val userExist = booleanPreferencesKey(Constants.USER_EXIST)
     private val userToken = stringPreferencesKey(Constants.USER_TOKEN)
 
-    fun getUserExist() : Flow<Boolean> {
+    fun getUserExist(): Flow<Boolean> {
         return dataStore.data.map {
             it[userExist] ?: false
         }
     }
 
-    fun getUserToken() : Flow<String>{
+    fun getUserToken(): Flow<String> {
         return dataStore.data.map {
             it[userToken] ?: ""
         }
@@ -29,14 +29,14 @@ class SessionPreferences @Inject constructor(private val dataStore: DataStore<Pr
     suspend fun startSession(
         userChecked: Boolean,
         TokenChecked: String
-    ){
+    ) {
         dataStore.edit {
             it[userExist] = userChecked
             it[userToken] = TokenChecked
         }
     }
 
-    suspend fun deleteSession(){
+    suspend fun deleteSession() {
         dataStore.edit {
             it.clear()
         }

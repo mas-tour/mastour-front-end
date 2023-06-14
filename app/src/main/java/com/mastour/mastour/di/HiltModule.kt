@@ -18,27 +18,29 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
+
 @Module
 @InstallIn(SingletonComponent::class)
 object HiltModule {
     @Provides
-    fun provideMasTourApiService() : MasTourApiService = MasTourApiConfig.getApiService()
+    fun provideMasTourApiService(): MasTourApiService = MasTourApiConfig.getApiService()
 
     @Provides
-    fun provideImgurApiService() : ImgurApiService = ImgurApiConfig.getApiService()
+    fun provideImgurApiService(): ImgurApiService = ImgurApiConfig.getApiService()
 
     @Provides
     @Singleton
     fun provideRepository(
         @ApplicationContext context: Context,
         masTourApiService: MasTourApiService,
-        imgurApiService : ImgurApiService,
+        imgurApiService: ImgurApiService,
         preferences: SessionPreferences
     ) = Repository(preferences, masTourApiService, imgurApiService, context)
 
     @Provides
     @Singleton
-    fun provideDataStorePreferences(@ApplicationContext context: Context) : DataStore<Preferences> = context.dataStore
+    fun provideDataStorePreferences(@ApplicationContext context: Context): DataStore<Preferences> =
+        context.dataStore
 
     @Provides
     @Singleton

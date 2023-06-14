@@ -1,6 +1,5 @@
 package com.mastour.mastour.ui.screen.login
 
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,25 +27,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.mastour.mastour.R
 import com.mastour.mastour.ui.navigation.Screen
-import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.viewmodel.AuthViewModel
 import com.mastour.mastour.util.AuthUiState
 import com.mastour.mastour.util.isEmailValid
 
 @Composable
 fun LoginScreen(
+    modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
     navHostController: NavHostController,
-    modifier: Modifier = Modifier
-){
+
+    ) {
     val email by viewModel.email
     val password by viewModel.password
     val userExist by viewModel.userExist
@@ -67,8 +64,8 @@ fun LoginScreen(
         }
     }
     viewModel.loginResponse.collectAsState(initial = AuthUiState.Idle).value.let { uiState ->
-        when(uiState){
-            is AuthUiState.Idle ->{
+        when (uiState) {
+            is AuthUiState.Idle -> {
                 LoginContent(
                     email = email,
                     password = password,
@@ -77,15 +74,16 @@ fun LoginScreen(
                     onLoginClicked = viewModel::login,
                     checkValid = dataValid,
                     onRegisterClicked = {
-                        navHostController.navigate(Screen.Register.route){
-                            popUpTo(navHostController.graph.findStartDestination().id){
+                        navHostController.navigate(Screen.Register.route) {
+                            popUpTo(navHostController.graph.findStartDestination().id) {
                                 saveState = true
                             }
                             restoreState = true
                             launchSingleTop = true
-                        } })
+                        }
+                    })
             }
-            is AuthUiState.Load ->{
+            is AuthUiState.Load -> {
                 Column(
                     modifier = modifier
                         .fillMaxSize(),
@@ -96,7 +94,7 @@ fun LoginScreen(
                     CircularProgressIndicator(color = Color.Black)
                 }
             }
-            is AuthUiState.Success ->{
+            is AuthUiState.Success -> {
                 LoginContent(
                     email = email,
                     password = password,
@@ -105,36 +103,41 @@ fun LoginScreen(
                     onLoginClicked = viewModel::login,
                     checkValid = dataValid,
                     onRegisterClicked = {
-                        navHostController.navigate(Screen.Register.route){
-                            popUpTo(navHostController.graph.findStartDestination().id){
-                                saveState = true
-                            }
-                            restoreState = true
-                            launchSingleTop = true
-                        } })
-                LaunchedEffect(key1 = true){
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                }
-            }
-            is AuthUiState.Failure ->{
-                LoginContent(
-                    email = email,
-                    password = password,
-                    onEmailTextChanged = viewModel::changeEmail,
-                    onPasswordTextChanged = viewModel::changePassword,
-                    onLoginClicked = viewModel::login,
-                    checkValid = dataValid,
-                    onRegisterClicked = {
-                        navHostController.navigate(Screen.Register.route){
-                            popUpTo(navHostController.graph.findStartDestination().id){
+                        navHostController.navigate(Screen.Register.route) {
+                            popUpTo(navHostController.graph.findStartDestination().id) {
                                 saveState = true
                             }
                             restoreState = true
                             launchSingleTop = true
                         }
                     })
-                LaunchedEffect(key1 = true){
-                    Toast.makeText(context, "Failed please check if input correct, or check your internet", Toast.LENGTH_SHORT).show()
+                LaunchedEffect(key1 = true) {
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                }
+            }
+            is AuthUiState.Failure -> {
+                LoginContent(
+                    email = email,
+                    password = password,
+                    onEmailTextChanged = viewModel::changeEmail,
+                    onPasswordTextChanged = viewModel::changePassword,
+                    onLoginClicked = viewModel::login,
+                    checkValid = dataValid,
+                    onRegisterClicked = {
+                        navHostController.navigate(Screen.Register.route) {
+                            popUpTo(navHostController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    })
+                LaunchedEffect(key1 = true) {
+                    Toast.makeText(
+                        context,
+                        "Failed please check if input correct, or check your internet",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -152,7 +155,7 @@ fun LoginContent(
     onLoginClicked: () -> Unit,
     onRegisterClicked: () -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     checkValid[0] = email.isNotBlank() && isEmailValid(email)
     checkValid[1] = password.isNotBlank()
     val allValid = checkValid.all { it }
@@ -182,7 +185,10 @@ fun LoginContent(
         )
         Text(
             text = "Bring Tourism to The Masses",
-            style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Normal, color = Color.Gray),
+            style = MaterialTheme.typography.subtitle1.copy(
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray
+            ),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 4.dp),
         )
@@ -193,7 +199,7 @@ fun LoginContent(
             maxLines = 1,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email")},
+            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email") },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 leadingIconColor = MaterialTheme.colors.primary,
@@ -202,7 +208,7 @@ fun LoginContent(
                 placeholderColor = Color.Gray,
                 textColor = Color.Black,
             ),
-            placeholder = { Text(text = "E-mail")},
+            placeholder = { Text(text = "E-mail") },
             modifier = Modifier
                 .padding(top = 32.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
@@ -214,9 +220,9 @@ fun LoginContent(
             shape = RoundedCornerShape(16.dp),
             maxLines = 1,
             singleLine = true,
-            visualTransformation =  PasswordVisualTransformation(),
+            visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password")},
+            leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password") },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 leadingIconColor = MaterialTheme.colors.primary,
@@ -225,7 +231,7 @@ fun LoginContent(
                 placeholderColor = Color.Gray,
                 textColor = Color.Black,
             ),
-            placeholder = { Text(text = "Password")},
+            placeholder = { Text(text = "Password") },
             modifier = Modifier
                 .padding(top = 16.dp)
                 .clip(shape = RoundedCornerShape(16.dp))
@@ -241,34 +247,37 @@ fun LoginContent(
                 .height(48.dp),
             contentPadding = PaddingValues()
 
-        ){
+        ) {
             Box(
                 modifier = if (allValid) {
                     Modifier
                         .background(
                             brush = Brush.horizontalGradient(
-                                    colors = listOf(
-                                        MaterialTheme.colors.primary,
-                                        MaterialTheme.colors.secondary
-                                    )
+                                colors = listOf(
+                                    MaterialTheme.colors.primary,
+                                    MaterialTheme.colors.secondary
                                 )
                             )
-                            .fillMaxSize()
-                    } else {
-                        Modifier
-                            .background(Color.Gray)
-                            .fillMaxSize()
-                    },
-                    contentAlignment = Alignment.Center,
-            ){
+                        )
+                        .fillMaxSize()
+                } else {
+                    Modifier
+                        .background(Color.Gray)
+                        .fillMaxSize()
+                },
+                contentAlignment = Alignment.Center,
+            ) {
                 Text(text = "Login", color = Color.White)
             }
         }
-        
+
         TextButton(onClick = onRegisterClicked) {
             Text(
                 text = "Don't have an account? Register here",
-                style = MaterialTheme.typography.caption.copy(fontWeight = FontWeight.Normal, color = MaterialTheme.colors.primary),
+                style = MaterialTheme.typography.caption.copy(
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colors.primary
+                ),
             )
         }
     }

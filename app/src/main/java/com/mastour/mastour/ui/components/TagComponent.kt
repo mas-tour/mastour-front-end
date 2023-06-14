@@ -1,7 +1,9 @@
 package com.mastour.mastour.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -20,20 +22,28 @@ fun TagComponent(
     name: String,
     color: Color,
     modifier: Modifier = Modifier,
-){
-    Box(contentAlignment = Alignment.Center, modifier = modifier
-        .clip(shape = RoundedCornerShape(8.dp))
-        .background(color = color)){
+) {
+    Box(
+        contentAlignment = Alignment.Center, modifier = modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = color)
+    ) {
         Row {
 
-            Text(text = name, style = MaterialTheme.typography.caption, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, start = 10.dp, end = 10.dp))
+            Text(
+                text = name,
+                style = MaterialTheme.typography.caption,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, start = 10.dp, end = 10.dp)
+            )
         }
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-fun TagComponentPreview(){
+fun TagComponentPreview() {
     MasTourTheme {
         TagComponent(name = "Horror Attraction", color = MaterialTheme.colors.secondaryVariant)
     }
@@ -41,7 +51,7 @@ fun TagComponentPreview(){
 
 @Composable
 @Preview(showBackground = true)
-fun TagComponentPreview2(){
+fun TagComponentPreview2() {
     MasTourTheme {
         TagComponent(name = "Kediri", color = MaterialTheme.colors.primaryVariant)
     }

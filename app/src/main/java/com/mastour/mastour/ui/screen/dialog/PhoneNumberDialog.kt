@@ -38,11 +38,12 @@ fun PhoneNumberDialog(
                         onValueChange = onPhoneNumberChanged,
                         singleLine = true
                     )
-                } 
+                }
             },
             confirmButton = {
                 Button(
-                    onClick = onSubmitClicked) {
+                    onClick = onSubmitClicked
+                ) {
                     Text("Confirm ")
                 }
             },

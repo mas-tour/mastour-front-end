@@ -18,8 +18,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MatchViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    private val _surveyResultsResponse: MutableStateFlow<UiState<ResponseSurveyResults>> = MutableStateFlow(
-        UiState.Loading)
+    private val _surveyResultsResponse: MutableStateFlow<UiState<ResponseSurveyResults>> =
+        MutableStateFlow(
+            UiState.Loading
+        )
     val surveyResultsResponse: StateFlow<UiState<ResponseSurveyResults>>
         get() = _surveyResultsResponse
 
@@ -28,34 +30,35 @@ class MatchViewModel @Inject constructor(private val repository: Repository) : V
     private val _idCity = mutableStateOf("")
     val idCity: State<String> get() = _idCity
 
-    val todoListState = mutableStateListOf(0,0,0,0,0,0,0,0)
+    val todoListState = mutableStateListOf(0, 0, 0, 0, 0, 0, 0, 0)
 
-    private val _categoriesResponse: MutableStateFlow<UiState<CategoriesHelper>> = MutableStateFlow(UiState.Loading)
+    private val _categoriesResponse: MutableStateFlow<UiState<CategoriesHelper>> =
+        MutableStateFlow(UiState.Loading)
     val categoriesResponse: StateFlow<UiState<CategoriesHelper>>
         get() = _categoriesResponse
 
-    fun getCategories(){
+    fun getCategories() {
         viewModelScope.launch {
-            repository.getCategories().collect{
+            repository.getCategories().collect {
                 _categoriesResponse.value = it
             }
         }
     }
 
 
-    fun changeIdCity(email: String){
+    fun changeIdCity(email: String) {
         _idCity.value = email
     }
 
-    fun tryUserToken(){
+    fun tryUserToken() {
         viewModelScope.launch {
-            repository.getUserToken().collect{
+            repository.getUserToken().collect {
                 _userToken.value = it
             }
         }
     }
 
-    fun getSurveyResults(){
+    fun getSurveyResults() {
         viewModelScope.launch {
             repository.getSurveyResults(
                 cityId = _idCity.value,

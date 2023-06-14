@@ -26,17 +26,16 @@ fun SplashScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
     navHostController: NavHostController
-){
+) {
     val userExist by viewModel.userExist
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         viewModel.tryUserExist()
         delay(300L)
-        if(userExist){
+        if (userExist) {
             navHostController.navigate(Screen.Home.route) {
                 popUpTo(0)
             }
-        }
-        else{
+        } else {
             navHostController.navigate(Screen.Login.route) {
                 popUpTo(0)
             }
@@ -44,13 +43,17 @@ fun SplashScreen(
     }
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.background(
-        brush = Brush.horizontalGradient(
-            colors = listOf(
-                MaterialTheme.colors.primary,
-                MaterialTheme.colors.secondary
+        modifier = modifier
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        MaterialTheme.colors.primary,
+                        MaterialTheme.colors.secondary
+                    )
+                )
             )
-        )).fillMaxSize(),){
+            .fillMaxSize(),
+    ) {
         Image(
             painter = painterResource(id = R.drawable.wayang_only),
             contentDescription = "Matchmaking",

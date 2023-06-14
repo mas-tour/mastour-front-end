@@ -18,8 +18,9 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class SurveyViewModel @Inject constructor(private val repository: Repository): ViewModel() {
-    private val _surveyResponse: MutableStateFlow<UiState<SurveyResponse>> = MutableStateFlow(UiState.Loading)
+class SurveyViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+    private val _surveyResponse: MutableStateFlow<UiState<SurveyResponse>> =
+        MutableStateFlow(UiState.Loading)
     val surveyResponse: StateFlow<UiState<SurveyResponse>>
         get() = _surveyResponse
 

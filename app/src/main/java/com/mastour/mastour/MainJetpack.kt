@@ -1,21 +1,19 @@
 package com.mastour.mastour
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CastConnected
+import androidx.compose.material.BottomAppBar
+import androidx.compose.material.FabPosition
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -41,12 +39,11 @@ import com.mastour.mastour.ui.screen.search.SearchScreen
 import com.mastour.mastour.ui.screen.splashscreen.SplashScreen
 import com.mastour.mastour.ui.screen.survey.SurveyScreen
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainJetpack(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-){
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -65,11 +62,12 @@ fun MainJetpack(
                 }
             }
         },
-            floatingActionButtonPosition = FabPosition.Center,
-            isFloatingActionButtonDocked = true,
-            floatingActionButton = {
-                if (currentRoute == Screen.Home.route || currentRoute == Screen.Profile.route || currentRoute == Screen.Search.route || currentRoute == Screen.History.route) {
-                    FloatingActionButton(onClick = {
+        floatingActionButtonPosition = FabPosition.Center,
+        isFloatingActionButtonDocked = true,
+        floatingActionButton = {
+            if (currentRoute == Screen.Home.route || currentRoute == Screen.Profile.route || currentRoute == Screen.Search.route || currentRoute == Screen.History.route) {
+                FloatingActionButton(
+                    onClick = {
                         navController.navigate(Screen.Matchmaking.route) {
                             popUpTo(Screen.Home.route) {
                                 saveState = true
@@ -78,58 +76,59 @@ fun MainJetpack(
                             restoreState = true
                         }
                     },
-                        shape = CircleShape,
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.wayang_only),
-                            contentDescription = "Matchmaking",
-                            modifier = Modifier.size(50.dp)
-                        )
-                    }
+                    shape = CircleShape,
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.wayang_only),
+                        contentDescription = "Matchmaking",
+                        modifier = Modifier.size(50.dp)
+                    )
                 }
             }
+        }
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Screen.Splash.route,
-            modifier = Modifier.padding(innerPadding)){
+            modifier = Modifier.padding(innerPadding)
+        ) {
 
-            composable(Screen.Splash.route){
+            composable(Screen.Splash.route) {
                 SplashScreen(navHostController = navController)
             }
 
-            composable(Screen.Login.route){
+            composable(Screen.Login.route) {
                 LoginScreen(navHostController = navController)
             }
-            composable(Screen.Register.route){
+            composable(Screen.Register.route) {
                 RegisterScreen(navHostController = navController)
             }
-            composable(Screen.Home.route){
+            composable(Screen.Home.route) {
                 HomePageScreen(navHostController = navController)
             }
-            composable(Screen.History.route){
+            composable(Screen.History.route) {
                 HistoryScreen()
             }
-            composable(Screen.Search.route){
+            composable(Screen.Search.route) {
                 SearchScreen(moveToGuideDetail = {
                     navController.navigate(Screen.Detail.createRoute(it))
                 })
             }
-            composable(Screen.Profile.route){
+            composable(Screen.Profile.route) {
                 ProfileScreen(navHostController = navController)
             }
-            composable(Screen.Matchmaking.route){
+            composable(Screen.Matchmaking.route) {
                 MatchmakingContent(nextOnClicked = {
                     navController.navigate(Screen.Survey.route)
                 })
             }
-            composable(Screen.Survey.route){
+            composable(Screen.Survey.route) {
                 SurveyScreen(navHostController = navController)
             }
             composable(
                 route = Screen.Detail.route,
-                arguments = listOf(navArgument("detailId"){type = NavType.StringType}),
-            ){
+                arguments = listOf(navArgument("detailId") { type = NavType.StringType }),
+            ) {
                 val id = it.arguments?.getString("detailId") ?: ""
                 DetailScreen(
                     id = id,
@@ -141,23 +140,24 @@ fun MainJetpack(
             composable(
                 route = Screen.Results.route,
                 arguments = listOf(
-                    navArgument("isCity"){type = NavType.BoolType},
-                    navArgument("resultsId"){type = NavType.StringType}
+                    navArgument("isCity") { type = NavType.BoolType },
+                    navArgument("resultsId") { type = NavType.StringType }
                 )
-            ){
+            ) {
                 val isCity = it.arguments?.getBoolean("isCity") ?: true
                 val id = it.arguments?.getString("resultsId") ?: ""
 
                 CategoryScreen(
                     isCity = isCity,
                     id = id,
-                    moveToGuideDetail = {idDetail ->
-                        navController.navigate(Screen.Detail.createRoute(idDetail)) },
-                    onBackClicked = {navController.navigateUp()}
+                    moveToGuideDetail = { idDetail ->
+                        navController.navigate(Screen.Detail.createRoute(idDetail))
+                    },
+                    onBackClicked = { navController.navigateUp() }
                 )
             }
 
-            composable(Screen.PostMatchmaking.route){
+            composable(Screen.PostMatchmaking.route) {
                 MatchmakingResultsScreen(moveToGuideDetail = {
                     navController.navigate(Screen.Detail.createRoute(it))
                 })
