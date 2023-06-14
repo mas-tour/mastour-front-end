@@ -51,6 +51,7 @@ import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.formatNumber
 import com.mastour.mastour.util.getAgeFromTimestamp
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -165,25 +166,32 @@ fun ConfirmHirePopup(
         mutableStateOf(false)
     }
 
+    var timestampStart = 0L
+    var timestampEnd = 0L
+
+    datePickerStart.datePicker.minDate = Calendar.getInstance().timeInMillis
     datePickerStart.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         startDate = "$dayOfMonth / $month / $year"
-        var timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
         timestampStart *= 1000
         viewModel.changeStart(timestampStart)
+//        val instant = Instant.ofEpochSecond(timestampStart)
+//        val nextDayInstant = instant.plusSeconds(86400)
         datePickerEnd.datePicker.minDate = timestampStart
         startDateFilled.value = true
+        endDateFilled.value = timestampEnd - timestampStart > 0
     }
 
     datePickerEnd.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         endDate = "$dayOfMonth / $month / $year"
-        var timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
         timestampEnd *= 1000
         viewModel.changeEnd(timestampEnd)
-        endDateFilled.value = true
+        endDateFilled.value = timestampEnd - timestampStart > 0
     }
 
     if (popupControl.value) {
