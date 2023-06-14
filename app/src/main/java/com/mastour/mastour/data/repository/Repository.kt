@@ -126,14 +126,6 @@ class Repository @Inject constructor(
         return try {
             val response: Response<ImgurResponse>
             if (image == Uri.EMPTY) {
-                val file = uriToFile(image, context)
-                val filePart = MultipartBody.Part.
-                createFormData("image", null, file.asRequestBody())
-
-                response = imgurApiService.uploadFile(
-                    filePart
-                )
-            } else {
                 val link = "https://i.imgur.com//AwpoAoG.png"
                 val jsonObject = JSONObject()
                 jsonObject.put("image", link)
@@ -145,6 +137,14 @@ class Repository @Inject constructor(
 
                 response = imgurApiService.uploadFile(
                     requestBody
+                )
+            } else {
+                val file = uriToFile(image, context)
+                val filePart = MultipartBody.Part.
+                createFormData("image", null, file.asRequestBody())
+
+                response = imgurApiService.uploadFile(
+                    filePart
                 )
             }
 

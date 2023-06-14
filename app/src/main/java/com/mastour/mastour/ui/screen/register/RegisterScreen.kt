@@ -94,7 +94,7 @@ fun RegisterScreen(
     val context = LocalContext.current
 
     val dataValid = remember {
-        mutableListOf(false, false, false, false, false, false)
+        mutableListOf(false, false, false, false, false)
     }
     val genderDialog = remember { mutableStateOf(false) }
     val genders = listOf("male", "female")
@@ -240,8 +240,7 @@ fun RegisterContent(
     checkValid[1] = username.isNotBlank()
     checkValid[2] = name.isNotBlank()
     checkValid[3] = password == confirmPassword && password.isNotBlank()
-    checkValid[4] = imageUri != null
-    checkValid[5] = gender.isNotBlank()
+    checkValid[4] = gender.isNotBlank()
     val allValid = checkValid.all { it }
 
     Column(
@@ -274,7 +273,7 @@ fun RegisterContent(
         Box(modifier = modifier) {
             Image(
                 bitmap =
-                if (imageUri != null) {
+                if (imageUri != Uri.EMPTY) {
                     val inputStream = imageUri?.let { context.contentResolver.openInputStream(it) }
                     val bitmap = BitmapFactory.decodeStream(inputStream)
                     bitmap.asImageBitmap()
