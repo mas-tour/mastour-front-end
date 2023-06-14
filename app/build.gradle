@@ -15,11 +15,14 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "API_URL", "\"https://mastour-api-gxuwo3uksq-et.a.run.app/\""
+        buildConfigField "String", "CLIENT_ID", "\"3bc735ced126e46\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
+
     }
 
     buildTypes {

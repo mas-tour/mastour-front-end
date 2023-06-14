@@ -27,54 +27,59 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
 @Composable
-fun ExpandedToolbar (
+fun ExpandedToolbar(
     title: String,
     picture: String,
     onBackClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colors.primaryVariant)
-                .fillMaxWidth()
-                .height(200.dp),
-            contentAlignment = Alignment.BottomStart
-        ) {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = picture,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary, blendMode = BlendMode.Softlight)
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colors.primaryVariant)
+            .fillMaxWidth()
+            .height(200.dp),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = picture,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            colorFilter = ColorFilter.tint(
+                color = MaterialTheme.colors.primary,
+                blendMode = BlendMode.Softlight
             )
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = title,
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h3.copy(
-                    fontWeight = FontWeight.Bold,
-                    shadow = Shadow(color = Color.Black,
-                        offset = Offset(4f, 4f),
-                        blurRadius = 8f)
-                ),
-            )
-            IconButton(
-                onClick = onBackClicked,
-                modifier = modifier
-                    .align(Alignment.TopStart)
-                    .padding(2.dp)
-
-            ) {
-                Icon(
-                    Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.White,
-                    modifier = modifier.shadow(
-                        elevation = 4.dp
-                    )
+        )
+        Text(
+            modifier = Modifier.padding(16.dp),
+            text = title,
+            color = MaterialTheme.colors.onPrimary,
+            style = MaterialTheme.typography.h3.copy(
+                fontWeight = FontWeight.Bold,
+                shadow = Shadow(
+                    color = Color.Black,
+                    offset = Offset(4f, 4f),
+                    blurRadius = 8f
                 )
-            }
+            ),
+        )
+        IconButton(
+            onClick = onBackClicked,
+            modifier = modifier
+                .align(Alignment.TopStart)
+                .padding(2.dp)
+
+        ) {
+            Icon(
+                Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White,
+                modifier = modifier.shadow(
+                    elevation = 4.dp
+                )
+            )
         }
+    }
 }
 
 @Composable

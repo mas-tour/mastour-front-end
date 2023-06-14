@@ -31,8 +31,7 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     viewModel: GuidesViewModel = hiltViewModel(),
     moveToGuideDetail: (String) -> Unit,
-)
-{
+) {
     val query by viewModel.query
 
     SideEffect {
@@ -59,26 +58,31 @@ fun SearchContent(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier.padding(contentPadding)){
-        items(items = guides, key = {it.id}){guide->
+    LazyColumn(modifier = modifier.padding(contentPadding)) {
+        items(items = guides, key = { it.id }) { guide ->
             if (guide != null) {
                 UserComponent(
                     name = guide.name,
                     photoUrl = guide.picture,
-                    place = guide.city ,
+                    place = guide.city,
                     specialization = guide.categories,
                     price = guide.pricePerDay,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(160.dp)
                         .padding(horizontal = 16.dp, vertical = 5.dp)
-                        .shadow(elevation = 8.dp, ambientColor = MaterialTheme.colors.primary, spotColor = MaterialTheme.colors.primary).clickable {
-                        moveToGuideDetail(guide.id)
-                    }
+                        .shadow(
+                            elevation = 8.dp,
+                            ambientColor = MaterialTheme.colors.primary,
+                            spotColor = MaterialTheme.colors.primary
+                        )
+                        .clickable {
+                            moveToGuideDetail(guide.id)
+                        }
                 )
             }
         }
-        when(val state = guides.loadState.refresh){
+        when (guides.loadState.refresh) {
             is LoadState.Error -> {
                 item {
                     FailureScreen(
@@ -107,7 +111,7 @@ fun SearchContent(
             }
             else -> {}
         }
-        when(val state = guides.loadState.append){
+        when (guides.loadState.append) {
             is LoadState.Error -> {
                 item {
                     FailureScreen(

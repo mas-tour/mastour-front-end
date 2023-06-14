@@ -1,12 +1,9 @@
 package com.mastour.mastour.ui.screen.profile
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.os.Build
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -15,15 +12,7 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -35,12 +24,9 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -52,17 +38,13 @@ import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.ProfileViewModel
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.getAgeFromTimestamp
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
@@ -77,8 +59,8 @@ fun ProfileScreen(
         viewModel.tryUserToken()
     }
 
-    LaunchedEffect(userExist){
-        if(!userExist) {
+    LaunchedEffect(userExist) {
+        if (!userExist) {
             navHostController.navigate(Screen.Login.route) {
                 popUpTo(0)
             }
@@ -90,10 +72,14 @@ fun ProfileScreen(
 
     // Date picker UI
     val datePicker = DatePickerDialog(context)
-    val calendar = Calendar.getInstance()
-    datePicker.datePicker.maxDate = calendar.timeInMillis
-    calendar.add(Calendar.YEAR, -100)
-    datePicker.datePicker.minDate = calendar.timeInMillis
+    val calendarMax = Calendar.getInstance()
+    val calendarMin = Calendar.getInstance()
+//
+    calendarMax.add(Calendar.YEAR, -17)
+    datePicker.datePicker.maxDate = calendarMax.timeInMillis
+    calendarMin.add(Calendar.YEAR, -100)
+    datePicker.datePicker.minDate = calendarMin.timeInMillis
+
     datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
@@ -134,16 +120,16 @@ fun ProfileScreen(
     )
 
     viewModel.profileResponse.collectAsState(initial = UiState.Loading).value.let { UiState ->
-        when(UiState) {
+        when (UiState) {
             is UiState.Loading -> {
-                    Column(
-                        modifier = modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Loading")
-                        CircularProgressIndicator(color = Color.Black)
-                    }
+                Column(
+                    modifier = modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Loading")
+                    CircularProgressIndicator(color = Color.Black)
+                }
             }
 
             is UiState.Success -> {
@@ -183,17 +169,32 @@ fun ProfileScreen(
                 }
             }
             is UiState.Failure -> {
-                // TODO: Toast or dialogue, Register failed
-                // TODO: find a better way of handling errors...
-                FailureScreen(
-                    onRefreshClicked = { viewModel.getProfile() },
-                    modifier = modifier.fillMaxSize())
+                Column(
+                    modifier = modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    FailureScreen(
+                        onRefreshClicked = { viewModel.getProfile() },
+                    )
+                    TextButton(
+                        onClick = { viewModel.deleteSession() },
+                        modifier = Modifier.padding(top = 24.dp)
+                    ) {
+                        Text(
+                            text = "Log-out",
+                            style = MaterialTheme.typography.caption.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colors.error
+                            ),
+                        )
+                    }
+                }
             }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileContent(
     name: String,
@@ -214,15 +215,20 @@ fun ProfileContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Box(modifier = modifier
-            .fillMaxWidth()
-            .height(300.dp)) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(300.dp)
+        ) {
 
             AsyncImage(
-                model = photoUrl, // TODO: Dummy, Change this later
+                model = photoUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(Color(0xFF7147B1).copy(alpha = 0.3f), blendMode = BlendMode.Color),
+                colorFilter = ColorFilter.tint(
+                    Color(0xFF7147B1).copy(alpha = 0.3f),
+                    blendMode = BlendMode.Color
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .blur(2.dp)
@@ -244,11 +250,14 @@ fun ProfileContent(
             )
         }
 
-        Text(name,
+        Text(
+            name,
             style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.ExtraBold),
             color = MaterialTheme.colors.primary,
-            modifier = modifier.padding(top = 47.dp))
-        Text(username.lowercase(),
+            modifier = modifier.padding(top = 47.dp)
+        )
+        Text(
+            username.lowercase(),
             style = MaterialTheme.typography.subtitle1.copy(color = Color.Gray)
         )
 
@@ -256,7 +265,8 @@ fun ProfileContent(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = modifier
                 .padding(horizontal = 15.dp)
-                .padding(top = 25.dp)) {
+                .padding(top = 25.dp)
+        ) {
 
             // Menu
             Button(
@@ -271,16 +281,20 @@ fun ProfileContent(
             )
             {
                 val age = getAgeFromTimestamp(timestamp)
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier.padding(horizontal = 15.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier.padding(horizontal = 15.dp)
+                ) {
                     Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
                     Spacer(modifier.width(14.dp))
-                    Text(text =
-                    if (timestamp == 0L) {
-                        "[click here to set]"
-                    } else {
-                        "$age years old"
-                    }, style = MaterialTheme.typography.subtitle2)
+                    Text(
+                        text =
+                        if (timestamp == 0L) {
+                            "[click here to set]"
+                        } else {
+                            "$age years old"
+                        }, style = MaterialTheme.typography.subtitle2
+                    )
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -296,13 +310,18 @@ fun ProfileContent(
                     .advancedShadow(shadowRadius = 3.dp, borderRadius = 30.dp, offsetY = 3.dp)
             )
             {
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier.padding(horizontal = 15.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier.padding(horizontal = 15.dp)
+                ) {
                     Icon(Icons.Filled.Person, contentDescription = "Gender")
                     Spacer(modifier.width(14.dp))
-                    Text(gender.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
-                        style = MaterialTheme.typography.subtitle2)
+                    Text(
+                        gender.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                        },
+                        style = MaterialTheme.typography.subtitle2
+                    )
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -318,8 +337,10 @@ fun ProfileContent(
                     .advancedShadow(shadowRadius = 3.dp, borderRadius = 30.dp, offsetY = 3.dp)
             )
             {
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier.padding(horizontal = 15.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier.padding(horizontal = 15.dp)
+                ) {
                     Icon(Icons.Filled.Phone, contentDescription = "Phone Number")
                     Spacer(modifier.width(14.dp))
                     Text(
@@ -327,8 +348,8 @@ fun ProfileContent(
                             "[click here to set]"
                         } else {
                             phoneNumber
-                        }
-                        , style = MaterialTheme.typography.subtitle2)
+                        }, style = MaterialTheme.typography.subtitle2
+                    )
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -344,13 +365,21 @@ fun ProfileContent(
                     .advancedShadow(shadowRadius = 3.dp, borderRadius = 30.dp, offsetY = 3.dp)
             )
             {
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier.padding(horizontal = 15.dp)) {
-                    Icon(Icons.Filled.Logout, contentDescription = "Logout", tint = Color(0XFFB14747))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier.padding(horizontal = 15.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Logout,
+                        contentDescription = "Logout",
+                        tint = Color(0XFFB14747)
+                    )
                     Spacer(modifier.width(14.dp))
-                    Text("Logout",
+                    Text(
+                        "Logout",
                         style = MaterialTheme.typography.subtitle2,
-                        color = Color(0XFFB14747))
+                        color = Color(0XFFB14747)
+                    )
                     Spacer(modifier.weight(1f))
                 }
             }
@@ -359,6 +388,7 @@ fun ProfileContent(
 }
 
 // code snippet
+@SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.advancedShadow(
     color: Color = Color.Black,
     alpha: Float = 0.2f,
@@ -369,7 +399,7 @@ fun Modifier.advancedShadow(
 ) = composed {
 
     val shadowColor = color.copy(alpha = alpha).toArgb()
-    val transparent = color.copy(alpha= 0f).toArgb()
+    val transparent = color.copy(alpha = 0f).toArgb()
 
     this.drawBehind {
 

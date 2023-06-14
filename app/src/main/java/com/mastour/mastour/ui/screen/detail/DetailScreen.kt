@@ -4,15 +4,12 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -28,43 +25,32 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.mastour.mastour.data.remote.DataDetailGuides
 import com.mastour.mastour.ui.components.CategoryComponent
 import com.mastour.mastour.ui.components.TagComponent
-import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.screen.profile.advancedShadow
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.formatNumber
-import com.mastour.mastour.util.getAgeFromTimestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
-import java.util.Calendar
+import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailScreen(
     id: String,
     onBackClicked: () -> Unit,
-    navController: NavHostController = rememberNavController(),
     viewModel: GuidesViewModel = hiltViewModel()
-){
+) {
     SideEffect {
         viewModel.tryUserToken()
     }
@@ -80,16 +66,16 @@ fun DetailScreen(
 
     viewModel.bookGuideResponse.collectAsState(UiState.Loading).value.let { uiState ->
         when (uiState) {
-            is UiState.Loading ->{
+            is UiState.Loading -> {
                 // Empty?
             }
-            is UiState.Success ->{
+            is UiState.Success -> {
                 LaunchedEffect(key1 = true) {
                     Toast.makeText(context, "Guide booked succesfully!", Toast.LENGTH_SHORT).show()
                     popupControl.value = false
                 }
             }
-            is UiState.Failure ->{
+            is UiState.Failure -> {
                 LaunchedEffect(key1 = true) {
                     Toast.makeText(context, "Failed to book guide", Toast.LENGTH_SHORT).show()
                 }
@@ -97,9 +83,9 @@ fun DetailScreen(
         }
     }
 
-    viewModel.detailResponse.collectAsState(UiState.Loading).value.let {uiState->
-        when (uiState){
-            is UiState.Loading ->{
+    viewModel.detailResponse.collectAsState(UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
                 viewModel.getDetailedGuide(id)
                 Column(
                     modifier = Modifier
@@ -116,7 +102,7 @@ fun DetailScreen(
                     CircularProgressIndicator(color = Color.Black)
                 }
             }
-            is UiState.Success ->{
+            is UiState.Success -> {
                 uiState.data?.data?.let {
                     DetailContent(
                         dataDetailGuides = it,
@@ -128,15 +114,16 @@ fun DetailScreen(
                     )
                 }
             }
-            is UiState.Failure ->{
-                FailureScreen(onRefreshClicked = {viewModel.getDetailedGuide(id)}, modifier = Modifier.fillMaxSize())
+            is UiState.Failure -> {
+                FailureScreen(
+                    onRefreshClicked = { viewModel.getDetailedGuide(id) },
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
 }
 
-// TODO: Move this and maybe change to AlertDialog for dimmed background
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ConfirmHirePopup(
     popupControl: MutableState<Boolean>,
@@ -154,7 +141,6 @@ fun ConfirmHirePopup(
         mutableStateOf("Unset")
     }
 
-    // TODO: Logic Start Date & End Date
     val datePickerStart = DatePickerDialog(context)
     val datePickerEnd = DatePickerDialog(context)
 
@@ -165,25 +151,32 @@ fun ConfirmHirePopup(
         mutableStateOf(false)
     }
 
+    var timestampStart = 0L
+    var timestampEnd = 0L
+
+    datePickerStart.datePicker.minDate = Calendar.getInstance().timeInMillis
     datePickerStart.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         startDate = "$dayOfMonth / $month / $year"
-        var timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        timestampStart = localDateTime.toEpochSecond(ZoneOffset.UTC)
         timestampStart *= 1000
         viewModel.changeStart(timestampStart)
+//        val instant = Instant.ofEpochSecond(timestampStart)
+//        val nextDayInstant = instant.plusSeconds(86400)
         datePickerEnd.datePicker.minDate = timestampStart
         startDateFilled.value = true
+        endDateFilled.value = timestampEnd - timestampStart > 0
     }
 
     datePickerEnd.setOnDateSetListener { _, year, month, dayOfMonth ->
         val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
         val localDateTime = LocalDateTime.of(selectedDate, LocalTime.MIDNIGHT)
         endDate = "$dayOfMonth / $month / $year"
-        var timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        timestampEnd = localDateTime.toEpochSecond(ZoneOffset.UTC)
         timestampEnd *= 1000
         viewModel.changeEnd(timestampEnd)
-        endDateFilled.value = true
+        endDateFilled.value = timestampEnd - timestampStart > 0
     }
 
     if (popupControl.value) {
@@ -192,19 +185,26 @@ fun ConfirmHirePopup(
                 popupControl.value = false
             },
             title = {
-                Text(text = "Booking Menu",
+                Text(
+                    text = "Booking Menu",
                     style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
-                    modifier = modifier.padding(8.dp))
+                    modifier = modifier.padding(8.dp)
+                )
             },
             text = {
-                Box(modifier = modifier
-                    .fillMaxWidth(0.9F)
-                    .background(Color.White)
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth(0.9F)
+                        .background(Color.White)
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(text = "Choose Tour Start Date!", modifier = modifier.align(Alignment.Start))
+                        Text(
+                            text = "Choose Tour Start Date!",
+                            modifier = modifier.align(Alignment.Start)
+                        )
                         Button(
                             onClick = { datePickerStart.show() },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
@@ -221,8 +221,10 @@ fun ConfirmHirePopup(
 
                         )
                         {
-                            Row(verticalAlignment = Alignment.CenterVertically,
-                                modifier = modifier.padding(horizontal = 15.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = modifier.padding(horizontal = 15.dp)
+                            ) {
                                 Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
                                 Spacer(modifier.width(14.dp))
                                 Text(text = startDate, style = MaterialTheme.typography.subtitle2)
@@ -230,7 +232,10 @@ fun ConfirmHirePopup(
                             }
                         }
 
-                        Text(text = "Choose Tour End Date!", modifier = modifier.align(Alignment.Start))
+                        Text(
+                            text = "Choose Tour End Date!",
+                            modifier = modifier.align(Alignment.Start)
+                        )
                         Button(
                             onClick = { datePickerEnd.show() },
                             enabled = startDateFilled.value,
@@ -247,8 +252,10 @@ fun ConfirmHirePopup(
                                 )
                         )
                         {
-                            Row(verticalAlignment = Alignment.CenterVertically,
-                                modifier = modifier.padding(horizontal = 15.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = modifier.padding(horizontal = 15.dp)
+                            ) {
                                 Icon(Icons.Filled.CalendarToday, contentDescription = "Age")
                                 Spacer(modifier.width(14.dp))
                                 Text(text = endDate, style = MaterialTheme.typography.subtitle2)
@@ -285,7 +292,7 @@ fun DetailContent(
     onBackClicked: () -> Unit,
     onHireClicked: () -> Unit,
     context: Context,
-){
+) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         Column {
             Column(
@@ -424,9 +431,11 @@ fun DetailContent(
                 }
 
             }
-            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+            ) {
                 OutlinedButton(
                     onClick = {
                         val u = Uri.parse("tel:${dataDetailGuides.phoneNumber}")
@@ -441,7 +450,8 @@ fun DetailContent(
                     shape = RoundedCornerShape(16.dp), modifier = Modifier
                         .padding(top = 16.dp, bottom = 16.dp, end = 8.dp, start = 8.dp)
                         .height(48.dp)
-                        .width(this@BoxWithConstraints.maxWidth / 2)) {
+                        .width(this@BoxWithConstraints.maxWidth / 2)
+                ) {
                     Text(
                         text = "Contact",
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp),

@@ -34,15 +34,15 @@ fun HomePageScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     navHostController: NavHostController
-){
+) {
     Scaffold(
         topBar = {
             HomeTopBar()
         })
-    {paddingValues ->
-        viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let {uiState->
-            when(uiState){
-                is UiState.Loading ->{
+    { paddingValues ->
+        viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
                     viewModel.getCategories()
                     Column(
                         modifier = modifier
@@ -55,19 +55,27 @@ fun HomePageScreen(
                         CircularProgressIndicator(color = Color.Black)
                     }
                 }
-                is UiState.Success ->{
+                is UiState.Success -> {
                     uiState.data?.citiesResponse?.let {
                         uiState.data.specResponse.let { it1 ->
                             HomePageContent(
-                                moveToCategoryDetail = {isCity, id ->
-                                    navHostController.navigate(Screen.Results.createRoute(isCity, id))},
-                                moveToMatchMaking = { navHostController.navigate(Screen.Matchmaking.route) {
-                                    popUpTo(Screen.Home.route) {
-                                        saveState = true
+                                moveToCategoryDetail = { isCity, id ->
+                                    navHostController.navigate(
+                                        Screen.Results.createRoute(
+                                            isCity,
+                                            id
+                                        )
+                                    )
+                                },
+                                moveToMatchMaking = {
+                                    navHostController.navigate(Screen.Matchmaking.route) {
+                                        popUpTo(Screen.Home.route) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }},
+                                },
                                 placeData = it.data,
                                 categoryData = it1.data,
                                 modifier = modifier.padding(paddingValues)
@@ -75,13 +83,17 @@ fun HomePageScreen(
                         }
                     }
                 }
-                is UiState.Failure ->{
-                    FailureScreen(onRefreshClicked = {viewModel.getCategories()}, modifier = modifier.fillMaxSize())
+                is UiState.Failure -> {
+                    FailureScreen(
+                        onRefreshClicked = { viewModel.getCategories() },
+                        modifier = modifier.fillMaxSize()
+                    )
                 }
             }
         }
     }
 }
+
 @Composable
 fun HomePageContent(
     moveToCategoryDetail: (Boolean, String) -> Unit,
@@ -89,23 +101,27 @@ fun HomePageContent(
     placeData: List<CategoriesItem>,
     categoryData: List<CategoriesItem>,
     modifier: Modifier = Modifier,
-){
-    Column(modifier = modifier
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Popular Places",
             style = MaterialTheme.typography.h5.copy(
                 color = Color.Black,
-                fontWeight = FontWeight.ExtraBold),
+                fontWeight = FontWeight.ExtraBold
+            ),
             maxLines = 1,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, top = 16.dp))
+                .padding(start = 16.dp, top = 16.dp)
+        )
 
-        LazyRow(modifier = Modifier.padding(top = 8.dp)){
-            items(placeData){place ->
+        LazyRow(modifier = Modifier.padding(top = 8.dp)) {
+            items(placeData) { place ->
                 CategoryComponent(name = place.name, photoUrl = place.picture, modifier = Modifier
                     .size(160.dp)
                     .padding(8.dp)
@@ -131,14 +147,16 @@ fun HomePageContent(
             text = "Categories",
             style = MaterialTheme.typography.h5.copy(
                 color = Color.Black,
-                fontWeight = FontWeight.ExtraBold),
+                fontWeight = FontWeight.ExtraBold
+            ),
             maxLines = 1,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp))
+                .padding(start = 16.dp)
+        )
 
-        LazyRow(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)){
-            items(categoryData){ category ->
+        LazyRow(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)) {
+            items(categoryData) { category ->
                 CategoryComponent(
                     name = category.name,
                     photoUrl = category.picture,

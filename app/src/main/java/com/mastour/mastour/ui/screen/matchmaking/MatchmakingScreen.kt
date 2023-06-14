@@ -33,56 +33,114 @@ import com.mastour.mastour.ui.theme.MasTourTheme
 fun MatchmakingContent(
     modifier: Modifier = Modifier,
     nextOnClicked: () -> Unit,
-){
-    Box(modifier = modifier.fillMaxSize()){
-        Image(painter = painterResource(R.drawable.match_bg),
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.match_bg),
             contentDescription = "Matchmaking",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary, blendMode = BlendMode.Softlight)
+            colorFilter = ColorFilter.tint(
+                color = MaterialTheme.colors.primary,
+                blendMode = BlendMode.Softlight
+            )
         )
-        Column(modifier = Modifier
-            .align(Alignment.TopStart)
-            .padding(16.dp)) {
-            Text(text = "Personality", style = MaterialTheme.typography.h5.copy(
-                color = Color.White,
-                fontWeight = FontWeight.ExtraBold,
-                shadow = Shadow(color = MaterialTheme.colors.primary, offset = Offset(5f, 10f), blurRadius = 3f)
-            ))
-            Text(text = "Matchmaking", style = MaterialTheme.typography.h5.copy(
-                color = MaterialTheme.colors.primaryVariant,
-                fontWeight = FontWeight.ExtraBold,
-                shadow = Shadow(color = MaterialTheme.colors.primary, offset = Offset(5f, 10f), blurRadius = 3f)
-            ))
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Personality", style = MaterialTheme.typography.h5.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.ExtraBold,
+                    shadow = Shadow(
+                        color = MaterialTheme.colors.primary,
+                        offset = Offset(5f, 10f),
+                        blurRadius = 3f
+                    )
+                )
+            )
+            Text(
+                text = "Matchmaking", style = MaterialTheme.typography.h5.copy(
+                    color = MaterialTheme.colors.primaryVariant,
+                    fontWeight = FontWeight.ExtraBold,
+                    shadow = Shadow(
+                        color = MaterialTheme.colors.primary,
+                        offset = Offset(5f, 10f),
+                        blurRadius = 3f
+                    )
+                )
+            )
         }
 
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomStart)
-            .padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomStart)
+                .padding(16.dp)
+        ) {
             Text(buildAnnotatedString {
-                withStyle(style = SpanStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                ) {
                     append("Find your best ")
                 }
-                withStyle(style = SpanStyle(color = MaterialTheme.colors.primaryVariant, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colors.primaryVariant,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                ) {
                     append("tour guide\n")
                 }
-                withStyle(style = SpanStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                ) {
                     append("by using our ")
                 }
-                withStyle(style = SpanStyle(color = MaterialTheme.colors.primaryVariant, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)){
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colors.primaryVariant,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                ) {
                     append("matchmaking\n")
                 }
-                withStyle(style = SpanStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)) {
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                ) {
                     append("feature")
                 }
             })
 
             TextButton(onClick = nextOnClicked, modifier = Modifier.align(Alignment.End)) {
-                Text(text = "Next", style = MaterialTheme.typography.h5.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.ExtraBold) )
-                Icon(imageVector = Icons.Filled.KeyboardArrowRight, contentDescription = "next", tint = Color.White, modifier = Modifier.size(24.dp))
+                Text(
+                    text = "Next", style = MaterialTheme.typography.h5.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                )
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowRight,
+                    contentDescription = "next",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
 
@@ -91,7 +149,7 @@ fun MatchmakingContent(
 
 @Composable
 @Preview(showBackground = true, device = Devices.PIXEL_3A, showSystemUi = true)
-fun MatchmakingScreenPreview(){
+fun MatchmakingScreenPreview() {
     MasTourTheme {
         MatchmakingContent(nextOnClicked = {})
     }

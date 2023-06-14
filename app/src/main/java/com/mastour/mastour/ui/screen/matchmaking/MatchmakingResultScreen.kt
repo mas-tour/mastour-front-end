@@ -1,6 +1,5 @@
 package com.mastour.mastour.ui.screen.matchmaking
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,7 +16,6 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,11 +37,12 @@ fun MatchmakingResultsScreen(
 ) {
     SideEffect {
         viewModel.tryUserToken()
+        viewModel.checkIsFilled()
     }
-    val context = LocalContext.current
+    val isFilled by viewModel.isFilled
 
-    viewModel.surveyResultsResponse.collectAsState(initial = UiState.Loading).value.let { uiState->
-        when(uiState){
+    viewModel.surveyResultsResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
             is UiState.Loading -> {
                 viewModel.getSurveyResults()
                 Column(
@@ -57,12 +56,17 @@ fun MatchmakingResultsScreen(
                 }
             }
             is UiState.Success -> {
-                uiState.data?.let { MatchmakingResultContent(userList = it.data, moveToGuideDetail = moveToGuideDetail ) }
+                uiState.data?.let {
+                    MatchmakingResultContent(
+                        userList = it.data,
+                        moveToGuideDetail = moveToGuideDetail
+                    )
+                }
             }
             is UiState.Failure -> {
-                viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let {secondState ->
-                    when(secondState){
-                        is UiState.Loading ->{
+                viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let { secondState ->
+                    when (secondState) {
+                        is UiState.Loading -> {
                             viewModel.getCategories()
                             Column(
                                 modifier = modifier
@@ -74,7 +78,7 @@ fun MatchmakingResultsScreen(
                                 CircularProgressIndicator(color = Color.Black)
                             }
                         }
-                        is UiState.Success ->{
+                        is UiState.Success -> {
                             var expanded by remember { mutableStateOf(false) }
                             var selectedText by remember {
                                 mutableStateOf(secondState.data?.citiesResponse?.data?.get(0)?.name.toString())
@@ -83,7 +87,8 @@ fun MatchmakingResultsScreen(
                                 secondState.data?.citiesResponse?.data?.get(0).let {
                                     if (it != null) {
                                         viewModel.changeIdCity(
-                                            it.id)
+                                            it.id
+                                        )
                                     }
                                 }
                             }
@@ -126,14 +131,12 @@ fun MatchmakingResultsScreen(
                                     ExposedDropdownMenu(
                                         expanded = expanded,
                                         onDismissRequest = { expanded = false }) {
-                                        secondState.data?.citiesResponse?.data?.forEach{ city ->
+                                        secondState.data?.citiesResponse?.data?.forEach { city ->
                                             DropdownMenuItem(
                                                 onClick = {
                                                     selectedText = city.name
                                                     viewModel.changeIdCity(city.id)
                                                     expanded = false
-                                                    Toast.makeText(context, "${viewModel.idCity}", Toast.LENGTH_SHORT).show()
-
                                                 },
                                             ) {
                                                 Text(text = city.name)
@@ -145,50 +148,60 @@ fun MatchmakingResultsScreen(
                                     text = "Pick the categories",
                                     style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold),
                                     color = MaterialTheme.colors.secondary,
-                                    modifier = Modifier.padding(start = 16.dp, top = 32.dp)
+                                    modifier = Modifier.padding(top = 32.dp, bottom = 8.dp)
                                 )
-                                secondState.data?.specResponse?.data?.forEach { spec ->
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        var checked by remember {
-                                            mutableStateOf(false)
-                                        }
-                                        Checkbox(checked = checked, onCheckedChange = {
-                                            checked = it
-
-                                            when (spec.name) {
-                                                "Historical" -> {
-                                                    viewModel.todoListState[0] = booleanToInt(it)
-                                                }
-                                                "Adventure" -> {
-                                                    viewModel.todoListState[1] = booleanToInt(it)
-                                                }
-                                                "Nature and Wildlife" -> {
-                                                    viewModel.todoListState[2] = booleanToInt(it)
-                                                }
-                                                "Culinary" -> {
-                                                    viewModel.todoListState[3] = booleanToInt(it)
-                                                }
-                                                "Wellness and Retreat" -> {
-                                                    viewModel.todoListState[4] = booleanToInt(it)
-                                                }
-                                                "Architectural" -> {
-                                                    viewModel.todoListState[5] = booleanToInt(it)
-                                                }
-                                                "Educational" -> {
-                                                    viewModel.todoListState[6] = booleanToInt(it)
-                                                }
-                                                "Shopping" -> {
-                                                    viewModel.todoListState[7] = booleanToInt(it)
-                                                }
+                                Column(horizontalAlignment = Alignment.Start) {
+                                    secondState.data?.specResponse?.data?.forEach { spec ->
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            var checked by remember {
+                                                mutableStateOf(false)
                                             }
-                                        })
-                                        Text(
-                                            text = spec.name,
-                                            style = MaterialTheme.typography.subtitle2.copy(
-                                                fontWeight = FontWeight.Normal,
-                                                color = MaterialTheme.colors.primary,
-                                            ),
-                                        )
+                                            Checkbox(checked = checked, onCheckedChange = {
+                                                checked = it
+
+                                                when (spec.name) {
+                                                    "Historical" -> {
+                                                        viewModel.todoListState[0] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Adventure" -> {
+                                                        viewModel.todoListState[1] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Nature and Wildlife" -> {
+                                                        viewModel.todoListState[2] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Culinary" -> {
+                                                        viewModel.todoListState[3] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Wellness and Retreat" -> {
+                                                        viewModel.todoListState[4] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Architectural" -> {
+                                                        viewModel.todoListState[5] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Educational" -> {
+                                                        viewModel.todoListState[6] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Shopping" -> {
+                                                        viewModel.todoListState[7] =
+                                                            booleanToInt(it)
+                                                    }
+                                                }
+                                            })
+                                            Text(
+                                                text = spec.name,
+                                                style = MaterialTheme.typography.subtitle2.copy(
+                                                    fontWeight = FontWeight.Normal,
+                                                    color = MaterialTheme.colors.primary,
+                                                ),
+                                            )
+                                        }
                                     }
                                 }
                                 Button(
@@ -202,9 +215,7 @@ fun MatchmakingResultsScreen(
                                         .width(120.dp)
                                         .height(48.dp),
                                     contentPadding = PaddingValues(),
-                                    enabled = !viewModel.todoListState.all {
-                                        it == 0
-                                    }
+                                    enabled = isFilled
 
                                 ) {
                                     Box(
@@ -221,13 +232,18 @@ fun MatchmakingResultsScreen(
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         Text(
-                                            text = if(!viewModel.todoListState.all { it == 0 }){ "Submit" }else{"Choose 1"},
-                                            color = Color.White)
+                                            text = if (isFilled) {
+                                                "Submit"
+                                            } else {
+                                                "Choose 1"
+                                            },
+                                            color = Color.White
+                                        )
                                     }
 
                                 }
                                 Text(
-                                    text = if (!viewModel.todoListState.all { it == 0 }) {
+                                    text = if (isFilled) {
                                         ""
                                     } else {
                                         "You must choose at least one category!"
@@ -243,10 +259,11 @@ fun MatchmakingResultsScreen(
                             }
 
                         }
-                        is UiState.Failure ->{
+                        is UiState.Failure -> {
                             FailureScreen(
                                 onRefreshClicked = { viewModel.getSurveyResults() },
-                                modifier = modifier.fillMaxSize())
+                                modifier = modifier.fillMaxSize()
+                            )
                         }
                     }
                 }
@@ -258,9 +275,9 @@ fun MatchmakingResultsScreen(
 @Composable
 fun MatchmakingResultContent(
     modifier: Modifier = Modifier,
-    userList : List<SurveyResults>,
+    userList: List<SurveyResults>,
     moveToGuideDetail: (String) -> Unit,
-){
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -282,7 +299,7 @@ fun MatchmakingResultContent(
             modifier = modifier
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
-            items(items = userList, key = {it.id}){guides->
+            items(items = userList, key = { it.id }) { guides ->
                 ExtendedUserComponent(
                     name = guides.name,
                     photoUrl = guides.picture,

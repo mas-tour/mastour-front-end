@@ -1,12 +1,10 @@
 package com.mastour.mastour.data.repository
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.mastour.mastour.R
 import com.mastour.mastour.data.local.UserData
 import com.mastour.mastour.data.pagingsource.GuidePagingSource
 import com.mastour.mastour.data.pagingsource.HistoryPagingSource
@@ -35,35 +33,47 @@ class Repository @Inject constructor(
     private val imgurApiService: ImgurApiService,
     @ApplicationContext private val context: Context
 ) {
-    fun getGuides(bearer : String, query: String = "", cityId: String? = null, categoryId: String? = null) = Pager(
+    fun getGuides(
+        bearer: String,
+        query: String = "",
+        cityId: String? = null,
+        categoryId: String? = null
+    ) = Pager(
         config = PagingConfig(
             pageSize = 20,
         ),
-        pagingSourceFactory = {GuidePagingSource(masTourApiService, bearer, query = query, cityId = cityId, categoryId = categoryId)}
+        pagingSourceFactory = {
+            GuidePagingSource(
+                masTourApiService,
+                bearer,
+                query = query,
+                cityId = cityId,
+                categoryId = categoryId
+            )
+        }
     ).flow
 
-    fun getHistory(bearer : String) = Pager(
+    fun getHistory(bearer: String) = Pager(
         config = PagingConfig(
             pageSize = 20,
         ),
         pagingSourceFactory = { HistoryPagingSource(masTourApiService, bearer) }
     ).flow
 
-    fun getUserExist(): Flow<Boolean>{
+    fun getUserExist(): Flow<Boolean> {
         return preferences.getUserExist()
     }
 
-    fun getUserToken(): Flow<String>{
+    fun getUserToken(): Flow<String> {
         return preferences.getUserToken()
     }
 
 
-
-    suspend fun deleteSession(){
+    suspend fun deleteSession() {
         preferences.deleteSession()
     }
 
-    fun login(email: String, password: String) : Flow<AuthUiState<LoginResponses>> {
+    fun login(email: String, password: String): Flow<AuthUiState<LoginResponses>> {
         val jsonObject = JSONObject()
         jsonObject.put("email", email)
         jsonObject.put("password", password)
@@ -78,8 +88,7 @@ class Repository @Inject constructor(
                 val responseLogin = masTourApiService.login(requestBody)
                 responseLogin.data?.token?.let { preferences.startSession(true, it) }
                 emit(AuthUiState.Success(responseLogin))
-            }
-            catch (e : Exception){
+            } catch (e: Exception) {
                 emit(AuthUiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -92,7 +101,7 @@ class Repository @Inject constructor(
         password: String,
         gender: String,
         picture: String
-    ) : Flow<AuthUiState<RegisterResponses>> {
+    ): Flow<AuthUiState<RegisterResponses>> {
         val jsonObject = JSONObject()
         jsonObject.put("username", username)
         jsonObject.put("email", email)
@@ -115,8 +124,7 @@ class Repository @Inject constructor(
                 emit(AuthUiState.Load)
                 val responseRegister = masTourApiService.register(requestBody)
                 emit(AuthUiState.Success(responseRegister))
-            }
-            catch (e : Exception){
+            } catch (e: Exception) {
                 emit(AuthUiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -130,8 +138,6 @@ class Repository @Inject constructor(
                 val jsonObject = JSONObject()
                 jsonObject.put("image", link)
 
-                Log.d("UploadImage", jsonObject.toString())
-
                 val requestBody =
                     jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
@@ -140,24 +146,22 @@ class Repository @Inject constructor(
                 )
             } else {
                 val file = uriToFile(image, context)
-                val filePart = MultipartBody.Part.
-                createFormData("image", null, file.asRequestBody())
+                val filePart =
+                    MultipartBody.Part.createFormData("image", null, file.asRequestBody())
 
                 response = imgurApiService.uploadFile(
                     filePart
                 )
             }
 
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 val link = response.body()?.upload?.link ?: ""
-                Log.d("ImgurAPI", link)
                 Result.success(link)
             } else {
-                Log.d("ImgurAPI", "Error")
                 Result.failure(Exception("Unknown network Exception."))
             }
 
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
@@ -168,8 +172,7 @@ class Repository @Inject constructor(
                 emit(UiState.Loading)
                 val responseLogin = masTourApiService.getProfile(bearer)
                 emit(UiState.Success(responseLogin))
-            }
-            catch (e : Exception){
+            } catch (e: Exception) {
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -193,15 +196,18 @@ class Repository @Inject constructor(
                 emit(UiState.Loading)
                 val responseProfile = masTourApiService.putProfile("Bearer $bearer", requestBody)
                 emit(UiState.Success(responseProfile))
-            }
-            catch (e : Exception){
+            } catch (e: Exception) {
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    // TODO: Maybe not UIState?
-    fun bookGuide(startDate: Long, endDate: Long, bearer: String, id: String): Flow<UiState<BookGuidesResponse>> {
+    fun bookGuide(
+        startDate: Long,
+        endDate: Long,
+        bearer: String,
+        id: String
+    ): Flow<UiState<BookGuidesResponse>> {
         val jsonObject = JSONObject()
         jsonObject.put("start_date", startDate)
         jsonObject.put("end_date", endDate)
@@ -209,18 +215,12 @@ class Repository @Inject constructor(
         val requestBody =
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
-        Log.d("Post", jsonObject.toString())
         return flow {
             try {
-                Log.d("Post", "Try, token: $bearer")
                 emit(UiState.Loading)
                 val responseBooking = masTourApiService.bookGuide("Bearer $bearer", requestBody, id)
                 emit(UiState.Success(responseBooking))
-                Log.d("Post", responseBooking.toString())
-            }
-            catch (e : Exception){
-                Log.d("Post", "Fail")
-                Log.d("Post", e.toString())
+            } catch (e: Exception) {
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
@@ -239,14 +239,17 @@ class Repository @Inject constructor(
                 emit(UiState.Loading)
                 val responseSurvey = masTourApiService.submitSurvey("Bearer $token", requestBody)
                 emit(UiState.Success(responseSurvey))
-            }
-            catch (e : Exception){
+            } catch (e: Exception) {
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getSurveyResults(cityId: String, pickedCategories: List<Int>, token: String): Flow<UiState<ResponseSurveyResults>> {
+    fun getSurveyResults(
+        cityId: String,
+        pickedCategories: List<Int>,
+        token: String
+    ): Flow<UiState<ResponseSurveyResults>> {
         val jsonObject = JSONObject()
         val jsonArray = JSONArray(pickedCategories)
         jsonObject.put("city_id", cityId)
@@ -256,32 +259,31 @@ class Repository @Inject constructor(
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
         return flow {
-            try{
+            try {
                 emit(UiState.Loading)
-                val responseSurveyResults = masTourApiService.getSurvey("Bearer $token", requestBody)
+                val responseSurveyResults =
+                    masTourApiService.getSurvey("Bearer $token", requestBody)
                 emit(UiState.Success(responseSurveyResults))
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 emit(UiState.Failure(e))
             }
         }
     }
 
 
-    fun detailedGuides(id: String, token: String) : Flow<UiState<DetailGuidesResponse>>{
+    fun detailedGuides(id: String, token: String): Flow<UiState<DetailGuidesResponse>> {
         return flow {
             try {
                 emit(UiState.Loading)
                 val responseDetailGuide = masTourApiService.getDetailedGuide("Bearer $token", id)
                 emit(UiState.Success(responseDetailGuide))
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getCategories(): Flow<UiState<CategoriesHelper>>{
+    fun getCategories(): Flow<UiState<CategoriesHelper>> {
         return flow {
             try {
                 emit(UiState.Loading)
@@ -289,8 +291,7 @@ class Repository @Inject constructor(
                 val specResponse = masTourApiService.getCategories()
                 val responseCategoriesHelper = CategoriesHelper(citiesResponse, specResponse)
                 emit(UiState.Success(responseCategoriesHelper))
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 emit(UiState.Failure(e))
             }
         }.flowOn(Dispatchers.IO)

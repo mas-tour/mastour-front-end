@@ -1,7 +1,9 @@
 package com.mastour.mastour.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -18,22 +20,20 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.mastour.mastour.R
-import com.mastour.mastour.ui.theme.MasTourTheme
 
 @Composable
 fun CategoryComponent(
     name: String,
     photoUrl: String,
     modifier: Modifier = Modifier,
-){
-    Card(modifier = modifier
-        .clip(RoundedCornerShape(8.dp))
-    ){
-        Box{
+) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+    ) {
+        Box {
             AsyncImage(
                 model = photoUrl,
                 contentDescription = name,
@@ -41,15 +41,20 @@ fun CategoryComponent(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(8.dp)),
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary, blendMode = BlendMode.Softlight)
+                colorFilter = ColorFilter.tint(
+                    color = MaterialTheme.colors.primary,
+                    blendMode = BlendMode.Softlight
+                )
             )
             Text(
                 text = name,
                 style = MaterialTheme.typography.subtitle2.copy(
                     fontWeight = FontWeight.ExtraBold,
-                    shadow = Shadow(color = Color.Black,
+                    shadow = Shadow(
+                        color = Color.Black,
                         offset = Offset(4f, 4f),
-                        blurRadius = 8f)
+                        blurRadius = 8f
+                    )
                 ),
                 color = Color.White,
                 modifier = Modifier
@@ -66,11 +71,12 @@ fun CategoryComponent2(
     name: String,
     photoUrl: Int,
     modifier: Modifier = Modifier,
-){
-    Card(modifier = modifier
-        .clip(RoundedCornerShape(8.dp))
-    ){
-        Box{
+) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+    ) {
+        Box {
             Image(
                 painter = painterResource(photoUrl),
                 contentDescription = name,
@@ -78,15 +84,20 @@ fun CategoryComponent2(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(8.dp)),
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary, blendMode = BlendMode.Softlight)
+                colorFilter = ColorFilter.tint(
+                    color = MaterialTheme.colors.primary,
+                    blendMode = BlendMode.Softlight
+                )
             )
             Text(
                 text = name,
                 style = MaterialTheme.typography.subtitle2.copy(
                     fontWeight = FontWeight.ExtraBold,
-                    shadow = Shadow(color = Color.Black,
+                    shadow = Shadow(
+                        color = Color.Black,
                         offset = Offset(4f, 4f),
-                        blurRadius = 8f)
+                        blurRadius = 8f
+                    )
                 ),
                 color = Color.White,
                 modifier = Modifier

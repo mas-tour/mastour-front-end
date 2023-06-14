@@ -50,9 +50,9 @@ fun CategoryScreen(
             isFirstItemHidden || listState.firstVisibleItemIndex > 0
         }
     }
-    viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let { uiState->
-        when(uiState){
-            is UiState.Loading ->{
+    viewModel.categoriesResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
                 viewModel.getCategories()
                 Column(
                     modifier = modifier
@@ -64,13 +64,16 @@ fun CategoryScreen(
                     CircularProgressIndicator(color = Color.Black)
                 }
             }
-            is UiState.Success ->{
-               val dataCity =  uiState.data?.citiesResponse?.data?.filter {
-                    it.id == id }
+            is UiState.Success -> {
+                val dataCity = uiState.data?.citiesResponse?.data?.filter {
+                    it.id == id
+                }
                 val dataCategory = uiState.data?.specResponse?.data?.filter {
                     it.id == id
                 }
-                (if (isCity && dataCity != null) { dataCity[0] } else{
+                (if (isCity && dataCity != null) {
+                    dataCity[0]
+                } else {
                     dataCategory?.get(0)
                 })?.let {
                     CategoryContent(
@@ -78,18 +81,25 @@ fun CategoryScreen(
                         it.name,
                         cityPic = it.picture,
                         guideData =
-                        if(isCity){viewModel.getGuides(cityId = id).collectAsLazyPagingItems()}
-                        else{viewModel.getGuides(categoryId = id).collectAsLazyPagingItems()},
+                        if (isCity) {
+                            viewModel.getGuides(cityId = id).collectAsLazyPagingItems()
+                        } else {
+                            viewModel.getGuides(categoryId = id).collectAsLazyPagingItems()
+                        },
                         moveToGuideDetail = moveToGuideDetail,
                         listState = listState,
                         isCollapsed = isCollapsed,
                         onBackClicked = onBackClicked,
-                        modifier = modifier)
+                        modifier = modifier
+                    )
                 }
 
             }
-            is UiState.Failure ->{
-                FailureScreen(onRefreshClicked = {viewModel.getCategories()}, modifier = modifier.fillMaxSize())
+            is UiState.Failure -> {
+                FailureScreen(
+                    onRefreshClicked = { viewModel.getCategories() },
+                    modifier = modifier.fillMaxSize()
+                )
             }
         }
     }
@@ -110,8 +120,13 @@ fun CategoryContent(
         CollapsedTopBar(modifier = modifier.zIndex(2f), title = title, isCollapsed = isCollapsed)
 
         LazyColumn(state = listState) {
-            // TODO: Change data to arguments
-            item { ExpandedToolbar(title = title, picture = cityPic, onBackClicked = onBackClicked) }
+            item {
+                ExpandedToolbar(
+                    title = title,
+                    picture = cityPic,
+                    onBackClicked = onBackClicked
+                )
+            }
             items(guideData) { guide ->
                 if (guide != null) {
                     UserComponent(
@@ -135,9 +150,14 @@ fun CategoryContent(
                     )
                 }
             }
-            when(val state = guideData.loadState.refresh){
+            when (guideData.loadState.refresh) {
                 is LoadState.Error -> {
-                    //TODO
+                    item {
+                        FailureScreen(
+                            onRefreshClicked = { guideData.refresh() },
+                            modifier = modifier.fillMaxSize()
+                        )
+                    }
                 }
                 is LoadState.Loading -> {
                     item {
@@ -159,9 +179,14 @@ fun CategoryContent(
                 }
                 else -> {}
             }
-            when(val state = guideData.loadState.append){
+            when (guideData.loadState.append) {
                 is LoadState.Error -> {
-                    //TODO
+                    item {
+                        FailureScreen(
+                            onRefreshClicked = { guideData.retry() },
+                            modifier = modifier.fillMaxWidth()
+                        )
+                    }
                 }
 
                 is LoadState.Loading -> {

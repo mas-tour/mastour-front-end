@@ -14,13 +14,14 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    private val _categoriesResponse: MutableStateFlow<UiState<CategoriesHelper>> = MutableStateFlow(UiState.Loading)
+    private val _categoriesResponse: MutableStateFlow<UiState<CategoriesHelper>> =
+        MutableStateFlow(UiState.Loading)
     val categoriesResponse: StateFlow<UiState<CategoriesHelper>>
         get() = _categoriesResponse
 
-    fun getCategories(){
+    fun getCategories() {
         viewModelScope.launch {
-            repository.getCategories().collect{
+            repository.getCategories().collect {
                 _categoriesResponse.value = it
             }
         }

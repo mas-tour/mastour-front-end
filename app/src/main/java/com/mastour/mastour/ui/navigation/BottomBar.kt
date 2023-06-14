@@ -15,20 +15,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.mastour.mastour.MainJetpack
-import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.theme.md_theme_dark_primaryContainer
 
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
-){
+) {
     BottomNavigation(modifier = modifier) {
         val navBackStackEntry by navHostController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -55,24 +51,28 @@ fun BottomBar(
             )
         )
 
-        BottomNavigation(modifier
-            .background(Color.White)
-            .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))) {
+        BottomNavigation(
+            modifier
+                .background(Color.White)
+                .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+        ) {
             navigationItem.map {
                 BottomNavigationItem(
                     icon = {
                         Icon(
                             imageVector = it.icon,
                             contentDescription = it.title
-                        )},
+                        )
+                    },
                     onClick = {
-                        navHostController.navigate(it.screen.route){
-                            popUpTo(Screen.Home.route){
+                        navHostController.navigate(it.screen.route) {
+                            popUpTo(Screen.Home.route) {
                                 saveState = true
                             }
                             restoreState = true
                             launchSingleTop = true
-                        } },
+                        }
+                    },
                     selected = currentRoute == it.screen.route,
                     selectedContentColor = md_theme_dark_primaryContainer,
                     unselectedContentColor = Color(0x507147B1),

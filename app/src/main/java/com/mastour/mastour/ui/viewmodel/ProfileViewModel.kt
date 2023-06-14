@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mastour.mastour.data.local.UserData
 import com.mastour.mastour.data.remote.ProfileResponse
-import com.mastour.mastour.data.remote.SurveyResponse
 import com.mastour.mastour.data.repository.Repository
 import com.mastour.mastour.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(private val repository: Repository): ViewModel() {
+class ProfileViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     private val _userToken = mutableStateOf("")
     private val _userExist = mutableStateOf(false)
     val userExist: State<Boolean> get() = _userExist
@@ -43,7 +42,8 @@ class ProfileViewModel @Inject constructor(private val repository: Repository): 
         }
     }
 
-    private val _profileResponse: MutableStateFlow<UiState<ProfileResponse>> = MutableStateFlow(UiState.Loading)
+    private val _profileResponse: MutableStateFlow<UiState<ProfileResponse>> =
+        MutableStateFlow(UiState.Loading)
     val profileResponse: StateFlow<UiState<ProfileResponse>>
         get() = _profileResponse
 
@@ -81,7 +81,6 @@ class ProfileViewModel @Inject constructor(private val repository: Repository): 
 
     fun putNumber() {
         _userData.value.phoneNumber = _phoneNumber.value
-        Log.d("PhoneNumber", _userToken.value)
         viewModelScope.launch {
             repository.updateProfile(userData.value, _userToken.value).collect {
                 _profileResponse.value = it
@@ -91,7 +90,6 @@ class ProfileViewModel @Inject constructor(private val repository: Repository): 
 
     fun putGender() {
         _userData.value.gender = _gender.value
-        Log.d("PhoneNumber", _userToken.value)
         viewModelScope.launch {
             repository.updateProfile(userData.value, _userToken.value).collect {
                 _profileResponse.value = it
@@ -101,7 +99,6 @@ class ProfileViewModel @Inject constructor(private val repository: Repository): 
 
     fun putBirthDate() {
         _userData.value.birthDate = _birthDate.value
-        Log.d("PhoneNumber", _userToken.value)
         viewModelScope.launch {
             repository.updateProfile(userData.value, _userToken.value).collect {
                 _profileResponse.value = it

@@ -1,18 +1,8 @@
 package com.mastour.mastour.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +24,7 @@ fun QuestionComponent(
     question: String,
     selectedValue: MutableState<Int>
 ) {
-    val items = listOf(0, 1, 2, 3, 4)
+    val items = listOf(1, 2, 3, 4, 5)
 
     val isSelectedItem: (Int) -> Boolean = { selectedValue.value == it }
     val onChangeState: (Int) -> Unit = { selectedValue.value = it }
@@ -44,24 +34,30 @@ fun QuestionComponent(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Column(modifier = modifier.padding(vertical = 20.dp, horizontal = 15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(question,
+        Column(
+            modifier = modifier.padding(vertical = 20.dp, horizontal = 15.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                question,
                 style = MaterialTheme.typography.subtitle1
                     .copy(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colors.primary
                     ),
                 textAlign = TextAlign.Center,
-                modifier = modifier.padding(bottom = 10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(15.dp),) {
+                modifier = modifier.padding(bottom = 10.dp)
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
 
                 items.forEach { item ->
-                    Column(verticalArrangement = Arrangement.Bottom,
+                    Column(
+                        verticalArrangement = Arrangement.Bottom,
                         modifier = modifier.height(40.dp)
                     ) {
-                        val number = item + 1
-                        Text(text = number.toString(),
+                        val number = item
+                        Text(
+                            text = number.toString(),
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 color = Color.Gray
@@ -81,11 +77,13 @@ fun QuestionComponent(
                 }
             }
             Row(modifier.padding(top = 10.dp)) {
-                Text("Disagree",
+                Text(
+                    "Disagree",
                     style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Normal)
                 )
                 Spacer(modifier.weight(1f))
-                Text("Agree",
+                Text(
+                    "Agree",
                     style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Normal)
                 )
             }

@@ -1,25 +1,21 @@
 package com.mastour.mastour.data.remote
 
+import com.mastour.mastour.BuildConfig
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Headers
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
+import retrofit2.http.*
 
 interface ImgurApiService {
     @Multipart
-    @Headers("Authorization: Client-ID 3bc735ced126e46")
+    @Headers("Authorization: Client-ID ${BuildConfig.CLIENT_ID}")
     @POST("/3/image")
     suspend fun uploadFile(
         @Part image: MultipartBody.Part?,
         @Part("name") name: RequestBody? = null
     ): Response<ImgurResponse>
 
-    // TODO: This function currently unused.
-    @Headers("Authorization: Client-ID 3bc735ced126e46")
+    @Headers("Authorization: Client-ID ${BuildConfig.CLIENT_ID}")
     @POST("/3/image")
     suspend fun uploadFile(
         @Body requestBody: RequestBody
