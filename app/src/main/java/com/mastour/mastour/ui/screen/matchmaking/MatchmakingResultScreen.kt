@@ -1,6 +1,5 @@
 package com.mastour.mastour.ui.screen.matchmaking
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,7 +16,6 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,8 +37,9 @@ fun MatchmakingResultsScreen(
 ) {
     SideEffect {
         viewModel.tryUserToken()
+        viewModel.checkIsFilled()
     }
-    val context = LocalContext.current
+    val isFilled by viewModel.isFilled
 
     viewModel.surveyResultsResponse.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
@@ -138,12 +137,6 @@ fun MatchmakingResultsScreen(
                                                     selectedText = city.name
                                                     viewModel.changeIdCity(city.id)
                                                     expanded = false
-                                                    Toast.makeText(
-                                                        context,
-                                                        "${viewModel.idCity}",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-
                                                 },
                                             ) {
                                                 Text(text = city.name)
@@ -155,50 +148,60 @@ fun MatchmakingResultsScreen(
                                     text = "Pick the categories",
                                     style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold),
                                     color = MaterialTheme.colors.secondary,
-                                    modifier = Modifier.padding(start = 16.dp, top = 32.dp)
+                                    modifier = Modifier.padding(top = 32.dp, bottom = 8.dp)
                                 )
-                                secondState.data?.specResponse?.data?.forEach { spec ->
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        var checked by remember {
-                                            mutableStateOf(false)
-                                        }
-                                        Checkbox(checked = checked, onCheckedChange = {
-                                            checked = it
-
-                                            when (spec.name) {
-                                                "Historical" -> {
-                                                    viewModel.todoListState[0] = booleanToInt(it)
-                                                }
-                                                "Adventure" -> {
-                                                    viewModel.todoListState[1] = booleanToInt(it)
-                                                }
-                                                "Nature and Wildlife" -> {
-                                                    viewModel.todoListState[2] = booleanToInt(it)
-                                                }
-                                                "Culinary" -> {
-                                                    viewModel.todoListState[3] = booleanToInt(it)
-                                                }
-                                                "Wellness and Retreat" -> {
-                                                    viewModel.todoListState[4] = booleanToInt(it)
-                                                }
-                                                "Architectural" -> {
-                                                    viewModel.todoListState[5] = booleanToInt(it)
-                                                }
-                                                "Educational" -> {
-                                                    viewModel.todoListState[6] = booleanToInt(it)
-                                                }
-                                                "Shopping" -> {
-                                                    viewModel.todoListState[7] = booleanToInt(it)
-                                                }
+                                Column(horizontalAlignment = Alignment.Start) {
+                                    secondState.data?.specResponse?.data?.forEach { spec ->
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            var checked by remember {
+                                                mutableStateOf(false)
                                             }
-                                        })
-                                        Text(
-                                            text = spec.name,
-                                            style = MaterialTheme.typography.subtitle2.copy(
-                                                fontWeight = FontWeight.Normal,
-                                                color = MaterialTheme.colors.primary,
-                                            ),
-                                        )
+                                            Checkbox(checked = checked, onCheckedChange = {
+                                                checked = it
+
+                                                when (spec.name) {
+                                                    "Historical" -> {
+                                                        viewModel.todoListState[0] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Adventure" -> {
+                                                        viewModel.todoListState[1] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Nature and Wildlife" -> {
+                                                        viewModel.todoListState[2] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Culinary" -> {
+                                                        viewModel.todoListState[3] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Wellness and Retreat" -> {
+                                                        viewModel.todoListState[4] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Architectural" -> {
+                                                        viewModel.todoListState[5] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Educational" -> {
+                                                        viewModel.todoListState[6] =
+                                                            booleanToInt(it)
+                                                    }
+                                                    "Shopping" -> {
+                                                        viewModel.todoListState[7] =
+                                                            booleanToInt(it)
+                                                    }
+                                                }
+                                            })
+                                            Text(
+                                                text = spec.name,
+                                                style = MaterialTheme.typography.subtitle2.copy(
+                                                    fontWeight = FontWeight.Normal,
+                                                    color = MaterialTheme.colors.primary,
+                                                ),
+                                            )
+                                        }
                                     }
                                 }
                                 Button(
@@ -212,9 +215,7 @@ fun MatchmakingResultsScreen(
                                         .width(120.dp)
                                         .height(48.dp),
                                     contentPadding = PaddingValues(),
-                                    enabled = !viewModel.todoListState.all {
-                                        it == 0
-                                    }
+                                    enabled = isFilled
 
                                 ) {
                                     Box(
@@ -231,7 +232,7 @@ fun MatchmakingResultsScreen(
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         Text(
-                                            text = if (!viewModel.todoListState.all { it == 0 }) {
+                                            text = if (isFilled) {
                                                 "Submit"
                                             } else {
                                                 "Choose 1"
@@ -242,7 +243,7 @@ fun MatchmakingResultsScreen(
 
                                 }
                                 Text(
-                                    text = if (!viewModel.todoListState.all { it == 0 }) {
+                                    text = if (isFilled) {
                                         ""
                                     } else {
                                         "You must choose at least one category!"

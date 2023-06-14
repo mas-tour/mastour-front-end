@@ -28,7 +28,9 @@ class MatchViewModel @Inject constructor(private val repository: Repository) : V
     private val _userToken = mutableStateOf("")
 
     private val _idCity = mutableStateOf("")
-    val idCity: State<String> get() = _idCity
+
+    private val _isFilled = mutableStateOf(false)
+    val isFilled: State<Boolean> get() = _isFilled
 
     val todoListState = mutableStateListOf(0, 0, 0, 0, 0, 0, 0, 0)
 
@@ -45,6 +47,9 @@ class MatchViewModel @Inject constructor(private val repository: Repository) : V
         }
     }
 
+    fun checkIsFilled(){
+        _isFilled.value = !todoListState.all { it == 0 }
+    }
 
     fun changeIdCity(email: String) {
         _idCity.value = email
