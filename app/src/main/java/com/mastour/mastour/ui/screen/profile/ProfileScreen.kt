@@ -48,6 +48,7 @@ import com.mastour.mastour.data.local.UserData
 import com.mastour.mastour.ui.navigation.Screen
 import com.mastour.mastour.ui.screen.dialog.GenderSelectionDialog
 import com.mastour.mastour.ui.screen.dialog.PhoneNumberDialog
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.ProfileViewModel
 import com.mastour.mastour.util.UiState
 import com.mastour.mastour.util.getAgeFromTimestamp
@@ -184,10 +185,9 @@ fun ProfileScreen(
             is UiState.Failure -> {
                 // TODO: Toast or dialogue, Register failed
                 // TODO: find a better way of handling errors...
-                LaunchedEffect(key1 = true) {
-                    Toast.makeText(context, "Update failed, please check your internet", Toast.LENGTH_SHORT).show()
-                }
-                viewModel.deleteSession()
+                FailureScreen(
+                    onRefreshClicked = { viewModel.getProfile() },
+                    modifier = modifier.fillMaxSize())
             }
         }
     }

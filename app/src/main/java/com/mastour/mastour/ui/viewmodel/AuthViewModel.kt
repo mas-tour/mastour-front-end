@@ -77,8 +77,8 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     private val _passwordConfirm = mutableStateOf("")
     val passwordConfirm: State<String> get() = _passwordConfirm
 
-    private val _imageUri = mutableStateOf<Uri?>(null)
-    val imageUri: State<Uri?> get() = _imageUri
+    private val _imageUri = mutableStateOf<Uri>(Uri.EMPTY)
+    val imageUri: State<Uri> get() = _imageUri
 
     private val _selectedGender = mutableStateOf("male")
     private val selectedGender: State<String> get() = _selectedGender
@@ -114,9 +114,9 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
     fun register() {
         viewModelScope.launch {
             _registerResponse.value = AuthUiState.Load
-            val result = imageUri.value?.let { repository.uploadImage(it) }
+            val result = imageUri.value.let { repository.uploadImage(it) }
 
-            val link = (result?.fold(
+            val link = (result.fold(
                 onSuccess = { value ->
                         repository.register(
                             emailRegister.value,

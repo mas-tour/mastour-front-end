@@ -36,6 +36,7 @@ import com.mastour.mastour.data.remote.DataGuides
 import com.mastour.mastour.data.remote.HistoryData
 import com.mastour.mastour.ui.components.OrderComponent
 import com.mastour.mastour.ui.components.UserComponent
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.theme.MasTourTheme
 import com.mastour.mastour.ui.viewmodel.GuidesViewModel
 
@@ -93,7 +94,12 @@ fun HistoryContent(
                 }
                 when (val state = guides.loadState.refresh) {
                     is LoadState.Error -> {
-                        //TODO
+                        item {
+                            FailureScreen(
+                                onRefreshClicked = { guides.refresh() },
+                                modifier = modifier.fillMaxSize()
+                            )
+                        }
                     }
 
                     is LoadState.Loading -> {
@@ -119,7 +125,12 @@ fun HistoryContent(
                 }
                 when (val state = guides.loadState.append) {
                     is LoadState.Error -> {
-                        //TODO
+                        item {
+                            FailureScreen(
+                                onRefreshClicked = { guides.retry() },
+                                modifier = modifier.fillMaxWidth()
+                            )
+                        }
                     }
 
                     is LoadState.Loading -> {

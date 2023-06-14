@@ -28,6 +28,7 @@ import com.mastour.mastour.data.local.Question
 import com.mastour.mastour.data.local.QuestionsData
 import com.mastour.mastour.ui.components.QuestionComponent
 import com.mastour.mastour.ui.navigation.Screen
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.SurveyViewModel
 import com.mastour.mastour.util.UiState
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ fun SurveyScreen(
                 )
             }
             is UiState.Success -> {
-                // TODO: Navigate to Matchmaking Results
+
                 LaunchedEffect(key1 = true) {
                     Log.d("Survey", "Life is a highway")
                     navHostController.navigate(Screen.PostMatchmaking.route) {
@@ -78,9 +79,9 @@ fun SurveyScreen(
                 }
             }
             is UiState.Failure -> {
-                rememberCoroutineScope().launch {
-                    Toast.makeText(context, uiState.e?.message, Toast.LENGTH_SHORT).show()
-                }
+                FailureScreen(
+                    onRefreshClicked = { viewModel.postAnswers() },
+                    modifier = Modifier.fillMaxSize())
             }
         }
     }

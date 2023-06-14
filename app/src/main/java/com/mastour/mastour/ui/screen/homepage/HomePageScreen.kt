@@ -25,6 +25,7 @@ import com.mastour.mastour.ui.components.CategoryComponent
 import com.mastour.mastour.ui.components.CategoryComponent2
 import com.mastour.mastour.ui.navigation.HomeTopBar
 import com.mastour.mastour.ui.navigation.Screen
+import com.mastour.mastour.ui.screen.failureScreen.FailureScreen
 import com.mastour.mastour.ui.viewmodel.HomeViewModel
 import com.mastour.mastour.util.UiState
 
@@ -75,7 +76,7 @@ fun HomePageScreen(
                     }
                 }
                 is UiState.Failure ->{
-                    //TODO
+                    FailureScreen(onRefreshClicked = {viewModel.getCategories()}, modifier = modifier.fillMaxSize())
                 }
             }
         }

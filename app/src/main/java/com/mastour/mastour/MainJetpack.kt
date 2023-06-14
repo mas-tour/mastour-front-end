@@ -2,8 +2,10 @@ package com.mastour.mastour
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -13,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -34,6 +38,7 @@ import com.mastour.mastour.ui.screen.matchmaking.MatchmakingResultsScreen
 import com.mastour.mastour.ui.screen.profile.ProfileScreen
 import com.mastour.mastour.ui.screen.register.RegisterScreen
 import com.mastour.mastour.ui.screen.search.SearchScreen
+import com.mastour.mastour.ui.screen.splashscreen.SplashScreen
 import com.mastour.mastour.ui.screen.survey.SurveyScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -75,10 +80,10 @@ fun MainJetpack(
                     },
                         shape = CircleShape,
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.CastConnected,
+                        Image(
+                            painter = painterResource(id = R.drawable.wayang_only),
                             contentDescription = "Matchmaking",
-                            tint = Color.White,
+                            modifier = Modifier.size(50.dp)
                         )
                     }
                 }
@@ -86,10 +91,13 @@ fun MainJetpack(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            //TODO: Change if shared pref user exist, do Screen.Home.route instead
-            startDestination = Screen.Login.route,
+            startDestination = Screen.Splash.route,
             modifier = Modifier.padding(innerPadding)){
-            //TODO: Add the arguments route
+
+            composable(Screen.Splash.route){
+                SplashScreen(navHostController = navController)
+            }
+
             composable(Screen.Login.route){
                 LoginScreen(navHostController = navController)
             }
