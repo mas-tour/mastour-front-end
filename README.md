@@ -10,13 +10,12 @@ MasTour connects tourists directly with local freelance tour guides, providing a
  
 ## Table of Contents
 
-- [Getting Started]()
-- [Screenshots and Demo]()
-- [Features]()
-- [Technologies Used]
-- [License]()
-- [Contact]()
-- [Acknowledgement]()
+- [Getting Started](https://github.com/mas-tour/mastour-front-end#Getting-Started)
+- [Screenshots and Demo](https://github.com/mas-tour/mastour-front-end#Screenshots-and-Demo)
+- [Features](https://github.com/mas-tour/mastour-front-end#Features)
+- [Technologies Used](https://github.com/mas-tour/mastour-front-end#Technologies-Used)
+- [Contact](https://github.com/mas-tour/mastour-front-end#Contact)
+- [Acknowledgement](https://github.com/mas-tour/mastour-front-end#Acknowledgement)
 
 ## Getting Started
 
@@ -58,10 +57,6 @@ MasTour is made with:
 6. [Hilt](https://dagger.dev/hilt/)
 7. [Coil](https://github.com/coil-kt/coil)
 8. [Okhttp Logging Interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor)
-
-
-## License
-*Coming Soon*
 
 <!-- CONTACT -->
 ## Contact
