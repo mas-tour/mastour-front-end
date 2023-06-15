@@ -264,7 +264,7 @@ data class DataDetailGuides(
     val id: String? = null,
 
     @field:SerializedName("categories")
-    val categories: List<CategoriesItem?>? = null,
+    val categories: List<CategoriesItem>,
 
     @field:SerializedName("price_per_day")
     val pricePerDay: Long? = null,
