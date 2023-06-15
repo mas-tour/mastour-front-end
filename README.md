@@ -52,7 +52,7 @@ MasTour is made with:
 2. Android Jetpack
 3. Navigation Component
 3. MVVM
-4. Imgur API
+4. [Imgur API](https://apidocs.imgur.com/)
 5. [Retrofit](https://github.com/square/retrofit)
 6. [Hilt](https://dagger.dev/hilt/)
 7. [Coil](https://github.com/coil-kt/coil)
