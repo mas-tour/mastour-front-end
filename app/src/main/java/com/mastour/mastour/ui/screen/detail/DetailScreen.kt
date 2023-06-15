@@ -408,7 +408,7 @@ fun DetailContent(
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                 )
 
-                LazyRow(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)) {
+                LazyRow(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp).fillMaxWidth()) {
                     items(dataDetailGuides.topPlaces) { top ->
                         top.picture?.let {
                             CategoryComponent(
