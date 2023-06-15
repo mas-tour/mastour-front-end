@@ -95,7 +95,7 @@ fun ExtendedUserComponent(
     modifier: Modifier = Modifier
 ) {
     Card(shape = RoundedCornerShape(16.dp), modifier = modifier) {
-        Column(Modifier.padding(top = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.padding(top = 16.dp), horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.SpaceEvenly) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -145,7 +145,7 @@ fun ExtendedUserComponent(
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
@@ -157,7 +157,7 @@ fun ExtendedUserComponent(
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.size(8.dp))
+                Spacer(modifier = Modifier.size(8.dp).weight(1F))
                 TagComponent(
                     name = "${percentage.toInt()}%", color = color, modifier = Modifier
                         .size(98.dp)

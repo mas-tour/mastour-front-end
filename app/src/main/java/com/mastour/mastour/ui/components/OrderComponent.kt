@@ -29,7 +29,7 @@ fun OrderComponent(
 ) {
     Card(
         shape = RoundedCornerShape(16.dp), modifier = modifier
-            .width(350.dp)
+            .fillMaxWidth()
             .height(90.dp)
     ) {
         Row(
