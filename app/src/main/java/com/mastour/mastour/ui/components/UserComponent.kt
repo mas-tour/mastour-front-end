@@ -1,8 +1,8 @@
 package com.mastour.mastour.ui.components
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -57,28 +57,15 @@ fun UserComponent(
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier.padding(end = 4.dp)
                 )
-                Row(
-                    modifier = Modifier
-                        .padding(end = 8.dp, top = 4.dp)
-                        .horizontalScroll(
-                            rememberScrollState()
+                LazyRow(modifier = Modifier
+                    .padding(end = 8.dp, top = 4.dp)){
+                    items(items = specialization, key = { it.id }) {categories ->
+                        TagComponent(
+                            name = categories.name,
+                            color = MaterialTheme.colors.secondaryVariant,
+                            modifier = Modifier.padding(end = 4.dp)
                         )
-                ) {
-                    TagComponent(
-                        name = specialization[0].name,
-                        color = MaterialTheme.colors.secondaryVariant,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    TagComponent(
-                        name = specialization[1].name,
-                        color = MaterialTheme.colors.secondaryVariant,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    TagComponent(
-                        name = specialization[2].name,
-                        color = MaterialTheme.colors.secondaryVariant,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
+                    }
                 }
                 Text(
                     maxLines = 1,
@@ -136,30 +123,16 @@ fun ExtendedUserComponent(
                         color = MaterialTheme.colors.primaryVariant,
                         modifier = Modifier.padding(end = 4.dp)
                     )
-                    Row(
-                        modifier = Modifier
-                            .padding(end = 8.dp, top = 4.dp)
-                            .horizontalScroll(
-                                rememberScrollState()
+                    LazyRow(modifier = Modifier
+                        .padding(end = 8.dp, top = 4.dp)){
+                        items(items = specialization, key = { it.id }) {categories ->
+                            TagComponent(
+                                name = categories.name,
+                                color = MaterialTheme.colors.secondaryVariant,
+                                modifier = Modifier.padding(end = 4.dp)
                             )
-                    ) {
-                        TagComponent(
-                            name = specialization[0].name,
-                            color = MaterialTheme.colors.secondaryVariant,
-                            modifier = Modifier.padding(end = 4.dp)
-                        )
-                        TagComponent(
-                            name = specialization[1].name,
-                            color = MaterialTheme.colors.secondaryVariant,
-                            modifier = Modifier.padding(end = 4.dp)
-                        )
-                        TagComponent(
-                            name = specialization[2].name,
-                            color = MaterialTheme.colors.secondaryVariant,
-                            modifier = Modifier.padding(end = 4.dp)
-                        )
+                        }
                     }
-
                     Text(
                         text = "IDR " + formatNumber(price) + " / Day",
                         style = MaterialTheme.typography.subtitle2.copy(

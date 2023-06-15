@@ -375,24 +375,16 @@ fun DetailContent(
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                 )
 
-                Row(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
-                    TagComponent(
-                        name = dataDetailGuides.categories?.get(0)?.name.toString(),
-                        color = MaterialTheme.colors.secondaryVariant,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    TagComponent(
-                        name = dataDetailGuides.categories?.get(1)?.name.toString(),
-                        color = MaterialTheme.colors.secondaryVariant,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    TagComponent(
-                        name = dataDetailGuides.categories?.get(2)?.name.toString(),
-                        color = MaterialTheme.colors.secondaryVariant,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
+                LazyRow(modifier = Modifier
+                    .padding(end = 8.dp, top = 8.dp, start = 16.dp)){
+                    items(items = dataDetailGuides.categories, key = { it.id }) {categories ->
+                        TagComponent(
+                            name = categories.name,
+                            color = MaterialTheme.colors.secondaryVariant,
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                    }
                 }
-
                 Text(
                     text = "Description",
                     style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold),
