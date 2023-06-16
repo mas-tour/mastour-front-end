@@ -42,9 +42,10 @@ Android Studio
    ```
 
 <!-- USAGE EXAMPLES -->
-## Screenshots and Demo
-Apps Demo
-*Coming Soon...*
+## Application Demonstration
+Click on the picture to watch the demonstration:
+
+[<img src="https://i.ytimg.com/vi/gPyj6UmJgpg/maxresdefault.jpg" width="25%">](https://www.youtube.com/watch?v=gPyj6UmJgpg "Demonstration and Showcase")
 
 ## Technologies Used
 MasTour is made with:
